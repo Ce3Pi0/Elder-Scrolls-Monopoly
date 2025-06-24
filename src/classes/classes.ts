@@ -25,6 +25,7 @@ enum Finances {
   STABLES_RENT_4 = 200,
   START_MONEY = 1500,
   PASS_MONEY = 200,
+  INCOME_TAX_FEE = 200,
   LUXURY_TAX_FEE = 150,
   JAIL_FEE = 50,
 }
@@ -370,6 +371,20 @@ export class Player {
   }
   getBalance(): number {
     return this.balance;
+  }
+  getTotalBalance(): number {
+    return (
+      this.balance +
+      this.deeds.reduce((acc, deed) => {
+        let houseVal = 0,
+          castleVal = 0;
+        if (isPropertyDeed(deed)) {
+          houseVal = deed.getNumberOfHouses() * deed.getHouseCost();
+          castleVal = deed.getNumberOfCastles() * deed.getCastleCost();
+        }
+        return houseVal + castleVal + acc + deed.getPrice();
+      }, 0)
+    );
   }
   getPosition(): number {
     return this.position;
@@ -750,7 +765,12 @@ export class Game {
         //TODO: implement community chest logic
         break;
       case "incomeTax":
-        //TODO: implement income tax logic
+        this.modalOpen = true;
+        this.modalContent = {
+          title: "Income Tax Modal",
+          const_amount: Finances.INCOME_TAX_FEE,
+          variable_amount: this.getCurrentPlayer().getTotalBalance() * 0.1,
+        };
         break;
       case "jail":
         break;
