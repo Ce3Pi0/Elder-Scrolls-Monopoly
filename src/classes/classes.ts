@@ -459,7 +459,7 @@ export class Player {
       }
     }
   }
-  addDeed(deed: PropertyDeed): void {
+  addDeed(deed: BasicDeed): void {
     if (this.deeds.some((d) => d.getId() === deed.getId())) {
       throw new Error("PropertyDeed already owned by this player.");
     }

@@ -445,6 +445,7 @@ export type GameAction =
   | { type: "START_GAME"; payload: Cell[] }
   | { type: "DECIDE_ORDER"; payload: Player[] }
   | { type: "ROLL_DICE"; payload: null }
+  | { type: "RESET_DICE"; payload: null }
   | { type: "MOVE_PLAYER"; payload: number }
   | { type: "CELL_ACTION"; payload: null }
   | { type: "PLAYER_OUT"; payload: number }
@@ -455,6 +456,34 @@ export type GameAction =
   | { type: "END_GAME"; payload: null }
   | { type: "NEXT_PLAYER"; payload: null }
   | { type: "UPDATE_PLAYER_BALANCE"; payload: number }
+  | { type: "OPEN_MODAL"; payload: null }
+  | { type: "SET_MODAL_CONTENT"; payload: Object | null }
+  | { type: "CLOSE_MODAL"; payload: null }
+  | { type: "DRAW_CARD"; payload: null }
+  | { type: "END_DRAW_CARD"; payload: null }
+  | { type: "BUY_DEED"; payload: { deed: BasicDeed; playerId: number } } //TODO: Might need to change payload deed type
+  //TODO: SELL DEED
+  | { type: "REMOVE_DEED"; payload: { deed: BasicDeed; playerId: number } }
+  | { type: "MORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
+  | { type: "UNMORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
+  | {
+      type: "BUY_HOUSE";
+      payload: { propertyDeed: PropertyDeed; playerId: number };
+    }
+  | {
+      type: "BUY_CASTLE";
+      payload: { propertyDeed: PropertyDeed; playerId: number };
+    }
+  | {
+      type: "SELL_HOUSE";
+      payload: { propertyDeed: PropertyDeed; playerId: number };
+    }
+  | {
+      type: "SELL_CASTLE";
+      payload: { propertyDeed: PropertyDeed; playerId: number };
+    }
+  | { type: "ADD_GET_OUT_OF_JAIL_CARD"; payload: number }
+  | { type: "REMOVE_GET_OUT_OF_JAIL_CARD"; payload: number }
   | { type: "ADD_PLAYER"; payload: Player }
   | { type: "UPDATE_PLAYER"; payload: PlayerData }
   | { type: "REMOVE_PLAYER"; payload: Player };

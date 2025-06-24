@@ -27,7 +27,11 @@ export const gameReducer = (
       return { ...state, game: newGame };
     }
 
-    //TODO: RESET DICE
+    case "RESET_DICE": {
+      const newGame = state.game?.clone();
+      newGame?.resetDice();
+      return { ...state, game: newGame };
+    }
 
     case "MOVE_PLAYER": {
       const newGame = state.game?.clone();
@@ -90,13 +94,56 @@ export const gameReducer = (
       return { ...state, game: newGame };
     }
 
-    //TODO: OPEN MODAL
-    //TODO: SET MODAL CONTENT
-    //TODO: CLOSE MODAL
+    case "OPEN_MODAL": {
+      const newGame = state.game?.clone();
+      newGame?.setModalOpen(true);
+      return { ...state, game: newGame };
+    }
+
+    case "SET_MODAL_CONTENT": {
+      //TODO: Add more clarity to the types accepted as modal content objects (create a type for it)
+      const newGame = state.game?.clone();
+      newGame?.setModalContent(action.payload);
+      return { ...state, game: newGame };
+    }
+
+    case "CLOSE_MODAL": {
+      const newGame = state.game?.clone();
+      newGame?.setModalOpen(false);
+      return { ...state, game: newGame };
+    }
+
     //TODO: DRAW CARD
     //TODO: END DRAW CARD
-    //TODO: BUY PROPERTY
-    //TODO: BUY DEED
+
+    case "BUY_DEED": {
+      const newGame = state.game?.clone();
+      if (
+        newGame
+          ?.getPlayerById(action.payload.playerId)
+          ?.canAfford(action.payload.deed.getPrice()) &&
+        action.payload.deed.getOwner() === null
+      ) {
+        newGame
+          ?.getPlayerById(action.payload.playerId)
+          ?.addDeed(action.payload.deed);
+      } else if (
+        newGame
+          ?.getPlayerById(action.payload.playerId)
+          ?.canAfford(action.payload.deed.getPrice())
+      ) {
+        throw new Error("Player does not have enough money to buy the deed.");
+      } else {
+        throw new Error(
+          `Property already owned by playerId: ${action.payload.deed
+            .getOwner()
+            ?.getId()}`
+        );
+      }
+      return { ...state, game: newGame };
+    }
+
+    //TODO: SELL DEED
     //TODO: REMOVE DEED
     //TODO: MORTGAGE DEED
     //TODO: UNMORTGAGE DEED
