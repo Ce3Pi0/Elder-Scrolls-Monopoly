@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Carrois+Gothic+SC&display=swap");
+
+* {
+  font-family: "Carrois Gothic SC", sans-serif;
+  color: white;
+  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+body {
+  background-image: url("assets/images/backgroundImage.png");
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}

@@ -1,0 +1,149 @@
+.number-of-players {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.number-of-players-header {
+  font-size: 1.5rem;
+  margin-right: 10px;
+  background-color: #a67b5b;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid #000;
+}
+
+.number-of-players-options select {
+  background-color: #a67b5b;
+  width: 2.5rem;
+  height: 3.6rem;
+  border-radius: 10px;
+  border: 2px solid #000;
+  font-size: 20px;
+}
+
+.number-of-players-options select:focus {
+  background-color: #836148;
+}
+
+.player-section-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.name {
+  padding-right: 7rem;
+}
+.icons {
+  padding-right: 2rem;
+}
+
+.player-section-players {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.player {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.playerName {
+  padding: 0.2rem;
+  background-color: #a67b5b;
+  border: 2px solid #000;
+  border-radius: 10px;
+}
+
+.playerName input {
+  background-color: transparent;
+  border: none;
+}
+
+.player-color {
+  width: 4.2rem;
+  text-align: center;
+  padding: 6px;
+  border: 2px solid #000;
+  border-radius: 100px;
+}
+
+.player-color select {
+  width: 100%;
+  background-image: none;
+  background-color: transparent;
+  border: none;
+}
+
+.player-color select:hover {
+  cursor: pointer;
+}
+
+.start-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-button button {
+  background-color: #a67b5b;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid #000;
+  font-size: 1.5rem;
+}
+
+.start-button button:hover {
+  cursor: pointer;
+  background-color: #836148;
+}
+
+.player-icon {
+  width: 2rem;
+  height: 2rem;
+  transform: rotate(45deg);
+  background-color: #a67b5b;
+  border: 2px solid #000;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-inline: 1rem;
+  margin-top: 0.5rem;
+}
+
+.player-icon select {
+  /* background-image: url("../../../../src/assets/icons/player-icon1.png"); */
+  height: 200%;
+  width: 200%;
+  background-color: transparent;
+  border: none;
+  transform: rotate(-45deg);
+  background-size: cover;
+  background-position: center;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.player-icon option {
+  color: #000;
+}
+
+.player-icon select {
+  color: transparent;
+  text-shadow: 0 0 0;
+}
+
+.player-icon select:focus {
+  outline: none;
+}
