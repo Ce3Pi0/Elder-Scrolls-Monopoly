@@ -1,10 +1,13 @@
 import type {
   Cell,
   GameType,
+  ModalContent,
   Pair,
   PlayerData,
 } from "../interfaces/interfaces";
 import {
+  getRandomChanceCard,
+  getRandomCommunityChestCard,
   //  Finances,
   isPropertyDeed,
   isStablesDeed,
@@ -248,14 +251,14 @@ export class PropertyDeed extends BasicDeed {
     }
     this.numberOfCastles = numberOfCastles;
   }
-  canBuildHouse(): boolean {
+  private canBuildHouse(): boolean {
     return (
       this.numberOfHouses < 4 &&
       this.owner !== null &&
       this.owner.getBalance() >= this.houseCost
     );
   }
-  canBuildCastle(): boolean {
+  private canBuildCastle(): boolean {
     return (
       this.numberOfCastles < 4 &&
       this.owner !== null &&
@@ -278,7 +281,7 @@ export class PropertyDeed extends BasicDeed {
       throw new Error("Cannot build castle: conditions not met.");
     }
   }
-  canSellHouse(): boolean {
+  private canSellHouse(): boolean {
     return (
       this.numberOfHouses > 0 &&
       this.numberOfCastles === 0 &&
@@ -286,7 +289,7 @@ export class PropertyDeed extends BasicDeed {
       this.owner.getBalance() <= 0
     );
   }
-  canSellCastle(): boolean {
+  private canSellCastle(): boolean {
     return (
       this.numberOfCastles > 0 &&
       this.owner !== null &&
@@ -466,7 +469,7 @@ export class Player {
     this.deeds.push(deed);
     deed.setOwner(this);
   }
-  removeDeed(deed: PropertyDeed): void {
+  removeDeed(deed: BasicDeed): void {
     const index = this.deeds.findIndex((d) => d.getId() === deed.getId());
     if (index === -1) {
       throw new Error("PropertyDeed not owned by this player.");
@@ -759,10 +762,20 @@ export class Game {
         }
         break;
       case "chance":
-        //TODO: implement chance card logic
+        const randomCard: ModalContent = getRandomChanceCard();
+        this.modalOpen = true;
+        this.modalContent = {
+          title: randomCard.title,
+          content: randomCard.content,
+        };
         break;
       case "community":
-        //TODO: implement community chest logic
+        const randomCommunityCard: ModalContent = getRandomCommunityChestCard();
+        this.modalOpen = true;
+        this.modalContent = {
+          title: randomCommunityCard.title,
+          content: randomCommunityCard.content,
+        };
         break;
       case "incomeTax":
         this.modalOpen = true;

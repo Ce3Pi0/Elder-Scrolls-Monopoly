@@ -1,0 +1,104 @@
+{
+  "communityChestCards": [
+    {
+      "id": 0,
+      "type": " move",
+      "location": 0,
+      "content": "Advance to GO Collect 200"
+    },
+    {
+      "id": 1,
+      "type": "pay",
+      "value": 100,
+      "content": "Pay hospital bill of 100"
+    },
+    {
+      "id": 2,
+      "type": "pay",
+      "value": 50,
+      "content": "Doctor's fee Pay 50"
+    },
+    {
+      "id": 3,
+      "type": "collect",
+      "value": 100,
+      "content": "You inherit 100"
+    },
+    {
+      "id": 4,
+      "type": "collect",
+      "value": 20,
+      "content": "Income tax refund. Collect 20"
+    },
+    {
+      "id": 5,
+      "type": "variablePay",
+      "value": {
+        "house": 40,
+        "castle": 115
+      },
+      "content": "FOR EACH HOUSE PAY 40 /FOR EACH CASTLE PAY 115"
+    },
+    {
+      "id": 6,
+      "type": "getOutOfJailCard",
+      "content": "This card may be kept until needed, or sold"
+    },
+    {
+      "id": 7,
+      "type": "variableCollect",
+      "value": {
+        "player": 50
+      },
+      "content": "For opening night seats. Collect 50 from every player"
+    },
+    {
+      "id": 8,
+      "type": "collect",
+      "value": 100,
+      "content": "LIFE INSURANCE MATURES COLLECT 100"
+    },
+    {
+      "id": 9,
+      "type": "move",
+      "location": "jail",
+      "content": "Do not pass go, do not collect 200"
+    },
+    {
+      "id": 10,
+      "type": "collect",
+      "value": 200,
+      "content": "BANK ERROR IN YOUR FAVOR COLLECT 200"
+    },
+    {
+      "id": 11,
+      "type": "pay",
+      "value": 150,
+      "content": "PAY SCHOOL TAX OF 150"
+    },
+    {
+      "id": 12,
+      "type": "collect",
+      "value": 100,
+      "content": "XMAS FUND MATURES COLLECT 100"
+    },
+    {
+      "id": 13,
+      "type": "collect",
+      "value": 10,
+      "content": "YOU HAVE WON SECOND PRIZE in a beauty contest. Collect 10"
+    },
+    {
+      "id": 14,
+      "type": "collect",
+      "value": 45,
+      "content": "FROM SALE OF STOCK YOU GET 45"
+    },
+    {
+      "id": 15,
+      "type": "collect",
+      "value": 25,
+      "content": "RECEIVE FOR SERVICES 25"
+    }
+  ]
+}

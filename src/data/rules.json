@@ -1,0 +1,32 @@
+{
+  "rules": [
+    {
+      "page": 1,
+      "paragraphs": {
+        "one": "OBJECT: The object of the game IS to become the wealthiest player through buying, renting and selling property.",
+        "two": "PREPARATION: Each player chooses a logo and a color to represent them while traveling around the board. Each player is given 1,500 coins",
+        "three": "THE PLAY: Each player in turn rolls the dice. The player with the highest total starts the play: Throw the dice to move your token in the direction of the arrow, the number of spaces indicated by the dice. After you have completed your play, the turn passes to the next player. The tokens remain on the spaces occupied and proceed from that point on the player's next turn. Two or more tokens may rest on the same space at the same time.",
+        "four": "According to the space your token reaches, you may be entitled to buy real estate or other properties - or obliged to pay rent, pay taxes, draw a Chance or Community Chest card, 'Go to Jail', etc. ",
+        "five": "If you throw doubles, you move your token as usual, the sum of the two dice, and are subject to any privileges or penalties pertaining to the space on which you land. Roll the dice again and move your token as before. If you throw doubles three times in succession, move your token immediately to the space marked 'In Jail' (see JAIL)."
+      }
+    },
+    {
+      "page": 2,
+      "paragraphs": {
+        "one": "'GO': Each time a player's token lands on or passes over GO, whether by rolling the dice or drawing a card, they get paid 200 coins. The 200 coins are only paid once each time around the board. However, if a player passing GO on the throw of the dice lands 2 spaces beyond it on Community Chest, or 7 spaces beyond it on Chance, and draws the 'Advance to GO' card, they collect 200 coins for passing GO the first time and another 200 coins for reaching it the second time by instructions on the card.",
+        "two": "BUYING PROPERTY: Whenever you land on an unowned property you may buy that property at its shown price. You receive the Title Deed card showing ownership. All deeds can be viewed by clicking on the deed icon by each player’s name card. If you do not wish to buy the property, it is sold at an auction to the highest bidder. The buyer pays the amount of the bid and receives the Title Deed card for that property. Any player, including the one who declined the option to buy it at the shown price, may bid. Bidding may start at a price that is 10% lower than the shown price.",
+        "three": "PAYING RENT: When you land on property owned by another player, the owner collects rent from you in accordance with the list shown on its Title Deed card. If the property is mortgaged, no rent can be collected. When a property is mortgaged, its Title Deed card is shown face down in the owner's deeds list. "
+      }
+    },
+    {
+      "page": 3,
+      "paragraphs": {
+        "one": "",
+        "two": "",
+        "three": "",
+        "four": "",
+        "five": ""
+      }
+    }
+  ]
+}

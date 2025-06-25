@@ -1,5 +1,6 @@
 import type { GameAction } from "../utils/utils";
 import type { GameState } from "../interfaces/interfaces";
+import type { BasicDeed, Player, PropertyDeed } from "../classes/classes";
 
 export const gameReducer = (
   state: GameState,
@@ -143,14 +144,98 @@ export const gameReducer = (
       return { ...state, game: newGame };
     }
 
-    //TODO: SELL DEED
-    //TODO: REMOVE DEED
-    //TODO: MORTGAGE DEED
-    //TODO: UNMORTGAGE DEED
-    //TODO: BUY HOUSE
-    //TODO: BUY CASTLE
-    //TODO: SELL HOUSE
-    //TODO: SELL CASTLE
+    case "REMOVE_DEED": {
+      const newGame = state.game?.clone();
+      const player = newGame?.getPlayerById(action.payload.playerId);
+
+      if (action.payload.deed.getOwner()?.getId() === player?.getId()) {
+        player?.removeDeed(action.payload.deed);
+      }
+
+      return { ...state, game: newGame };
+    }
+
+    case "MORTGAGE_DEED": {
+      const newGame = state.game?.clone();
+      const curPlayer: Player | undefined = newGame?.getPlayerById(
+        action.payload.playerId
+      );
+      const deed: BasicDeed = action.payload.deed;
+
+      if (curPlayer?.getId() === deed.getOwner()?.getId()) {
+        deed.mortgage();
+      }
+
+      return { ...state, game: newGame };
+    }
+
+    case "UNMORTGAGE_DEED": {
+      const newGame = state.game?.clone();
+      const player: Player | undefined = newGame?.getPlayerById(
+        action.payload.playerId
+      );
+      const deed: BasicDeed = action.payload.deed;
+
+      if (player?.getId() === deed.getOwner()?.getId()) {
+        deed.unmortgage();
+      }
+      return { ...state, game: newGame };
+    }
+
+    case "BUY_HOUSE": {
+      const newGame = state.game?.clone();
+
+      const deed: PropertyDeed = action.payload.propertyDeed;
+
+      if (deed.getOwner()?.getId() === action.payload.playerId) {
+        deed.buildHouse();
+      } else {
+        throw new Error("Player doesn't own the deed.");
+      }
+
+      return { ...state, game: newGame };
+    }
+
+    case "BUY_CASTLE": {
+      const newGame = state.game?.clone();
+
+      const deed: PropertyDeed = action.payload.propertyDeed;
+
+      if (deed.getOwner()?.getId() === action.payload.playerId) {
+        deed.buildCastle();
+      } else {
+        throw new Error("Player doesn't own the deed.");
+      }
+
+      return { ...state, game: newGame };
+    }
+
+    case "SELL_HOUSE": {
+      const newGame = state.game?.clone();
+      const deed: PropertyDeed = action.payload.propertyDeed;
+
+      if (deed.getOwner()?.getId() === action.payload.playerId) {
+        deed.sellHouse();
+      } else {
+        throw new Error("Player doesn't own the deed.");
+      }
+
+      return { ...state, game: newGame };
+    }
+
+    case "SELL_CASTLE": {
+      const newGame = state.game?.clone();
+      const deed: PropertyDeed = action.payload.propertyDeed;
+
+      if (deed.getOwner()?.getId() === action.payload.playerId) {
+        deed.sellCastle();
+      } else {
+        throw new Error("Player doesn't own the deed.");
+      }
+
+      return { ...state, game: newGame };
+    }
+
     //TODO: ADD_GET_OUT_OF_JAIL_CARD
     //TODO: REMOVE_GET_OUT_OF_JAIL_CARD
 

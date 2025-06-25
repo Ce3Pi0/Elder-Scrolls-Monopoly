@@ -6,7 +6,7 @@ import {
   StablesDeed,
   BasicDeed,
 } from "../classes/classes";
-import type { Cell, PlayerData } from "../interfaces/interfaces";
+import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
 
 export const PLAYER_COLORS: { [key: number]: [string, string] } = {
   1: ["#FF0000", "Red"], // Red
@@ -462,7 +462,6 @@ export type GameAction =
   | { type: "DRAW_CARD"; payload: null }
   | { type: "END_DRAW_CARD"; payload: null }
   | { type: "BUY_DEED"; payload: { deed: BasicDeed; playerId: number } } //TODO: Might need to change payload deed type
-  //TODO: SELL DEED
   | { type: "REMOVE_DEED"; payload: { deed: BasicDeed; playerId: number } }
   | { type: "MORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
   | { type: "UNMORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
@@ -520,4 +519,22 @@ export const isUtilityDeed = (deed: any): deed is UtilityDeed => {
 
 export const isStablesDeed = (deed: any): deed is StablesDeed => {
   return deed instanceof StablesDeed;
+};
+
+export const getRandomChanceCard = (): ModalContent => {
+  //TODO: Fetch random chance card
+
+  return {
+    title: "chance",
+    content: {},
+  };
+};
+
+export const getRandomCommunityChestCard = (): ModalContent => {
+  //TODO: Fetch random community chest card
+
+  return {
+    title: "community",
+    content: {},
+  };
 };

@@ -1,0 +1,104 @@
+{
+  "chanceCards": [
+    {
+      "id": 0,
+      "type": "move",
+      "location": 21,
+      "content": "Advance to Evermore"
+    },
+    {
+      "id": 1,
+      "type": "pay",
+      "value": 15,
+      "content": "Pay poor tax of 15"
+    },
+    {
+      "id": 2,
+      "type": "move",
+      "location": -3,
+      "content": "Go back 3 spaces!"
+    },
+    {
+      "id": 3,
+      "type": "move",
+      "location": "utility",
+      "content": "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times the amount thrown."
+    },
+    {
+      "id": 4,
+      "type": "move",
+      "location": "stables",
+      "content": "Advance token to the nearest Stables and pay owner Twice the Rental to which they are otherwise entitled. If Stables are UNOWNED, you may buy it from the Bank."
+    },
+    {
+      "id": 5,
+      "type": "getOutOfJailCard",
+      "content": "This card may be kept until needed, or sold"
+    },
+    {
+      "id": 6,
+      "type": "move",
+      "location": "jail",
+      "content": "Do not pass go, do not collect 200"
+    },
+    {
+      "id": 7,
+      "type": "collect",
+      "value": 150,
+      "content": "YOUR BUILDING AND LOAN MATURES COLLECT 150"
+    },
+    {
+      "id": 8,
+      "type": "move",
+      "location": 39,
+      "content": "Advance token to Alinor. Take a ship to the Isles!"
+    },
+    {
+      "id": 9,
+      "type": "collect",
+      "value": 50,
+      "content": "Bank pays you dividend of 50"
+    },
+    {
+      "id": 10,
+      "type": "variablePay",
+      "value": {
+        "house": 25,
+        "castle": 100
+      },
+      "content": "Make general repairs on your property. For each house: Pay 25 / For each castle: Pay 100"
+    },
+    {
+      "id": 11,
+      "type": "move",
+      "location": "stables",
+      "content": "Advance token to the nearest Stables and pay owner Twice the Rental to which they are otherwise entitled. If Stables are UNOWNED, you may buy it from the Bank."
+    },
+    {
+      "id": 12,
+      "type": "variablePay",
+      "value": {
+        "player": 50
+      },
+      "content": "You Have Been Elected CHAIRMAN OF THE BOARD. PAY EACH PLAYER 50"
+    },
+    {
+      "id": 13,
+      "type": "move",
+      "location": 0,
+      "content": "ADVANCE TO GO!"
+    },
+    {
+      "id": 14,
+      "type": "move",
+      "location": 32,
+      "content": "Advance to Sentinel. If you pass go, collect 200"
+    },
+    {
+      "id": 15,
+      "type": "move",
+      "location": 25,
+      "content": "TAKE A HORSE TO MARKARTH STABLES. IF YOU PASS GO, COLLECT 200"
+    }
+  ]
+}

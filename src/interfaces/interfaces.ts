@@ -7,6 +7,11 @@ import type {
 } from "../classes/classes";
 import type { CellType } from "../utils/utils";
 
+export interface ModalContent {
+  title: string;
+  content: object;
+}
+
 export interface HeaderProps {
   title: string;
 }
