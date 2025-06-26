@@ -9,6 +9,7 @@ import NotFound from "./pages/notFound/notFound.tsx";
 import { GameProvider } from "./context/GameContext.tsx";
 
 import "./index.css";
+import Game from "./pages/game/game.tsx";
 
 const root = document.getElementById("root");
 
@@ -18,6 +19,8 @@ ReactDOM.createRoot(root!).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/game-setup" element={<GameSetup />} />
+        {/* <Route path="/leaderboards" element={<Leaderboards />} /> */}
+        <Route path="/game" element={<Game />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

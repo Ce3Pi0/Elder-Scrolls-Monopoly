@@ -32,8 +32,9 @@
     },
     {
       "id": 5,
-      "type": "getOutOfJailCard",
-      "content": "This card may be kept until needed, or sold"
+      "type": "move",
+      "location": 25,
+      "content": "TAKE A HORSE TO MARKARTH STABLES. IF YOU PASS GO, COLLECT 200"
     },
     {
       "id": 6,
@@ -96,9 +97,8 @@
     },
     {
       "id": 15,
-      "type": "move",
-      "location": 25,
-      "content": "TAKE A HORSE TO MARKARTH STABLES. IF YOU PASS GO, COLLECT 200"
+      "type": "getOutOfJailCard",
+      "content": "This card may be kept until needed, or sold"
     }
   ]
 }

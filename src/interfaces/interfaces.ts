@@ -5,10 +5,22 @@ import type {
   UtilityDeed,
   StablesDeed,
 } from "../classes/classes";
-import type { CellType } from "../utils/utils";
+import type { CellType } from "../utils/types";
 
 export interface ModalContent {
-  title: string;
+  title:
+    | "chance"
+    | "community"
+    | "deed"
+    | "deedProperties"
+    | "deedOther"
+    | "trade"
+    | "auction"
+    | "sellDeed"
+    | "sellDeedProperties"
+    | "sellDeedOther"
+    | "sellAssets"
+    | "mortgage";
   content: object;
 }
 

@@ -1,6 +1,10 @@
-import type { GameAction } from "../utils/utils";
-import type { GameState } from "../interfaces/interfaces";
+import type { GameAction } from "../utils/types";
+import type { GameState, ModalContent } from "../interfaces/interfaces";
 import type { BasicDeed, Player, PropertyDeed } from "../classes/classes";
+import {
+  getRandomChanceCard,
+  getRandomCommunityChestCard,
+} from "../utils/utils";
 
 export const gameReducer = (
   state: GameState,
@@ -102,7 +106,6 @@ export const gameReducer = (
     }
 
     case "SET_MODAL_CONTENT": {
-      //TODO: Add more clarity to the types accepted as modal content objects (create a type for it)
       const newGame = state.game?.clone();
       newGame?.setModalContent(action.payload);
       return { ...state, game: newGame };
@@ -110,12 +113,30 @@ export const gameReducer = (
 
     case "CLOSE_MODAL": {
       const newGame = state.game?.clone();
-      newGame?.setModalOpen(false);
+      newGame?.closeModal();
       return { ...state, game: newGame };
     }
 
-    //TODO: DRAW CARD
-    //TODO: END DRAW CARD
+    case "DRAW_CHANCE_CARD": {
+      const newGame = state.game?.clone();
+      const card: ModalContent = getRandomChanceCard();
+      newGame?.drawCard(card);
+      newGame?.setPendingDrawCard(true);
+      return { ...state, game: newGame };
+    }
+
+    case "DRAW_COMMUNITY_CHEST_CARD": {
+      const newGame = state.game?.clone();
+      const card: ModalContent = getRandomCommunityChestCard();
+      newGame?.drawCard(card);
+      return { ...state, game: newGame };
+    }
+
+    case "END_DRAW_CARD": {
+      const newGame = state.game?.clone();
+      newGame?.endDrawCard();
+      return { ...state, game: newGame };
+    }
 
     case "BUY_DEED": {
       const newGame = state.game?.clone();
@@ -236,8 +257,23 @@ export const gameReducer = (
       return { ...state, game: newGame };
     }
 
-    //TODO: ADD_GET_OUT_OF_JAIL_CARD
-    //TODO: REMOVE_GET_OUT_OF_JAIL_CARD
+    case "ADD_GET_OUT_OF_JAIL_CARD": {
+      const newGame = state.game?.clone();
+      for (let i = 0; i < action.payload.amount; i++)
+        newGame
+          ?.getPlayerById(action.payload.playerId)
+          ?.addGetOutOfJailCard(action.payload.type);
+      return { ...state, game: newGame };
+    }
+
+    case "REMOVE_GET_OUT_OF_JAIL_CARD": {
+      const newGame = state.game?.clone();
+      for (let i = 0; i < action.payload.amount; i++)
+        newGame
+          ?.getPlayerById(action.payload.playerId)
+          ?.removeGetOutOfJailCard();
+      return { ...state, game: newGame };
+    }
 
     case "ADD_PLAYER": {
       const newGame = state.game?.clone();

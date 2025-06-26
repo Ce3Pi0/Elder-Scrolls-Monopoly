@@ -6,11 +6,23 @@ import {
   StablesDeed,
   BasicDeed,
 } from "../classes/classes";
-import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
+import propertyDeedsJson from "../data/propertyDeeds.json";
+import stablesDeedsJson from "../data/stablesDeeds.json";
+import utilitiesDeedsJson from "../data/utilityDeeds.json";
+import chanceCardsJson from "../data/chanceCards.json";
+import communityChestCardsJson from "../data/communityChestCards.json";
+import type { Cell, ModalContent } from "../interfaces/interfaces";
+import type {
+  ChanceCard,
+  CommunityChestCard,
+  GetOutOfJailCardType,
+  OtherDeedTuple,
+  PropertyDeedTuple,
+} from "./types";
 
 export const PLAYER_COLORS: { [key: number]: [string, string] } = {
   1: ["#FF0000", "Red"], // Red
-  2: ["#00FF00", "Green"],
+  2: ["#00FF00", "Green"], // Green
   3: ["#0000FF", "Blue"], // Blue
   4: ["#FFFF00", "Yellow"], // Yellow
   5: ["#FFA500", "Orange"], // Orange
@@ -28,216 +40,17 @@ export const PLAYER_ICONS: { [key: number]: [string, string] } = {
   4: ["src/assets/icons/player-icon4.png", "Daggerfall"],
 };
 
-type PROPERTY_DEED_TUPLE = [
-  number,
-  string,
-  string,
-  number,
-  number[],
-  number,
-  number,
-  number
-];
+const propertyDeedData = propertyDeedsJson.propertyDeeds as PropertyDeedTuple[];
+const stableDeedData = stablesDeedsJson.stablesDeeds as OtherDeedTuple[];
+const utilityDeedData = utilitiesDeedsJson.utilitiesDeeds as OtherDeedTuple[];
 
-type REST_DEED_TUPLE = [number, string];
+export const CHANCE_CARDS: ChanceCard[] =
+  chanceCardsJson.chanceCards as ChanceCard[];
 
-const PROPERTY_DEED_DATA: PROPERTY_DEED_TUPLE[] = [
-  [1, "Black Marsh", "Lilmoth", 60, [7, 28, 64, 130, 180, 200], 30, 30, 30],
-  [3, "Black Marsh", "Kvatch", 90, [11, 44, 90, 150, 200, 220], 30, 30, 45],
-  [6, "Cyrodiil", "Stormhold", 120, [15, 60, 120, 200, 240, 260], 50, 50, 60],
-  [8, "Cyrodiil", "Skingard", 130, [16, 65, 125, 205, 245, 265], 50, 50, 65],
-  [
-    9,
-    "Cyrodiil",
-    "Imperial City",
-    150,
-    [19, 75, 140, 220, 260, 280],
-    50,
-    50,
-    75,
-  ],
+export const COMMUNITY_CHEST_CARDS: ChanceCard[] =
+  communityChestCardsJson.communityChestCards as CommunityChestCard[];
 
-  [
-    11,
-    "South Skyrim",
-    "Falkreath",
-    160,
-    [20, 80, 160, 240, 280, 300],
-    70,
-    70,
-    80,
-  ],
-  [
-    13,
-    "South Skyrim",
-    "Markarth",
-    160,
-    [20, 80, 160, 240, 280, 300],
-    70,
-    70,
-    80,
-  ],
-  [14, "South Skyrim", "Riften", 170, [22, 88, 175, 255, 290, 310], 70, 70, 85],
-
-  [
-    16,
-    "North Skyrim",
-    "Winterhold",
-    180,
-    [23, 95, 180, 260, 300, 360],
-    90,
-    90,
-    90,
-  ],
-  [
-    18,
-    "North Skyrim",
-    "Windhlem",
-    200,
-    [25, 100, 200, 280, 360, 400],
-    90,
-    90,
-    100,
-  ],
-  [
-    19,
-    "North Skyrim",
-    "Soltitude",
-    200,
-    [25, 100, 200, 280, 360, 400],
-    90,
-    90,
-    100,
-  ],
-
-  [
-    21,
-    "High Rock",
-    "Evermore",
-    220,
-    [27, 110, 220, 300, 380, 420],
-    100,
-    100,
-    110,
-  ],
-  [
-    23,
-    "High Rock",
-    "Wayrest",
-    220,
-    [27, 110, 220, 300, 380, 420],
-    100,
-    100,
-    110,
-  ],
-  [
-    24,
-    "High Rock",
-    "Daggerfall",
-    240,
-    [30, 120, 240, 320, 400, 440],
-    100,
-    100,
-    120,
-  ],
-
-  [
-    26,
-    "Morrowind",
-    "Raven Rock",
-    260,
-    [32, 125, 250, 350, 430, 480],
-    120,
-    120,
-    130,
-  ],
-  [
-    27,
-    "Morrowind",
-    "Mournhold",
-    260,
-    [32, 125, 250, 350, 430, 480],
-    120,
-    120,
-    130,
-  ],
-  [
-    29,
-    "Morrowind",
-    "Ebonheart",
-    280,
-    [35, 140, 280, 380, 460, 500],
-    120,
-    120,
-    140,
-  ],
-
-  [
-    31,
-    "Hammerfell ",
-    "Orsinium",
-    300,
-    [38, 150, 300, 400, 480, 540],
-    140,
-    140,
-    150,
-  ],
-  [
-    32,
-    "Hammerfell ",
-    "Sentinel",
-    320,
-    [40, 160, 320, 420, 500, 560],
-    140,
-    140,
-    160,
-  ],
-  [
-    34,
-    "Hammerfell ",
-    "Abah's Landing",
-    340,
-    [42, 170, 340, 440, 520, 600],
-    140,
-    140,
-    170,
-  ],
-
-  [
-    37,
-    "Summerset Isles",
-    "Lillandril",
-    450,
-    [56, 220, 440, 800, 900, 1000],
-    200,
-    200,
-    225,
-  ],
-  [
-    39,
-    "Summerset Isles",
-    "Alinor",
-    500,
-    [60, 240, 480, 860, 1000, 1200],
-    200,
-    200,
-    250,
-  ],
-];
-
-const STABLES_DEED_DATA: REST_DEED_TUPLE[] = [
-  [5, "White Run Stables"],
-  [15, "Riften Stables"],
-  [25, "Markarth Stables"],
-  [35, "Windhelm Stables"],
-];
-
-const UTILITIES_DEED_DATA: REST_DEED_TUPLE[] = [
-  [12, "Raven Rock Mine"],
-  [28, "Soltitude Sawmill"],
-];
-
-export const PROPERTY_DEEDS: PropertyDeed[] = PROPERTY_DEED_DATA.map(
+export const PROPERTY_DEEDS: PropertyDeed[] = propertyDeedData.map(
   ([position, region, name, cost, rents, houseCost, castleCost, mortgage]) =>
     new PropertyDeed(
       position,
@@ -251,34 +64,13 @@ export const PROPERTY_DEEDS: PropertyDeed[] = PROPERTY_DEED_DATA.map(
     )
 );
 
-export const STABLES_DEEDS: StablesDeed[] = STABLES_DEED_DATA.map(
+export const STABLES_DEEDS: StablesDeed[] = stableDeedData.map(
   ([position, name]) => new StablesDeed(position, name)
 );
 
-export const UTILITIES_DEEDS: UtilityDeed[] = UTILITIES_DEED_DATA.map(
+export const UTILITIES_DEEDS: UtilityDeed[] = utilityDeedData.map(
   ([position, name]) => new UtilityDeed(position, name)
 );
-
-export enum Finances {
-  UTILITY_PRICE = 150,
-  STABLES_PRICE = 200,
-  UTILITY_PRICE_MULTIPLIER = 4,
-  UTILITY_PRICE_MULTIPLIER_2 = 10,
-  STABLES_RENT_1 = 25,
-  STABLES_RENT_2 = 50,
-  STABLES_RENT_3 = 100,
-  STABLES_RENT_4 = 200,
-  START_MONEY = 1500,
-  PASS_MONEY = 200,
-  JAIL_FEE = 50,
-}
-
-export enum Positions {
-  START = 0,
-  END = 39,
-  JAIL = 10,
-  GO_TO_JAIL = 30,
-}
 
 export const serializeGame = (game: Game) => {
   return {
@@ -429,64 +221,6 @@ export const deserializeGame = (data: any): Game => {
   return game;
 };
 
-export type CellType =
-  | "start"
-  | "property"
-  | "chance"
-  | "community"
-  | "incomeTax"
-  | "jail"
-  | "lodging"
-  | "goToJail"
-  | "luxuryTax";
-
-export type GameAction =
-  | { type: "GAME_SETUP"; payload: Game }
-  | { type: "START_GAME"; payload: Cell[] }
-  | { type: "DECIDE_ORDER"; payload: Player[] }
-  | { type: "ROLL_DICE"; payload: null }
-  | { type: "RESET_DICE"; payload: null }
-  | { type: "MOVE_PLAYER"; payload: number }
-  | { type: "CELL_ACTION"; payload: null }
-  | { type: "PLAYER_OUT"; payload: number }
-  | { type: "DOUBLES"; payload: null }
-  | { type: "RESET_DOUBLES"; payload: null }
-  | { type: "SEND_TO_JAIL"; payload: number }
-  | { type: "END_TURN"; payload: Game }
-  | { type: "END_GAME"; payload: null }
-  | { type: "NEXT_PLAYER"; payload: null }
-  | { type: "UPDATE_PLAYER_BALANCE"; payload: number }
-  | { type: "OPEN_MODAL"; payload: null }
-  | { type: "SET_MODAL_CONTENT"; payload: Object | null }
-  | { type: "CLOSE_MODAL"; payload: null }
-  | { type: "DRAW_CARD"; payload: null }
-  | { type: "END_DRAW_CARD"; payload: null }
-  | { type: "BUY_DEED"; payload: { deed: BasicDeed; playerId: number } } //TODO: Might need to change payload deed type
-  | { type: "REMOVE_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | { type: "MORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | { type: "UNMORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | {
-      type: "BUY_HOUSE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "BUY_CASTLE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "SELL_HOUSE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "SELL_CASTLE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | { type: "ADD_GET_OUT_OF_JAIL_CARD"; payload: number }
-  | { type: "REMOVE_GET_OUT_OF_JAIL_CARD"; payload: number }
-  | { type: "ADD_PLAYER"; payload: Player }
-  | { type: "UPDATE_PLAYER"; payload: PlayerData }
-  | { type: "REMOVE_PLAYER"; payload: Player };
-
 export const getRandomColor = (colors: number[]) => {
   const availableColors: number[] = Object.keys(PLAYER_COLORS).map(Number);
   for (const color of colors) {
@@ -521,20 +255,56 @@ export const isStablesDeed = (deed: any): deed is StablesDeed => {
   return deed instanceof StablesDeed;
 };
 
+let drawnChanceGetOutOfJailCard = true;
 export const getRandomChanceCard = (): ModalContent => {
-  //TODO: Fetch random chance card
+  if (!drawnChanceGetOutOfJailCard) {
+    const card: ChanceCard =
+      CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length) + 1];
+    return {
+      title: "community",
+      content: card,
+    };
+  }
 
-  return {
-    title: "chance",
-    content: {},
-  };
-};
-
-export const getRandomCommunityChestCard = (): ModalContent => {
-  //TODO: Fetch random community chest card
+  //Avoid the last index because that is the one with the get out of jail card
+  const card: ChanceCard =
+    CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length)];
 
   return {
     title: "community",
-    content: {},
+    content: card,
   };
+};
+
+let drawnCommunityChestGetOutOfJailCard = false;
+export const getRandomCommunityChestCard = (): ModalContent => {
+  if (!drawnCommunityChestGetOutOfJailCard) {
+    const card: CommunityChestCard =
+      COMMUNITY_CHEST_CARDS[
+        Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length) + 1
+      ];
+    return {
+      title: "community",
+      content: card,
+    };
+  }
+
+  //Avoid the last index because that is the one with the get out of jail card
+  const card: CommunityChestCard =
+    COMMUNITY_CHEST_CARDS[
+      Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length)
+    ];
+
+  return {
+    title: "community",
+    content: card,
+  };
+};
+
+export const returnGetOutOfJailCard = (type: GetOutOfJailCardType): void => {
+  if (type === "chance") {
+    drawnChanceGetOutOfJailCard = true;
+  } else {
+    drawnCommunityChestGetOutOfJailCard = true;
+  }
 };

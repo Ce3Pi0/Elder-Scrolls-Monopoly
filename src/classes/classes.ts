@@ -8,30 +8,13 @@ import type {
 import {
   getRandomChanceCard,
   getRandomCommunityChestCard,
-  //  Finances,
   isPropertyDeed,
   isStablesDeed,
   isUtilityDeed,
-  Positions,
-  type CellType,
+  returnGetOutOfJailCard,
 } from "../utils/utils";
-
-// TODO: Move to a separate file
-enum Finances {
-  UTILITY_PRICE = 150,
-  STABLES_PRICE = 200,
-  UTILITY_PRICE_MULTIPLIER = 4,
-  UTILITY_PRICE_MULTIPLIER_2 = 10,
-  STABLES_RENT_1 = 25,
-  STABLES_RENT_2 = 50,
-  STABLES_RENT_3 = 100,
-  STABLES_RENT_4 = 200,
-  START_MONEY = 1500,
-  PASS_MONEY = 200,
-  INCOME_TAX_FEE = 200,
-  LUXURY_TAX_FEE = 150,
-  JAIL_FEE = 50,
-}
+import type { CellType, GetOutOfJailCardType } from "../utils/types";
+import { Finances, Positions } from "../utils/enums";
 
 export abstract class BasicDeed {
   protected id: number;
@@ -333,7 +316,7 @@ export class Player {
   private inJail: boolean = false;
   private jailTurns: number = 0;
   private deeds: BasicDeed[] = [];
-  private getOutOfJailCards: number = 0;
+  private getOutOfJailCards: GetOutOfJailCardType[] = [];
   private bankrupt: boolean = false;
 
   constructor(id: number, name: string, color: number, icon: number) {
@@ -401,7 +384,7 @@ export class Player {
   getDeeds(): BasicDeed[] {
     return this.deeds;
   }
-  getGetOutOfJailCards(): number {
+  getGetOutOfJailCards(): GetOutOfJailCardType[] {
     return this.getOutOfJailCards;
   }
   setPosition(position: number): void {
@@ -425,8 +408,9 @@ export class Player {
     this.position = Positions.JAIL; // Jail position
   }
   useGetOutOfJailCard(): void {
-    if (this.getOutOfJailCards > 0) {
-      this.getOutOfJailCards--;
+    if (this.getOutOfJailCards.length > 0) {
+      const card: GetOutOfJailCardType = this.getOutOfJailCards.pop()!;
+      returnGetOutOfJailCard(card);
       this.inJail = false;
       this.jailTurns = 0;
     } else {
@@ -500,14 +484,15 @@ export class Player {
     return this.deeds.some((d) => d.getId() === deed.getId());
   }
   hasGetOutOfJailCard(): boolean {
-    return this.getOutOfJailCards > 0;
+    return this.getOutOfJailCards.length > 0;
   }
-  addGetOutOfJailCard(): void {
-    this.getOutOfJailCards++;
+  addGetOutOfJailCard(card: GetOutOfJailCardType): void {
+    this.getOutOfJailCards.push(card);
   }
   removeGetOutOfJailCard(): void {
-    if (this.getOutOfJailCards > 0) {
-      this.getOutOfJailCards--;
+    if (this.getOutOfJailCards.length > 0) {
+      const card: GetOutOfJailCardType = this.getOutOfJailCards.pop()!;
+      returnGetOutOfJailCard(card);
     } else {
       throw new Error("No Get Out of Jail cards to remove.");
     }
@@ -728,7 +713,7 @@ export class Game {
   setModalOpen(modalOpen: boolean): void {
     this.modalOpen = modalOpen;
   }
-  setModalContent(modalContent: Object | null): void {
+  setModalContent(modalContent: ModalContent | null): void {
     this.modalContent = modalContent;
   }
   setPendingDrawCard(pendingDrawCard: boolean): void {
@@ -825,7 +810,7 @@ export class Game {
   rolledDoubles(): boolean {
     return this.diceValue.diceOne === this.diceValue.diceTwo;
   }
-  openModal(content: Object): void {
+  openModal(content: ModalContent): void {
     this.modalOpen = true;
     this.modalContent = content;
   }
@@ -833,7 +818,7 @@ export class Game {
     this.modalOpen = false;
     this.modalContent = null;
   }
-  drawCard(card: Object): void {
+  drawCard(card: ModalContent): void {
     if (this.pendingDrawCard) {
       throw new Error("A card is already being drawn.");
     }

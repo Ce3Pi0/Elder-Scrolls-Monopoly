@@ -1,7 +1,7 @@
 import React from "react";
 
-import PlayButton from "./PlayButton";
-import LeaderboardsButton from "./LeaderboardsButton";
+import PlayButton from "./playButton";
+import LeaderboardsButton from "./leaderboardsButton";
 
 const Body: React.FC = () => (
   <div className="home-body">

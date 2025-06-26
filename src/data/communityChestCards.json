@@ -41,8 +41,9 @@
     },
     {
       "id": 6,
-      "type": "getOutOfJailCard",
-      "content": "This card may be kept until needed, or sold"
+      "type": "collect",
+      "value": 25,
+      "content": "RECEIVE FOR SERVICES 25"
     },
     {
       "id": 7,
@@ -96,9 +97,8 @@
     },
     {
       "id": 15,
-      "type": "collect",
-      "value": 25,
-      "content": "RECEIVE FOR SERVICES 25"
+      "type": "getOutOfJailCard",
+      "content": "This card may be kept until needed, or sold"
     }
   ]
 }
