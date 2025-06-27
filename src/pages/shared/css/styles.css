@@ -1,4 +1,4 @@
-header {
+.shared-header {
   margin: 2rem;
   margin-bottom: 6rem;
   display: flex;
@@ -6,7 +6,7 @@ header {
   align-items: center;
 }
 
-header .title {
+.shared-header .title {
   background-color: #533621;
   border: 2px solid black;
   border-radius: 10px;
@@ -14,16 +14,16 @@ header .title {
   padding: 1rem;
 }
 
-header h1 {
+.shared-header h1 {
   font-size: 64px;
 }
 
-header .icons {
+.shared-header .icons {
   margin-inline: 2rem;
   height: 50%;
 }
 
-header .quick-buttons {
+.shared-header .quick-buttons {
   margin-inline: 2rem;
   width: 5%;
   display: flex;
@@ -33,16 +33,20 @@ header .quick-buttons {
   font-size: 5rem;
 }
 
-header .quick-buttons .volume-icon:hover {
+.shared-header .quick-buttons .volume-icon:hover {
   cursor: pointer;
 }
 
-footer {
+.shared-header .quick-buttons .help-icon:hover {
+  cursor: pointer;
+}
+
+.shared-footer {
   display: flex;
   justify-content: center;
 }
 
-footer button {
+.shared-footer button {
   margin: 3.5rem;
   width: 25rem;
   padding: 0 3rem;
@@ -52,7 +56,7 @@ footer button {
   background-color: #a67b5b;
 }
 
-footer button:hover {
+.shared-footer footer button:hover {
   cursor: pointer;
   background-color: #836148;
 }
@@ -64,6 +68,6 @@ footer button:hover {
   align-items: center;
 }
 
-footer h1 {
+.shared-footer footer h1 {
   font-size: 48px;
 }

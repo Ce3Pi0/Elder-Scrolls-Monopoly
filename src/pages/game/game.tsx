@@ -13,9 +13,7 @@ const Game: React.FC = () => {
         <Board />
       </div>
       <div className="side-panel">
-        <div className="player-panel">
-          <PlayerPanel />
-        </div>
+        <PlayerPanel />
         <div className="dice-panel">
           <DicePanel />
         </div>

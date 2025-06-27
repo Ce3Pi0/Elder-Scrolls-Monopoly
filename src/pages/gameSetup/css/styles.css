@@ -1,3 +1,7 @@
+#root {
+  color: white;
+}
+
 .number-of-players {
   display: flex;
   flex-direction: row;
@@ -15,6 +19,7 @@
 }
 
 .number-of-players-options select {
+  color: white;
   background-color: #a67b5b;
   width: 2.5rem;
   height: 3.6rem;
@@ -62,6 +67,8 @@
 }
 
 .playerName input {
+  color: white;
+
   background-color: transparent;
   border: none;
 }
@@ -75,6 +82,8 @@
 }
 
 .player-color select {
+  color: white;
+
   width: 100%;
   background-image: none;
   background-color: transparent;
@@ -93,6 +102,7 @@
 }
 
 .start-button button {
+  color: white;
   background-color: #a67b5b;
   padding: 1rem;
   border-radius: 10px;

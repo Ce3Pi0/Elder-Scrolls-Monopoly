@@ -80,3 +80,11 @@ export interface PlayerData {
   color: number;
   icon: number;
 }
+
+export interface GamePlayerData {
+  id: number;
+  name: string;
+  color: number;
+  icon: number;
+  balance: number;
+}

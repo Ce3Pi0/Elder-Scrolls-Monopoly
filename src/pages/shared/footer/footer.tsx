@@ -4,7 +4,7 @@ import MainMenuButton from "./components/mainMenuButton";
 
 const Footer: React.FC = () => {
   return (
-    <footer>
+    <footer className="shared-footer">
       <MainMenuButton />
     </footer>
   );

@@ -7,7 +7,7 @@ import { IoMdVolumeHigh, IoMdHelpCircleOutline } from "react-icons/io";
 import "../css/styles.css";
 
 const Header: React.FC<HeaderProps> = ({ title }) => (
-  <header>
+  <header className="shared-header">
     <div className="quick-buttons">
       <IoMdVolumeHigh fill="black" className="volume-icon" />
 
@@ -26,6 +26,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => (
       <IoMdHelpCircleOutline
         fill="black"
         onClick={() => (window.location.href = "/gameRules")}
+        className="help-icon"
       />
     </div>
   </header>
