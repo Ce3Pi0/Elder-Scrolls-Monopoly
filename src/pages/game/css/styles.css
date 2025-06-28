@@ -56,22 +56,29 @@
 }
 
 .players-title {
+  width: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.players-title h2 {
+  width: 100%;
+  text-align: center;
+}
+
 .board-container {
-  background-image: url("../../../assets/images/backgroundImage.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 97vh;
-  width: 50%;
-  background-position: center;
-  flex: 1;
+  aspect-ratio: 1 / 1;
+  width: 50%; /* Controls overall size */
+  height: auto; /* Let aspect-ratio control width */
+  flex-shrink: 0; /* Prevent it from shrinking in flexbox */
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url("../../../assets/images/backgroundImage.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .player-panel {
@@ -115,6 +122,7 @@
 }
 
 .player-element .player-info {
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -184,12 +192,15 @@
 }
 
 .player-panel-footer button {
-  width: 10rem;
-  height: 3rem;
+  width: 20vw;
+  height: 6vh;
   color: white;
   border-radius: 10px;
   border: 2px solid black;
   background-color: #a67b5b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .player-panel-footer button:hover {
@@ -198,7 +209,8 @@
 }
 
 .player-panel-footer button h3 {
-  font-size: 15px;
+  width: 100%;
+  font-size: 1.2rem;
 }
 
 .dice-panel-inner {
@@ -222,8 +234,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 8rem;
-  height: 2rem;
+  width: 6vw;
+  height: 4vh;
   color: white;
   border-radius: 200px;
   border: 2px solid black;
@@ -236,6 +248,7 @@
 }
 
 .dice-icons {
+  overflow-x: hidden;
   height: 100%;
 }
 
@@ -256,4 +269,124 @@
 .score-panel h2 {
   width: 100%;
   text-align: center;
+}
+
+/* TEST */
+
+#board {
+  display: grid;
+  grid-template-columns: 15% repeat(9, 7.78%) 15%;
+  grid-template-rows: 15% repeat(9, 7.78%) 15%;
+  height: 100%;
+  width: 100%;
+  aspect-ratio: auto;
+
+  /*a, b, c, d are 9 rows and o is center*/
+  grid-template-areas:
+    "c c c c c c c c c c d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b o o o o o o o o o d"
+    "b a a a a a a a a a a";
+}
+
+#board * {
+  overflow-x: hidden;
+}
+#center {
+  grid-area: o;
+}
+.row {
+  display: flex;
+}
+.tile {
+  background-color: #cfb095;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  height: 100%;
+  width: 100%;
+}
+.tile-picture {
+  flex: 3;
+  background: blue;
+  border: 1px 0px solid black;
+}
+.tile-picture img {
+  width: 100%;
+  height: 100%;
+}
+
+.tile-color {
+  flex: 0.5;
+}
+.tile-name {
+  margin-top: 0.3rem;
+  flex: 6;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+.tile-price {
+  flex: 3;
+  display: flex;
+  justify-content: center;
+}
+
+/*Flex directions are used to give the tiles correct order*/
+#row-0 {
+  grid-area: a;
+  flex-direction: row-reverse;
+}
+#row-1 {
+  grid-area: b;
+  flex-direction: column-reverse;
+}
+#row-2 {
+  grid-area: c;
+  flex-direction: row;
+}
+#row-3 {
+  grid-area: d;
+  flex-direction: column;
+}
+
+/*To make the corner tiles bigger and square*/
+.row > .tile:nth-child(1) {
+  flex: 0 0 18%;
+}
+
+/*Turn tiles*/
+#row-1 .tile {
+  writing-mode: vertical-rl;
+}
+#row-2 .tile {
+  transform: rotate(180deg);
+}
+#row-3 .tile {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/*Turn corners*/
+.row > .tile:first-child {
+  text-align: center;
+}
+#row-0 > .tile:first-child .tile-name {
+  transform: rotate(-45deg) translateY(38px);
+}
+#row-1 > .tile:first-child .tile-name {
+  transform: rotate(-45deg) translateX(-38px);
+}
+#row-2 > .tile:first-child .tile-name {
+  transform: rotate(-45deg) translateY(38px);
+}
+#row-3 > .tile:first-child .tile-name {
+  transform: rotate(-45deg) translateX(-38px);
 }

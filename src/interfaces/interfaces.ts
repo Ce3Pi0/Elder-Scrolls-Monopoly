@@ -28,6 +28,14 @@ export interface HeaderProps {
   title: string;
 }
 
+export interface CellProps {
+  id: number;
+  picture: string;
+  color: string;
+  name: string;
+  price: number;
+}
+
 export interface Cell {
   id: number;
   actionType: CellType;
