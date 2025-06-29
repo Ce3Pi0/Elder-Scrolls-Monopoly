@@ -1,12 +1,10 @@
 import React from "react";
+import { Link } from "react-router";
 
 const PlayButton: React.FC = () => (
-  <button
-    className="button"
-    onClick={() => (window.location.href = "/game-setup")}
-  >
-    <h1>Play</h1>
-  </button>
+  <Link to="/game-setup" className="button">
+    <h2>Play</h2>
+  </Link>
 );
 
 export default PlayButton;

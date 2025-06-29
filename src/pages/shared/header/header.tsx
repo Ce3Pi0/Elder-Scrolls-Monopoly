@@ -8,21 +8,25 @@ import "../css/styles.css";
 
 const Header: React.FC<HeaderProps> = ({ title }) => (
   <header className="shared-header">
-    <div className="quick-buttons">
+    <div className="side-button">
       <IoMdVolumeHigh fill="black" className="volume-icon" />
+    </div>
 
-      {/* TODO: add functionality to mute music */}
+    <div className="title-row">
+      <img
+        className="icon"
+        src="src/assets/icons/elderScrollsIcon.png"
+        alt="Left icon"
+      />
+      <h1 className="title">{title}</h1>
+      <img
+        className="icon"
+        src="src/assets/icons/elderScrollsIcon.png"
+        alt="Right icon"
+      />
     </div>
-    <div>
-      <img className="icons" src="src/assets/icons/elderScrollsIcon.png" />
-    </div>
-    <div className="title">
-      <h1>{title}</h1>
-    </div>
-    <div>
-      <img className="icons" src="src/assets/icons/elderScrollsIcon.png" />
-    </div>
-    <div className="quick-buttons">
+
+    <div className="side-button">
       <IoMdHelpCircleOutline
         fill="black"
         onClick={() => (window.location.href = "/gameRules")}
@@ -33,3 +37,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => (
 );
 
 export default Header;
+
+{
+  /* TODO: add functionality to mute music */
+}

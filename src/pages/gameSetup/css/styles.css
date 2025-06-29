@@ -10,6 +10,7 @@
 }
 
 .number-of-players-header {
+  cursor: default;
   font-size: 1.5rem;
   margin-right: 10px;
   background-color: #a67b5b;
@@ -130,7 +131,6 @@
 }
 
 .player-icon select {
-  /* background-image: url("../../../../src/assets/icons/player-icon1.png"); */
   height: 200%;
   width: 200%;
   background-color: transparent;
@@ -156,4 +156,11 @@
 
 .player-icon select:focus {
   outline: none;
+}
+
+.game-setup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
 }

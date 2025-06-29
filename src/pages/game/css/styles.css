@@ -22,6 +22,10 @@
   background-color: #f1deb4;
 }
 
+.player-panel {
+  overflow-x: hidden;
+}
+
 .player-panel-header {
   display: flex;
   flex-direction: row;
@@ -40,6 +44,7 @@
   height: 100%;
   padding: 1rem;
   margin: 1rem;
+  overflow-x: hidden;
 }
 
 .player-panel-header img {
@@ -174,6 +179,8 @@
 }
 
 .player-panel footer .quick-buttons {
+  overflow-x: hidden;
+
   margin-inline: 2rem;
   width: 40%;
   display: flex;
@@ -183,12 +190,13 @@
   font-size: 2rem;
 }
 
-.player-panel footer .quick-buttons .volume-icon:hover {
+.player-panel footer .quick-buttons .volume-icon {
   cursor: pointer;
+  height: 2rem;
 }
-
-.player-panel footer .quick-buttons .help-icon:hover {
+.player-panel footer .quick-buttons .help-icon {
   cursor: pointer;
+  height: 2rem;
 }
 
 .player-panel-footer button {
@@ -378,15 +386,17 @@
 .row > .tile:first-child {
   text-align: center;
 }
-#row-0 > .tile:first-child .tile-name {
+/* #row-0 > .tile:first-child .tile-name {
   transform: rotate(-45deg) translateY(38px);
-}
+} */
 #row-1 > .tile:first-child .tile-name {
-  transform: rotate(-45deg) translateX(-38px);
+  transform: rotate(-90deg) translateX(-38px);
 }
-#row-2 > .tile:first-child .tile-name {
+/* #row-2 > .tile:first-child .tile-name {
   transform: rotate(-45deg) translateY(38px);
-}
+} */
 #row-3 > .tile:first-child .tile-name {
-  transform: rotate(-45deg) translateX(-38px);
+  transform: rotate(-90deg) translateX(-38px);
 }
+
+/* TODO: FIX CORNERS */

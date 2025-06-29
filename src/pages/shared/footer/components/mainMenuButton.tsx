@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router";
 
 const MainMenuButton: React.FC = () => {
   return (
-    <button onClick={() => (window.location.href = "/")}>
-      <h1>Main Menu</h1>
-    </button>
+    <Link to="/" className="button" style={{ marginTop: "2rem" }}>
+      <h2>Main Menu</h2>
+    </Link>
   );
 };
 
