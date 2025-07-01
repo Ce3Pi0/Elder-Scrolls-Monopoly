@@ -2,9 +2,13 @@ import type { BasicDeed, Game, Player, PropertyDeed } from "../classes/classes";
 import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
 
 export type GetOutOfJailCardType = "chance" | "community";
+
+export type Direction = "top" | "bottom" | "left" | "right";
 export type CellType =
   | "start"
   | "property"
+  | "stables"
+  | "utility"
   | "chance"
   | "community"
   | "incomeTax"

@@ -1,7 +1,16 @@
 import React from "react";
-import type { CellProps } from "../../../../interfaces/interfaces";
+import type { PropertyCellProps } from "../../../../interfaces/interfaces";
+import { REGIONS_TO_COLORS, CITIES_TO_PICTURES } from "../../../../utils/utils";
 
-const Cell: React.FC<CellProps> = ({ picture, color, name, price }) => {
+const PropertyCell: React.FC<PropertyCellProps> = ({
+  city,
+  region,
+  name,
+  price,
+}) => {
+  const color = REGIONS_TO_COLORS[region];
+  const picture = CITIES_TO_PICTURES[city];
+
   return (
     <div className="tile">
       <div className="tile-picture">
@@ -29,4 +38,4 @@ const Cell: React.FC<CellProps> = ({ picture, color, name, price }) => {
   );
 };
 
-export default Cell;
+export default PropertyCell;

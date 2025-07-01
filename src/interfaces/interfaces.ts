@@ -5,7 +5,7 @@ import type {
   UtilityDeed,
   StablesDeed,
 } from "../classes/classes";
-import type { CellType } from "../utils/types";
+import type { CellType, Direction } from "../utils/types";
 
 export interface ModalContent {
   title:
@@ -28,12 +28,25 @@ export interface HeaderProps {
   title: string;
 }
 
-export interface CellProps {
+export interface PropertyCellProps {
   id: number;
-  picture: string;
-  color: string;
+  city: string;
+  region: string;
   name: string;
   price: number;
+  direction?: Direction;
+}
+
+export interface UtilityCellProps {
+  id: number;
+  utility: string;
+  type: string;
+  name: string;
+}
+
+export interface StableCellProps {
+  id: number;
+  name: string;
 }
 
 export interface Cell {

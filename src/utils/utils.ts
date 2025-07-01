@@ -40,6 +40,52 @@ export const PLAYER_ICONS: { [key: number]: [string, string] } = {
   4: ["src/assets/icons/player-icon4.png", "Daggerfall"],
 };
 
+export const REGIONS_TO_COLORS: { [key: string]: string } = {
+  "Black Marsh": "#A8714E",
+  Cyrodiil: "#4EA8A0",
+  "South Skyrim": "#F06BEC",
+  "North Skyrim": "#D16420",
+  "High Rock": "#EA0B0F",
+  Morrowind: "#D8CB18",
+  Hammerfell: "#12AA2",
+  "Summerset Isles": "#5871FF",
+};
+
+export const CITIES_TO_PICTURES: { [key: string]: string } = {
+  Lilmoth: "src/assets/images/Lilmoth.png",
+  Kvatch: "src/assets/images/Kvatch.png",
+  Stormhold: "src/assets/images/Stormhold.png",
+  Skingrad: "src/assets/images/Skingrad.png",
+  "Imperial City": "src/assets/images/ImperialCity.png",
+  Falkreath: "src/assets/images/Falkreath.png",
+  Markarth: "src/assets/images/Markarth.png",
+  Riften: "src/assets/images/Riften.png",
+  Winterhold: "src/assets/images/Winterhold.png",
+  Windhelm: "src/assets/images/Windhelm.png",
+  Solitude: "src/assets/images/Solitude.png",
+  Evermore: "src/assets/images/Evermore.png",
+  Wayrest: "src/assets/images/Wayrest.png",
+  Daggerfall: "src/assets/images/Daggerfall.png",
+  "Raven Rock": "src/assets/images/RavenRock.png",
+  Mournhold: "src/assets/images/Mournhold.png",
+  Ebonheart: "src/assets/images/Ebonheart.png",
+  Orsinium: "src/assets/images/Orsinium.png",
+  Sentinel: "src/assets/images/Sentinel.png",
+  "Abah's Landing": "src/assets/images/AbahsLanding.png",
+  Lillandril: "src/assets/images/Lillandril.png",
+  Alinor: "src/assets/images/Alinor.png",
+};
+
+export const UTILITIES_TO_PICTURES: { [key: string]: string } = {
+  "Raven Rock Mine": "src/assets/images/RavenRockMine.png",
+  "Soltitude Sawmill": "src/assets/images/SoltitudeSawmill.png",
+};
+
+export const UTILITIES_TO_LOGOS: { [key: string]: string } = {
+  "Raven Rock Mine": "src/assets/icons/MineLogo.png",
+  "Soltitude Sawmill": "src/assets/icons/SawmillLogo.png",
+};
+
 const propertyDeedData = propertyDeedsJson.propertyDeeds as PropertyDeedTuple[];
 const stableDeedData = stablesDeedsJson.stablesDeeds as OtherDeedTuple[];
 const utilityDeedData = utilitiesDeedsJson.utilitiesDeeds as OtherDeedTuple[];
@@ -71,6 +117,49 @@ export const STABLES_DEEDS: StablesDeed[] = stableDeedData.map(
 export const UTILITIES_DEEDS: UtilityDeed[] = utilityDeedData.map(
   ([position, name]) => new UtilityDeed(position, name)
 );
+
+export const BoardArray: Cell[] = [
+  { actionType: "start", deed: null, id: 0 },
+  { actionType: "property", deed: PROPERTY_DEEDS[0], id: 1 },
+  { actionType: "community", deed: null, id: 2 },
+  { actionType: "property", deed: PROPERTY_DEEDS[1], id: 3 },
+  { actionType: "incomeTax", deed: null, id: 4 },
+  { actionType: "stables", deed: STABLES_DEEDS[0], id: 5 },
+  { actionType: "property", deed: PROPERTY_DEEDS[2], id: 6 },
+  { actionType: "chance", deed: null, id: 7 },
+  { actionType: "property", deed: PROPERTY_DEEDS[3], id: 8 },
+  { actionType: "property", deed: PROPERTY_DEEDS[4], id: 9 },
+  { actionType: "jail", deed: null, id: 10 },
+  { actionType: "property", deed: PROPERTY_DEEDS[5], id: 11 },
+  { actionType: "utility", deed: UTILITIES_DEEDS[0], id: 12 },
+  { actionType: "property", deed: PROPERTY_DEEDS[6], id: 13 },
+  { actionType: "property", deed: PROPERTY_DEEDS[7], id: 14 },
+  { actionType: "stables", deed: STABLES_DEEDS[1], id: 15 },
+  { actionType: "property", deed: PROPERTY_DEEDS[8], id: 16 },
+  { actionType: "community", deed: null, id: 17 },
+  { actionType: "property", deed: PROPERTY_DEEDS[9], id: 18 },
+  { actionType: "property", deed: PROPERTY_DEEDS[10], id: 19 },
+  { actionType: "lodging", deed: null, id: 20 },
+  { actionType: "property", deed: PROPERTY_DEEDS[11], id: 21 },
+  { actionType: "chance", deed: null, id: 22 },
+  { actionType: "property", deed: PROPERTY_DEEDS[12], id: 23 },
+  { actionType: "property", deed: PROPERTY_DEEDS[13], id: 24 },
+  { actionType: "stables", deed: STABLES_DEEDS[2], id: 25 },
+  { actionType: "property", deed: PROPERTY_DEEDS[14], id: 26 },
+  { actionType: "property", deed: PROPERTY_DEEDS[15], id: 27 },
+  { actionType: "utility", deed: UTILITIES_DEEDS[1], id: 28 },
+  { actionType: "property", deed: PROPERTY_DEEDS[16], id: 29 },
+  { actionType: "goToJail", deed: null, id: 30 },
+  { actionType: "property", deed: PROPERTY_DEEDS[17], id: 31 },
+  { actionType: "property", deed: PROPERTY_DEEDS[18], id: 32 },
+  { actionType: "chance", deed: null, id: 33 },
+  { actionType: "property", deed: PROPERTY_DEEDS[19], id: 34 },
+  { actionType: "stables", deed: STABLES_DEEDS[3], id: 35 },
+  { actionType: "chance", deed: null, id: 36 },
+  { actionType: "property", deed: PROPERTY_DEEDS[20], id: 37 },
+  { actionType: "luxuryTax", deed: null, id: 38 },
+  { actionType: "property", deed: PROPERTY_DEEDS[21], id: 39 },
+];
 
 export const serializeGame = (game: Game) => {
   return {
