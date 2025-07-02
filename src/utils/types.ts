@@ -1,6 +1,15 @@
 import type { BasicDeed, Game, Player, PropertyDeed } from "../classes/classes";
 import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
 
+export type EventType =
+  | "decideOrder"
+  | "rollDice"
+  | "movePlayer"
+  | "cellAction"
+  | "playerOut"
+  | "doubles"
+  | "endTurn";
+
 export type GetOutOfJailCardType = "chance" | "community";
 
 export type Direction = "top" | "bottom" | "left" | "right";
@@ -18,6 +27,8 @@ export type CellType =
   | "luxuryTax";
 
 export type GameAction =
+  // TESTING ONLY
+  | { type: "TESTING"; payload: null }
   | { type: "GAME_SETUP"; payload: Game }
   | { type: "START_GAME"; payload: Cell[] }
   | { type: "DECIDE_ORDER"; payload: Player[] }

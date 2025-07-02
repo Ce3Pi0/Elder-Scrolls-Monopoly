@@ -173,9 +173,13 @@ export const serializeGame = (game: Game) => {
       inJail: p.isInJail(),
       jailTurns: p.getJailTurns(),
       deeds: p.getDeeds().map((d) => d?.getId()),
-      bankrupt: p.isBankrupt(),
       getOutOfJailCards: p.getGetOutOfJailCards(),
+      bankrupt: p.isBankrupt(),
     })),
+    gameSettings: game.getGameSettings(),
+    event: game.getEvent(),
+    gameStarted: game.isGameStarted(),
+    gameEnded: game.isGameEnded(),
     board: game.getBoard().map((cell) => {
       let deedData = null;
 
@@ -211,12 +215,10 @@ export const serializeGame = (game: Game) => {
         deed: deedData,
       };
     }),
-    gameSettings: game.getGameSettings(),
     currentPlayerIndex: game.getCurrentPlayer().getId(),
-    diceValue: game.getDiceValue(),
     diceRolled: game.getDiceRolled(),
-    gameStarted: game.isGameStarted(),
-    gameEnded: game.isGameEnded(),
+    diceValue: game.getDiceValue(),
+    doublesCounter: game.getDoublesCounter(),
     modalOpen: game.isModalOpen(),
     modalContent: game.getModalContent(),
     pendingDrawCard: game.isPendingDrawCard(),
@@ -228,6 +230,9 @@ export const deserializeGame = (data: any): Game => {
     const tempP = new Player(p.id, p.name, p.color, p.icon);
     tempP.setBalance(p.balance);
     tempP.setPosition(p.position);
+    for (const getOutOfJailCard of p.getOutOfJailCards) {
+      tempP.addGetOutOfJailCard(getOutOfJailCard);
+    }
     return tempP;
   });
 
@@ -267,7 +272,9 @@ export const deserializeGame = (data: any): Game => {
       }
 
       if (deed) {
-        deed.isMortgaged = d.isMortgaged;
+        if (d.isMortgaged) {
+          deed.mortgage();
+        }
         (deed as any)._ownerId = d.ownerId;
         if (
           deed instanceof PropertyDeed ||
@@ -298,6 +305,7 @@ export const deserializeGame = (data: any): Game => {
   }
 
   const game = new Game(players, data.gameSettings);
+  game.setEvent(data.event);
   game.setBoard(board);
   game.setCurrentPlayerIndex(data.currentPlayerIndex);
   game.setDiceRolled(data.diceRolled);
@@ -352,7 +360,7 @@ export const getRandomChanceCard = (): ModalContent => {
     const card: ChanceCard =
       CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length) + 1];
     return {
-      title: "community",
+      title: "chance",
       content: card,
     };
   }

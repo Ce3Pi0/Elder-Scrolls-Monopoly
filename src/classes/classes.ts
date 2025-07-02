@@ -13,7 +13,7 @@ import {
   isUtilityDeed,
   returnGetOutOfJailCard,
 } from "../utils/utils";
-import type { CellType, GetOutOfJailCardType } from "../utils/types";
+import type { CellType, EventType, GetOutOfJailCardType } from "../utils/types";
 import { Finances, Positions } from "../utils/enums";
 
 export abstract class BasicDeed {
@@ -58,7 +58,7 @@ export abstract class BasicDeed {
     this.owner = owner;
   }
   canMortgage(player: Player): boolean {
-    return this.owner === player && !this.isMortgaged;
+    return this.owner === player && !this.isMortgaged();
   }
   canUnmortgage(player: Player): boolean {
     return (
@@ -86,7 +86,10 @@ export abstract class BasicDeed {
       throw new Error("Cannot unmortgage: conditions not met.");
     }
   }
-  abstract getRent(): number;
+  getRent(): number[] {
+    return this.rent;
+  }
+  abstract getRentOwed(): number;
 }
 export class UtilityDeed extends BasicDeed {
   constructor(
@@ -114,7 +117,7 @@ export class UtilityDeed extends BasicDeed {
 
     return cloned;
   }
-  getRent(): number {
+  getRentOwed(): number {
     if (!this.getOwner()) return 0;
     return this.rent[this.getOwner()!.getOwnedUtilities() - 1];
   }
@@ -135,7 +138,7 @@ export class StablesDeed extends BasicDeed {
     super(id, deedName, price, rent, mortgageValue);
   }
   clone(): StablesDeed {
-    const cloned = new UtilityDeed(
+    const cloned = new StablesDeed(
       this.id,
       this.deedName,
       this.price,
@@ -147,7 +150,7 @@ export class StablesDeed extends BasicDeed {
 
     return cloned;
   }
-  getRent(): number {
+  getRentOwed(): number {
     if (!this.getOwner()) return 0;
     return this.rent[this.getOwner()!.getOwnedStables() - 1];
   }
@@ -196,7 +199,7 @@ export class PropertyDeed extends BasicDeed {
   getRegion(): string {
     return this.region;
   }
-  getRent(): number {
+  getRentOwed(): number {
     if (this.numberOfHouses === 0 && this.numberOfCastles === 0) {
       if (this.getOwner()!.regionOwned(this.region)) return 2 * this.rent[0];
       return this.rent[0];
@@ -388,12 +391,20 @@ export class Player {
     return this.getOutOfJailCards;
   }
   setPosition(position: number): void {
-    if (position < Positions.START || position > Positions.END) {
+    if (position < Positions.START) {
       throw new Error(
-        `Invalid position: must be between ${Positions.START} and ${Positions.END}.`
+        `Invalid position: must be larger than ${Positions.START}.`
       );
     }
-    if (position <= this.position) this.addBalance(Finances.PASS_MONEY);
+
+    //FIXME: Fix if the position is greater than the end
+    console.log(this.position, position);
+
+    this.position += position;
+    if (this.position >= Positions.END) {
+      this.position -= Positions.END;
+      this.addBalance(Finances.PASS_MONEY);
+    }
     while (this.position !== position) {
       this.position++;
       if (this.position === Positions.END) this.position = Positions.START;
@@ -486,7 +497,8 @@ export class Player {
   hasGetOutOfJailCard(): boolean {
     return this.getOutOfJailCards.length > 0;
   }
-  addGetOutOfJailCard(card: GetOutOfJailCardType): void {
+  addGetOutOfJailCard(card: GetOutOfJailCardType | null): void {
+    if (card === null || card === undefined) return;
     this.getOutOfJailCards.push(card);
   }
   removeGetOutOfJailCard(): void {
@@ -540,6 +552,7 @@ export class Player {
 }
 export class Game {
   private players: Player[];
+  private event: EventType | null = null;
   private gameSettings: GameType;
   private gameStarted: boolean = false;
   private gameEnded: boolean = true;
@@ -598,6 +611,12 @@ export class Game {
   }
   isGameEnded(): boolean {
     return this.gameEnded;
+  }
+  getEvent(): EventType | null {
+    return this.event;
+  }
+  setEvent(event: EventType): void {
+    this.event = event;
   }
   isModalOpen(): boolean {
     return this.modalOpen;
@@ -721,6 +740,8 @@ export class Game {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
     const cellType: CellType = cell.actionType;
 
+    console.log(cell);
+
     switch (cellType) {
       case "start":
         this.getCurrentPlayer().addBalance(Finances.PASS_MONEY);
@@ -732,8 +753,8 @@ export class Game {
             title: "Purchase Modal",
             ...cell.deed,
           };
-        } else if (cell.deed.getOwner() !== this.getCurrentPlayer()) {
-          this.getCurrentPlayer().addBalance(-cell.deed.getPrice());
+        } else if (cell.deed!.getOwner() !== this.getCurrentPlayer()) {
+          this.getCurrentPlayer().addBalance(-cell.deed!.getPrice());
 
           if (this.getCurrentPlayer().isBankrupt()) {
             this.modalOpen = true;
@@ -743,6 +764,12 @@ export class Game {
             };
           }
         }
+        break;
+      case "stables":
+        //TODO: Add stables actions
+        break;
+      case "utility":
+        //TODO: Add utility actions
         break;
       case "chance":
         const randomCard: ModalContent = getRandomChanceCard();
@@ -779,6 +806,7 @@ export class Game {
         this.getCurrentPlayer().addBalance(-Finances.LUXURY_TAX_FEE);
         break;
       default:
+        console.log(cellType);
         throw new Error("Invalid cell type.");
     }
   }

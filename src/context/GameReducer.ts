@@ -11,42 +11,57 @@ export const gameReducer = (
   action: GameAction
 ): GameState => {
   switch (action.type) {
+    case "TESTING":
+      const newGame = state.game?.clone();
+      newGame?.setEvent("rollDice");
+      return { ...state, game: newGame };
+
     case "GAME_SETUP":
       return { ...state, game: action.payload };
 
     case "START_GAME": {
       const newGame = state.game?.clone();
       newGame?.startGame(action.payload);
+      newGame?.setEvent("decideOrder");
       return { ...state, game: newGame };
     }
 
     case "DECIDE_ORDER": {
       const newGame = state.game?.clone();
       newGame?.changePlayerOrder(action.payload);
+      newGame?.setEvent("rollDice");
       return { ...state, game: newGame };
     }
 
     case "ROLL_DICE": {
       const newGame = state.game?.clone();
       newGame?.rollDice();
+      newGame?.setEvent("movePlayer");
       return { ...state, game: newGame };
     }
 
     case "RESET_DICE": {
       const newGame = state.game?.clone();
       newGame?.resetDice();
+      newGame?.setEvent("rollDice");
       return { ...state, game: newGame };
     }
 
     case "MOVE_PLAYER": {
       const newGame = state.game?.clone();
-      newGame?.getCurrentPlayer().setPosition(action.payload);
+      let curPosition: number | undefined = newGame
+        ?.getCurrentPlayer()
+        .getPosition();
+      if (curPosition === undefined) curPosition = 0;
+      newGame?.getCurrentPlayer().setPosition(curPosition + action.payload);
+      newGame?.setEvent("cellAction");
       return { ...state, game: newGame };
     }
 
     case "CELL_ACTION": {
       const newGame = state.game?.clone();
       newGame?.handleCellAction();
+      newGame?.setEvent("endTurn");
       return { ...state, game: newGame };
     }
 
@@ -76,8 +91,9 @@ export const gameReducer = (
 
     case "END_TURN": {
       const newGame = state.game?.clone();
-      newGame?.nextPlayer();
       newGame?.resetDice();
+      newGame?.nextPlayer();
+      newGame?.setEvent("rollDice");
       return { ...state, game: newGame };
     }
 
