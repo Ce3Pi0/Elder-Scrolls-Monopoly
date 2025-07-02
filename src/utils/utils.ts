@@ -227,6 +227,7 @@ export const deserializeGame = (data: any): Game => {
   const players = data.players.map((p: any) => {
     const tempP = new Player(p.id, p.name, p.color, p.icon);
     tempP.setBalance(p.balance);
+    tempP.setPosition(p.position);
     return tempP;
   });
 
@@ -299,8 +300,9 @@ export const deserializeGame = (data: any): Game => {
   const game = new Game(players, data.gameSettings);
   game.setBoard(board);
   game.setCurrentPlayerIndex(data.currentPlayerIndex);
-  game.setDiceValue(data.diceValue);
   game.setDiceRolled(data.diceRolled);
+
+  game.setDiceValue(data.diceValue);
   game.setGameStarted(data.gameStarted);
   game.setGameEnded(data.gameEnded);
   game.setModalOpen(data.modalOpen);

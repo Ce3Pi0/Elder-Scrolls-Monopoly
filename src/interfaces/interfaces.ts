@@ -24,11 +24,23 @@ export interface ModalContent {
   content: object;
 }
 
+export interface CellProps {
+  playerPositions: number[];
+  tileIndex: number;
+  colors: string[];
+}
+
+export interface PlayerDotsProps {
+  tileIndex: number;
+  playerPositions: number[];
+  colors: string[];
+}
+
 export interface HeaderProps {
   title: string;
 }
 
-export interface PropertyCellProps {
+export interface PropertyCellProps extends CellProps {
   id: number;
   city: string;
   region: string;
@@ -37,14 +49,14 @@ export interface PropertyCellProps {
   direction?: Direction;
 }
 
-export interface UtilityCellProps {
+export interface UtilityCellProps extends CellProps {
   id: number;
   utility: string;
   type: string;
   name: string;
 }
 
-export interface StableCellProps {
+export interface StableCellProps extends CellProps {
   id: number;
   name: string;
 }

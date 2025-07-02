@@ -1,6 +1,12 @@
 import React from "react";
+import PlayerDots from "./playerDots";
+import type { CellProps } from "../../../../interfaces/interfaces";
 
-const CommunityChestCell: React.FC = () => {
+const CommunityChestCell: React.FC<CellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+}) => {
   const picture = "src/assets/images/SkyrimChest.png";
 
   return (
@@ -9,6 +15,11 @@ const CommunityChestCell: React.FC = () => {
       <div className="community-chest-picture">
         <img src={picture} />
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

@@ -689,12 +689,10 @@ export class Game {
       (this.currentPlayerIndex + 1) % this.players.length;
   }
   setDiceValue(diceValue: Pair): void {
-    if (!this.diceRolled) return;
-
     if (
-      diceValue.diceOne < 1 ||
+      diceValue.diceOne < 0 ||
       diceValue.diceOne > 6 ||
-      diceValue.diceTwo < 1 ||
+      diceValue.diceTwo < 0 ||
       diceValue.diceTwo > 6
     ) {
       throw new Error("Invalid dice value.");

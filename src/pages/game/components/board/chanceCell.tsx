@@ -1,6 +1,12 @@
 import React from "react";
+import PlayerDots from "./playerDots";
+import type { CellProps } from "../../../../interfaces/interfaces";
 
-const ChanceCell: React.FC = () => {
+const ChanceCell: React.FC<CellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+}) => {
   const picture = "src/assets/images/questionmark.png";
 
   return (
@@ -9,6 +15,11 @@ const ChanceCell: React.FC = () => {
       <div className="chance-picture">
         <img src={picture} />
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

@@ -1,6 +1,12 @@
 import React from "react";
+import PlayerDots from "./playerDots";
+import type { CellProps } from "../../../../interfaces/interfaces";
 
-const IncomeTaxCell: React.FC = () => {
+const IncomeTaxCell: React.FC<CellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+}) => {
   return (
     <div className="income-tax-tile">
       <div className="income-tax-name">Income Tax</div>
@@ -29,6 +35,12 @@ const IncomeTaxCell: React.FC = () => {
           </p>
         </span>
       </div>
+      {/* TODO: Adjust values*/}
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

@@ -4,8 +4,16 @@ import {
   UTILITIES_TO_PICTURES,
 } from "../../../../utils/utils";
 import type { UtilityCellProps } from "../../../../interfaces/interfaces";
+import PlayerDots from "./playerDots";
 
-const UtilityCell: React.FC<UtilityCellProps> = ({ utility, type, name }) => {
+const UtilityCell: React.FC<UtilityCellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+  utility,
+  type,
+  name,
+}) => {
   const picture = UTILITIES_TO_PICTURES[utility];
   const logo = UTILITIES_TO_LOGOS[type];
 
@@ -32,6 +40,11 @@ const UtilityCell: React.FC<UtilityCellProps> = ({ utility, type, name }) => {
           />
         </span>
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

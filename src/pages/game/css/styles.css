@@ -255,6 +255,11 @@
   cursor: pointer;
 }
 
+.roll-panel button:disabled {
+  background-color: #c48482;
+  cursor: default;
+}
+
 .dice-icons {
   overflow-x: hidden;
   height: 100%;
@@ -314,6 +319,7 @@
   display: flex;
 }
 .tile {
+  position: relative;
   background-color: #cfb095;
   display: flex;
   flex-direction: column;
@@ -669,7 +675,6 @@
 }
 
 /* ROW 3 */
-
 #row-3 .tile-name {
   flex: 3;
 }
@@ -761,4 +766,21 @@
   display: flex;
   align-items: center;
   flex: 30;
+}
+
+/* TEST */
+.player-dots-container {
+  bottom: 5px;
+  left: 5px;
+  display: flex;
+  align-self: center;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.player-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid black;
 }

@@ -1,7 +1,13 @@
 import React from "react";
 import type { StableCellProps } from "../../../../interfaces/interfaces";
+import PlayerDots from "./playerDots";
 
-const StableCell: React.FC<StableCellProps> = ({ id, name }) => {
+const StableCell: React.FC<StableCellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+  name,
+}) => {
   const picture = "src/assets/images/stables.png";
 
   return (
@@ -26,6 +32,11 @@ const StableCell: React.FC<StableCellProps> = ({ id, name }) => {
           />
         </span>
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

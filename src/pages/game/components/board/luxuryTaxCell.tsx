@@ -1,6 +1,12 @@
 import React from "react";
+import PlayerDots from "./playerDots";
+import type { CellProps } from "../../../../interfaces/interfaces";
 
-const LuxuryTaxCell: React.FC = () => {
+const LuxuryTaxCell: React.FC<CellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+}) => {
   const picture = "src/assets/images/LuxuryTax.png";
 
   return (
@@ -25,6 +31,11 @@ const LuxuryTaxCell: React.FC = () => {
           />
         </span>
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

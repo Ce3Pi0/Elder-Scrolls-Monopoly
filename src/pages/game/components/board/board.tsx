@@ -12,7 +12,10 @@ import LuxuryTaxCell from "./luxuryTaxCell";
 import GoToJailCell from "./goToJailCell";
 import LodgingCell from "./lodgingCell";
 
-const Board: React.FC = () => {
+const Board: React.FC<{ playerPositions: number[]; colors: string[] }> = ({
+  playerPositions,
+  colors,
+}) => {
   const rowOneArray = BoardArray.slice(0, 10);
   const rowTwoArray = BoardArray.slice(10, 20);
   const rowThreeArray = BoardArray.slice(20, 30);
@@ -35,22 +38,56 @@ const Board: React.FC = () => {
                   }
                   name={data.deed!.getDeedName()}
                   price={data.deed!.getPrice()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "start":
-              return <GoCell key={data.id} />;
+              return (
+                <GoCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "community":
-              return <CommunityChestCell key={data.id} />;
+              return (
+                <CommunityChestCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "chance":
-              return <ChanceCell key={data.id} />;
+              return (
+                <ChanceCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "incomeTax":
-              return <IncomeTaxCell key={data.id} />;
+              return (
+                <IncomeTaxCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "stables":
               return (
                 <StableCell
                   key={data.id}
                   id={data.id}
                   name={data.deed!.getDeedName()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
           }
@@ -72,16 +109,29 @@ const Board: React.FC = () => {
                   }
                   name={data.deed!.getDeedName()}
                   price={data.deed!.getPrice()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "community":
-              return <CommunityChestCell key={data.id} />;
+              return (
+                <CommunityChestCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "stables":
               return (
                 <StableCell
                   key={data.id}
                   id={data.id}
                   name={data.deed!.getDeedName()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "utility":
@@ -92,10 +142,20 @@ const Board: React.FC = () => {
                   utility={data.deed!.getDeedName()}
                   type={data.deed!.getDeedName()}
                   key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "jail":
-              return <JailCell key={data.id} />;
+              return (
+                <JailCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
           }
         })}
       </div>
@@ -115,20 +175,47 @@ const Board: React.FC = () => {
                   }
                   name={data.deed!.getDeedName()}
                   price={data.deed!.getPrice()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "lodging":
-              return <LodgingCell key={data.id} />;
+              return (
+                <LodgingCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "chance":
-              return <ChanceCell key={data.id} />;
+              return (
+                <ChanceCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "community":
-              return <CommunityChestCell key={data.id} />;
+              return (
+                <CommunityChestCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "stables":
               return (
                 <StableCell
                   key={data.id}
                   id={data.id}
                   name={data.deed!.getDeedName()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "utility":
@@ -139,6 +226,9 @@ const Board: React.FC = () => {
                   utility={data.deed!.getDeedName()}
                   type={data.deed!.getDeedName()}
                   key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
           }
@@ -160,22 +250,49 @@ const Board: React.FC = () => {
                   }
                   name={data.deed!.getDeedName()}
                   price={data.deed!.getPrice()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "chance":
-              return <ChanceCell key={data.id} />;
+              return (
+                <ChanceCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "stables":
               return (
                 <StableCell
                   key={data.id}
                   id={data.id}
                   name={data.deed!.getDeedName()}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
                 />
               );
             case "goToJail":
-              return <GoToJailCell key={data.id} />;
+              return (
+                <GoToJailCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
             case "luxuryTax":
-              return <LuxuryTaxCell key={data.id} />;
+              return (
+                <LuxuryTaxCell
+                  key={data.id}
+                  playerPositions={playerPositions}
+                  tileIndex={data.id}
+                  colors={colors}
+                />
+              );
           }
         })}
       </div>

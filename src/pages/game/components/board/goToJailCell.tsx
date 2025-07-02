@@ -1,6 +1,12 @@
 import React from "react";
+import PlayerDots from "./playerDots";
+import type { CellProps } from "../../../../interfaces/interfaces";
 
-const GoToJailCell: React.FC = () => {
+const GoToJailCell: React.FC<CellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
+}) => {
   const picture = "src/assets/images/guard.png";
 
   return (
@@ -9,6 +15,11 @@ const GoToJailCell: React.FC = () => {
         <img src={picture} />
       </div>
       <div className="tile-name">Go To Jail!</div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };

@@ -1,8 +1,12 @@
 import React from "react";
 import type { PropertyCellProps } from "../../../../interfaces/interfaces";
 import { REGIONS_TO_COLORS, CITIES_TO_PICTURES } from "../../../../utils/utils";
+import PlayerDots from "./playerDots";
 
 const PropertyCell: React.FC<PropertyCellProps> = ({
+  playerPositions,
+  tileIndex,
+  colors,
   city,
   region,
   name,
@@ -34,6 +38,11 @@ const PropertyCell: React.FC<PropertyCellProps> = ({
           />
         </span>
       </div>
+      <PlayerDots
+        playerPositions={playerPositions}
+        tileIndex={tileIndex}
+        colors={colors}
+      />
     </div>
   );
 };
