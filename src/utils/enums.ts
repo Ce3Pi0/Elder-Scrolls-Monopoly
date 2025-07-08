@@ -16,7 +16,7 @@ export enum Finances {
 
 export enum Positions {
   START = 0,
-  END = 39,
+  END = 40,
   JAIL = 10,
   GO_TO_JAIL = 30,
 }

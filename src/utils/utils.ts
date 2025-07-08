@@ -162,6 +162,7 @@ export const BoardArray: Cell[] = [
 ];
 
 export const serializeGame = (game: Game) => {
+  console.log(game.getCurrentPlayer());
   return {
     players: game.getPlayers().map((p) => ({
       id: p.getId(),
@@ -230,6 +231,8 @@ export const deserializeGame = (data: any): Game => {
     const tempP = new Player(p.id, p.name, p.color, p.icon);
     tempP.setBalance(p.balance);
     tempP.setPosition(p.position);
+    tempP.setInJail(p.inJail);
+    tempP.setJailTurns(p.jailTurns);
     for (const getOutOfJailCard of p.getOutOfJailCards) {
       tempP.addGetOutOfJailCard(getOutOfJailCard);
     }
@@ -307,7 +310,6 @@ export const deserializeGame = (data: any): Game => {
   const game = new Game(players, data.gameSettings);
   game.setEvent(data.event);
   game.setBoard(board);
-  game.setCurrentPlayerIndex(data.currentPlayerIndex);
   game.setDiceRolled(data.diceRolled);
 
   game.setDiceValue(data.diceValue);
@@ -316,6 +318,9 @@ export const deserializeGame = (data: any): Game => {
   game.setModalOpen(data.modalOpen);
   game.setModalContent(data.modalContent);
   game.setPendingDrawCard(data.pendingDrawCard);
+  game.setCurrentPlayerIndex(data.currentPlayerIndex);
+
+  console.log(data.currentPlayerIndex);
 
   return game;
 };

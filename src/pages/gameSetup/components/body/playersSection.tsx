@@ -51,17 +51,11 @@ const PlayersSection: React.FC<PlayerSectionProps> = ({ playerCount }) => {
         usedColors.push(newColor);
         usedIcons.push(newIcon);
 
-        console.log("new player", newPlayer);
         dispatch({ type: "ADD_PLAYER", payload: newPlayer });
         statePlayerCount++;
       }
 
       while (statePlayerCount > playerCount) {
-        console.log(
-          "deleted player",
-          statePlayerCount,
-          state.game.getPlayers()[statePlayerCount]
-        );
         dispatch({
           type: "REMOVE_PLAYER",
           payload: state.game.getPlayers()[statePlayerCount - 1],

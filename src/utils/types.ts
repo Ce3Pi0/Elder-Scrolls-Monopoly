@@ -5,6 +5,7 @@ export type EventType =
   | "decideOrder"
   | "rollDice"
   | "movePlayer"
+  | "inJail"
   | "cellAction"
   | "playerOut"
   | "doubles"
@@ -32,7 +33,7 @@ export type GameAction =
   | { type: "GAME_SETUP"; payload: Game }
   | { type: "START_GAME"; payload: Cell[] }
   | { type: "DECIDE_ORDER"; payload: Player[] }
-  | { type: "ROLL_DICE"; payload: null }
+  | { type: "ROLL_DICE"; payload: EventType }
   | { type: "RESET_DICE"; payload: null }
   | { type: "MOVE_PLAYER"; payload: number }
   | { type: "CELL_ACTION"; payload: null }
@@ -80,7 +81,10 @@ export type GameAction =
     }
   | { type: "ADD_PLAYER"; payload: Player }
   | { type: "UPDATE_PLAYER"; payload: PlayerData }
-  | { type: "REMOVE_PLAYER"; payload: Player };
+  | { type: "REMOVE_PLAYER"; payload: Player }
+  | { type: "UPDATE_JAIL_TURNS"; payload: null }
+  | { type: "RELEASE_FROM_JAIL"; payload: null }
+  | { type: "IN_JAIL"; payload: null };
 
 export type ChanceCard =
   | { id: number; type: "move"; location: number | string; content: string }

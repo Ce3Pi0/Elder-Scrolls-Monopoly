@@ -378,6 +378,15 @@ export class Player {
   getPosition(): number {
     return this.position;
   }
+  setInJail(inJail: boolean): void {
+    this.inJail = inJail;
+  }
+  setJailTurns(jailTurns: number): void {
+    if (jailTurns < 0 || jailTurns > this.MAX_JAIL_TURNS) {
+      throw new Error("Invalid number of jail turns.");
+    }
+    this.jailTurns = jailTurns;
+  }
   isInJail(): boolean {
     return this.inJail;
   }
@@ -391,24 +400,12 @@ export class Player {
     return this.getOutOfJailCards;
   }
   setPosition(position: number): void {
-    if (position < Positions.START) {
+    if (position < Positions.START || position > Positions.END) {
       throw new Error(
         `Invalid position: must be larger than ${Positions.START}.`
       );
     }
-
-    //FIXME: Fix if the position is greater than the end
-    console.log(this.position, position);
-
-    this.position += position;
-    if (this.position >= Positions.END) {
-      this.position -= Positions.END;
-      this.addBalance(Finances.PASS_MONEY);
-    }
-    while (this.position !== position) {
-      this.position++;
-      if (this.position === Positions.END) this.position = Positions.START;
-    }
+    this.position = position;
   }
   setBalance(balance: number): void {
     this.balance = balance;
@@ -429,7 +426,7 @@ export class Player {
     }
   }
   releaseFromJail(): void {
-    if (this.inJail && this.jailTurns >= this.MAX_JAIL_TURNS) {
+    if (this.inJail) {
       this.inJail = false;
       this.jailTurns = 0;
     } else {
@@ -453,7 +450,8 @@ export class Player {
     if (this.inJail) {
       this.jailTurns++;
       if (this.jailTurns >= this.MAX_JAIL_TURNS) {
-        this.releaseFromJail(); // Automatically release after 3 turns
+        this.releaseFromJail();
+        this.jailTurns = 0;
       }
     }
   }
@@ -740,8 +738,6 @@ export class Game {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
     const cellType: CellType = cell.actionType;
 
-    console.log(cell);
-
     switch (cellType) {
       case "start":
         this.getCurrentPlayer().addBalance(Finances.PASS_MONEY);
@@ -806,7 +802,6 @@ export class Game {
         this.getCurrentPlayer().addBalance(-Finances.LUXURY_TAX_FEE);
         break;
       default:
-        console.log(cellType);
         throw new Error("Invalid cell type.");
     }
   }
@@ -834,6 +829,8 @@ export class Game {
     this.diceValue = { diceOne: 0, diceTwo: 0 };
   }
   rolledDoubles(): boolean {
+    if (this.diceValue.diceOne === 0 && this.diceValue.diceTwo === 0)
+      return false;
     return this.diceValue.diceOne === this.diceValue.diceTwo;
   }
   openModal(content: ModalContent): void {

@@ -27,8 +27,8 @@ const Body: React.FC = () => {
 
   useEffect(() => {
     if (loaded && !state.game) {
-      const playerOne = new Player(1, "Player 1", 1, 1);
-      const playerTwo = new Player(2, "Player 2", 2, 2);
+      const playerOne = new Player(0, "Player 1", 1, 1);
+      const playerTwo = new Player(1, "Player 2", 2, 2);
       const players: Player[] = [playerOne, playerTwo];
       const settings: GameType = { type: "Timed", duration: 2700 };
 

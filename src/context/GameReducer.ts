@@ -5,6 +5,7 @@ import {
   getRandomChanceCard,
   getRandomCommunityChestCard,
 } from "../utils/utils";
+import { Finances, Positions } from "../utils/enums";
 
 export const gameReducer = (
   state: GameState,
@@ -36,8 +37,25 @@ export const gameReducer = (
     case "ROLL_DICE": {
       const newGame = state.game?.clone();
       newGame?.rollDice();
-      newGame?.setEvent("movePlayer");
+
+      let event = action.payload;
+
+      if (newGame?.getCurrentPlayer().isInJail()) {
+        newGame?.getCurrentPlayer().updateJailTurns();
+        if (
+          newGame?.getCurrentPlayer().isInJail() &&
+          newGame?.rolledDoubles()
+        ) {
+          newGame?.getCurrentPlayer().releaseFromJail();
+        }
+        if (!newGame?.getCurrentPlayer().isInJail()) {
+          event = "movePlayer";
+        }
+      }
+      newGame?.setEvent(event);
+
       return { ...state, game: newGame };
+      //FIXME: fix this
     }
 
     case "RESET_DICE": {
@@ -53,7 +71,16 @@ export const gameReducer = (
         ?.getCurrentPlayer()
         .getPosition();
       if (curPosition === undefined) curPosition = 0;
-      newGame?.getCurrentPlayer().setPosition(curPosition + action.payload);
+      let newPosition = curPosition + action.payload;
+
+      if (newPosition > Positions.END) {
+        newGame?.getCurrentPlayer().addBalance(Finances.PASS_MONEY);
+        newPosition -= Positions.END;
+      } else if (newPosition === Positions.END) {
+        newPosition = 0;
+      }
+
+      newGame?.getCurrentPlayer().setPosition(newPosition);
       newGame?.setEvent("cellAction");
       return { ...state, game: newGame };
     }
@@ -86,6 +113,12 @@ export const gameReducer = (
     case "SEND_TO_JAIL": {
       const newGame = state.game?.clone();
       newGame?.getPlayerById(action.payload)?.goToJail();
+      return { ...state, game: newGame };
+    }
+
+    case "IN_JAIL": {
+      const newGame = state.game?.clone();
+      newGame?.setEvent("endTurn");
       return { ...state, game: newGame };
     }
 
@@ -308,6 +341,25 @@ export const gameReducer = (
       newGame?.removePlayer(action.payload);
       return { ...state, game: newGame };
     }
+
+    case "UPDATE_JAIL_TURNS": {
+      const newGame = state.game?.clone();
+      newGame?.getCurrentPlayer()?.updateJailTurns();
+      if (!newGame?.getCurrentPlayer()?.isInJail()) {
+        console.log(newGame?.getCurrentPlayer()?.getJailTurns());
+        newGame?.setEvent("movePlayer");
+      }
+      return { ...state, game: newGame };
+    }
+
+    case "RELEASE_FROM_JAIL": {
+      const newGame = state.game?.clone();
+      newGame?.getCurrentPlayer()?.releaseFromJail();
+      newGame?.setEvent("movePlayer");
+      return { ...state, game: newGame };
+    }
+
+    //TODO: Set current event
 
     default:
       return state;
