@@ -13,7 +13,7 @@
   cursor: default;
   font-size: 1.5rem;
   margin-right: 10px;
-  background-color: #a67b5b;
+  background-color: var(--button-color);
   padding: 1rem;
   border-radius: 10px;
   border: 2px solid #000;
@@ -21,7 +21,7 @@
 
 .number-of-players-options select {
   color: white;
-  background-color: #a67b5b;
+  background-color: var(--button-color);
   width: 2.5rem;
   height: 3.6rem;
   border-radius: 10px;
@@ -30,7 +30,7 @@
 }
 
 .number-of-players-options select:focus {
-  background-color: #836148;
+  background-color: var(--button-hover-color);
 }
 
 .player-section-header {
@@ -62,8 +62,8 @@
 
 .playerName {
   padding: 0.2rem;
-  background-color: #a67b5b;
-  border: 2px solid #000;
+  background-color: var(--button-color);
+  border: 2px solid black;
   border-radius: 10px;
 }
 
@@ -78,7 +78,7 @@
   width: 4.2rem;
   text-align: center;
   padding: 6px;
-  border: 2px solid #000;
+  border: 2px solid black;
   border-radius: 100px;
 }
 
@@ -104,24 +104,24 @@
 
 .start-button button {
   color: white;
-  background-color: #a67b5b;
+  background-color: var(--button-color);
   padding: 1rem;
   border-radius: 10px;
-  border: 2px solid #000;
+  border: 2px solid black;
   font-size: 1.5rem;
 }
 
 .start-button button:hover {
   cursor: pointer;
-  background-color: #836148;
+  background-color: var(--button-hover-color);
 }
 
 .player-icon {
   width: 2rem;
   height: 2rem;
   transform: rotate(45deg);
-  background-color: #a67b5b;
-  border: 2px solid #000;
+  background-color: var(--button-color);
+  border: 2px solid black;
   display: flex;
   flex-direction: row;
   justify-content: center;

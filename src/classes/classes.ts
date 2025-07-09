@@ -560,7 +560,7 @@ export class Game {
   private diceValue: Pair = { diceOne: 0, diceTwo: 0 };
   private doublesCounter: number = 0;
   private modalOpen: boolean = false;
-  private modalContent: Object | null = null;
+  private modalContent: ModalContent | null = null;
   private pendingDrawCard: boolean = false;
 
   constructor(players: Player[], gameSettings: GameType) {
@@ -587,6 +587,7 @@ export class Game {
     clonedGame.diceValue = { ...this.diceValue };
     clonedGame.gameStarted = this.gameStarted;
     clonedGame.gameEnded = this.gameEnded;
+    clonedGame.event = this.event;
     clonedGame.modalOpen = this.modalOpen;
     clonedGame.modalContent = this.modalContent
       ? structuredClone(this.modalContent)
@@ -619,7 +620,7 @@ export class Game {
   isModalOpen(): boolean {
     return this.modalOpen;
   }
-  getModalContent(): Object | null {
+  getModalContent(): ModalContent | null {
     return this.modalContent;
   }
   isPendingDrawCard(): boolean {
@@ -734,6 +735,7 @@ export class Game {
   setPendingDrawCard(pendingDrawCard: boolean): void {
     this.pendingDrawCard = pendingDrawCard;
   }
+  //TODO: Figure out what to do with this method
   handleCellAction(): void {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
     const cellType: CellType = cell.actionType;
@@ -745,20 +747,20 @@ export class Game {
       case "property":
         if (!cell.deed?.getOwner()) {
           this.modalOpen = true;
-          this.modalContent = {
-            title: "Purchase Modal",
-            ...cell.deed,
-          };
+          // this.modalContent = {
+          //   title: "auction",
+          //   content: { ...cell.deed },
+          // };
         } else if (cell.deed!.getOwner() !== this.getCurrentPlayer()) {
           this.getCurrentPlayer().addBalance(-cell.deed!.getPrice());
 
-          if (this.getCurrentPlayer().isBankrupt()) {
-            this.modalOpen = true;
-            this.modalContent = {
-              title: "Bankruptcy Modal",
-              ...this.getCurrentPlayer().getDeeds(),
-            };
-          }
+          // if (this.getCurrentPlayer().isBankrupt()) {
+          //   this.modalOpen = true;
+          //   this.modalContent = {
+          //     title: "bankruptcy",
+          //     ...this.getCurrentPlayer().getDeeds(),
+          //   };
+          // }
         }
         break;
       case "stables":
@@ -783,14 +785,14 @@ export class Game {
           content: randomCommunityCard.content,
         };
         break;
-      case "incomeTax":
-        this.modalOpen = true;
-        this.modalContent = {
-          title: "Income Tax Modal",
-          const_amount: Finances.INCOME_TAX_FEE,
-          variable_amount: this.getCurrentPlayer().getTotalBalance() * 0.1,
-        };
-        break;
+      // case "incomeTax":
+      //   this.modalOpen = true;
+      //   this.modalContent = {
+      //     title: "incomeTax",
+      //     const_amount: Finances.INCOME_TAX_FEE,
+      //     variable_amount: this.getCurrentPlayer().getTotalBalance() * 0.1,
+      //   };
+      //   break;
       case "jail":
         break;
       case "lodging":

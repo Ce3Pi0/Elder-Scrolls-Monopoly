@@ -20,3 +20,23 @@ export enum Positions {
   JAIL = 10,
   GO_TO_JAIL = 30,
 }
+
+export enum Colors {
+  RED = 1,
+  GREEN = 2,
+  BLUE = 3,
+  YELLOW = 4,
+  ORANGE = 5,
+  PURPLE = 6,
+  PINK = 7,
+  BROWN = 8,
+  GRAY = 9,
+  BLACK = 10,
+}
+
+export enum Icons {
+  SKYRIM = 1,
+  OBLIVION = 2,
+  MORROWIND = 3,
+  DAGGERFALL = 4,
+}

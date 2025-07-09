@@ -6,6 +6,31 @@
     1px 1px 0 black, -2px 0 1px black, 2px 0 1px black, 0 -2px 1px black,
     0 2px 1px black;
 }
+:root {
+  --main-color: #f1deb4;
+  --header-color-primary: #533621;
+  --header-color-secondary: #aa7c51;
+  --button-color: #a67b5b;
+  --button-hover-color: #836148;
+  --help-page-color: #7f5231;
+  --cell-color: #cfb095;
+  --roll-button-color: #852221;
+  --roll-button-hover-color: #d83f3c;
+  --roll-button-disabled-color: #c48482;
+  --modal-border-color: #532d2d;
+  --propose-button-color: #c73911;
+  /* --propose-button-hover-color: */
+  --accept-button-color: #4fc63a;
+  /* --accept-button-hover-color: */
+  --decline-button-color: #b60e0e;
+  /* --decline-button-hover-color: */
+  --chance-card-color: #4c2d14;
+  --community-chest-card-color: #f0d9a9;
+  --deal-button-color: #c73911;
+  /* --deal-button-hover-color: */
+  --sell-button-color: #974139;
+  /* --sell-button-hover-color: */
+}
 
 html {
   margin: 0;

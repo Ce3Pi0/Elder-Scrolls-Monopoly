@@ -12,10 +12,10 @@ import LuxuryTaxCell from "./luxuryTaxCell";
 import GoToJailCell from "./goToJailCell";
 import LodgingCell from "./lodgingCell";
 
-const Board: React.FC<{ playerPositions: number[]; colors: string[] }> = ({
-  playerPositions,
-  colors,
-}) => {
+const Board: React.FC<{
+  playerPositions: number[];
+  colors: string[];
+}> = ({ playerPositions, colors }) => {
   const rowOneArray = BoardArray.slice(0, 10);
   const rowTwoArray = BoardArray.slice(10, 20);
   const rowThreeArray = BoardArray.slice(20, 30);

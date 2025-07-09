@@ -13,13 +13,13 @@
 }
 
 .side-panel {
-  color: #aa7c51;
+  color: var(--header-color-secondary);
   display: flex;
   flex-direction: column;
   width: 50%;
   height: 100%;
-  border-left: 2px solid #372e25;
-  background-color: #f1deb4;
+  border-left: 2px solid black;
+  background-color: var(--main-color);
 }
 
 .player-panel {
@@ -100,7 +100,7 @@
   background-color: white;
   margin: 2vh;
   border-radius: 10px;
-  border: 2px solid #372e25;
+  border: 2px solid black;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -147,7 +147,7 @@
   display: flex;
   height: 20%;
   width: 100%;
-  border-top: 1px solid #372e25;
+  border-top: 1px solid black;
 }
 
 .deed-icon {
@@ -205,7 +205,7 @@
   color: white;
   border-radius: 10px;
   border: 2px solid black;
-  background-color: #a67b5b;
+  background-color: var(--button-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -213,7 +213,7 @@
 
 .player-panel-footer button:hover {
   cursor: pointer;
-  background-color: #836148;
+  background-color: var(--button-hover-color);
 }
 
 .player-panel-footer button h3 {
@@ -247,16 +247,16 @@
   color: white;
   border-radius: 200px;
   border: 2px solid black;
-  background-color: #852221;
+  background-color: var(--roll-button-color);
 }
 
 .roll-panel button:hover {
-  background-color: #d83f3c;
+  background-color: var(--roll-button-hover-color);
   cursor: pointer;
 }
 
 .roll-panel button:disabled {
-  background-color: #c48482;
+  background-color: var(--roll-button-disabled-color);
   cursor: default;
 }
 
@@ -320,7 +320,7 @@
 }
 .tile {
   position: relative;
-  background-color: #cfb095;
+  background-color: var(--cell-color);
   display: flex;
   flex-direction: column;
   border: 1px solid black;
@@ -329,7 +329,7 @@
 }
 
 .income-tax-tile {
-  background-color: #cfb095;
+  background-color: var(--cell-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -760,15 +760,12 @@
   justify-content: center;
 }
 
-/* TODO: FIX CORNERS */
-
 .jail-picture {
   display: flex;
   align-items: center;
   flex: 30;
 }
 
-/* TEST */
 .player-dots-container {
   bottom: 5px;
   left: 5px;
@@ -783,4 +780,37 @@
   height: 10px;
   border-radius: 50%;
   border: 1px solid black;
+}
+
+#dialog::backdrop {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(7px);
+}
+
+dialog {
+  color: white;
+  background-color: var(--main-color);
+  padding: 0;
+  border: 2px var(--modal-border-color) solid;
+  border-radius: 10px;
+  position: relative;
+
+  scrollbar-width: none;
+}
+
+.modal-exit-button {
+  position: absolute;
+  top: -10px;
+  right: -40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.deed-modal {
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }

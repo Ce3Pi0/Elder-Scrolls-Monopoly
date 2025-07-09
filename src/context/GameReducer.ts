@@ -346,7 +346,6 @@ export const gameReducer = (
       const newGame = state.game?.clone();
       newGame?.getCurrentPlayer()?.updateJailTurns();
       if (!newGame?.getCurrentPlayer()?.isInJail()) {
-        console.log(newGame?.getCurrentPlayer()?.getJailTurns());
         newGame?.setEvent("movePlayer");
       }
       return { ...state, game: newGame };

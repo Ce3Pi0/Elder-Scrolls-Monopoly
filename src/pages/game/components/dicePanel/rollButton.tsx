@@ -6,14 +6,12 @@ const RollButton: React.FC = () => {
   const { state, dispatch } = useGameContext();
   const [hasRolled, setHasRolled] = useState(false);
 
-  const diceRolled = state.game?.getDiceRolled();
-
   const dice: Pair | undefined = state.game?.getDiceValue();
-  const diceOne: number | undefined = dice?.diceOne;
-  const diceTwo: number | undefined = dice?.diceTwo;
+  const diceOne: number | undefined = 30; //dice?.diceOne;
+  const diceTwo: number | undefined = 0; //dice?.diceTwo;
 
   const handleRoll = async () => {
-    // FIXME: Remove this after testing
+    // FIXME: Fix this after testing
     if (state.game?.getEvent() === "decideOrder") dispatch({ type: "TESTING" });
 
     if (state.game?.getEvent() === "rollDice") {
@@ -56,10 +54,6 @@ const RollButton: React.FC = () => {
 
   //Cell action logic
   useEffect(() => {
-    console.log(
-      state.game?.getEvent(),
-      state.game?.getCurrentPlayer().getJailTurns()
-    );
     switch (state.game?.getEvent()) {
       case "cellAction":
         dispatch({ type: "CELL_ACTION" });
@@ -68,7 +62,9 @@ const RollButton: React.FC = () => {
         dispatch({ type: "IN_JAIL" });
         break;
       case "movePlayer":
-        dispatch({ type: "MOVE_PLAYER", payload: diceOne + diceTwo });
+        if (diceOne != null && diceTwo != null) {
+          dispatch({ type: "MOVE_PLAYER", payload: diceOne + diceTwo });
+        }
         break;
       case "endTurn":
         const nextPlayerButton = document.getElementById(

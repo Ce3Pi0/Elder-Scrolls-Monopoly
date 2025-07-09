@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { GamePlayerData } from "../../../../interfaces/interfaces";
-import { PLAYER_COLORS, PLAYER_ICONS } from "../../../../utils/utils";
+import {
+  isPropertyDeed,
+  isStablesDeed,
+  isUtilityDeed,
+  PLAYER_COLORS,
+  PLAYER_ICONS,
+} from "../../../../utils/utils";
+import PlayerInfo from "./playerInfo";
+import { useGameContext } from "../../../../context/GameContext";
+import DeedModal from "../../modals/deedModal/deedModal";
+import ExitButton from "../../modals/deedModal/exitButton";
 
 const Player: React.FC<GamePlayerData> = ({
   id,
@@ -12,55 +22,91 @@ const Player: React.FC<GamePlayerData> = ({
   const colorCode = PLAYER_COLORS[color];
   const iconCode = PLAYER_ICONS[icon];
 
+  const { state, dispatch } = useGameContext();
+
+  const isModalOpen = state.game?.isModalOpen();
+
+  useEffect(() => {
+    if (isModalOpen && state.game?.getModalContent()!.title === "deed") {
+      const dialog: HTMLDialogElement = document.getElementById(
+        "dialog"
+      ) as HTMLDialogElement;
+
+      dialog.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+        }
+      });
+
+      dialog.addEventListener("click", (event) => {
+        console.log(event.target);
+
+        if (event.target === dialog) {
+          event.preventDefault();
+        }
+      });
+
+      dialog.showModal();
+    }
+  }, [isModalOpen]);
+
+  const openModal = (): void => {
+    const player = state.game?.getPlayerById(id);
+
+    dispatch({
+      type: "SET_MODAL_CONTENT",
+      payload: {
+        title: "deed",
+        content: {
+          player: {
+            name: player?.getName(),
+            icon: player?.getIcon(),
+            balance: player?.getBalance(),
+          },
+          getOutOfJailFreeCards: player?.getGetOutOfJailCards().length || 0,
+          deeds: {
+            propertyDeeds:
+              player?.getDeeds().map((deed) => isPropertyDeed(deed)) || [],
+            stablesDeeds:
+              player?.getDeeds().map((deed) => isStablesDeed(deed)) || [],
+            utilityDeeds:
+              player?.getDeeds().map((deed) => isUtilityDeed(deed)) || [],
+          },
+        },
+      },
+    });
+    dispatch({ type: "OPEN_MODAL", payload: null });
+  };
   return (
-    <div key={id} className="player-element">
-      <div className="player-color" style={{ backgroundColor: colorCode[0] }} />
-      <div
-        className="game-player-icon"
-        style={{
-          width: "3rem",
-          height: "3rem",
-          marginLeft: "1rem",
-          backgroundImage: `url(../../../../../${iconCode[0]})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "60%",
-          backgroundPosition: "center",
-        }}
-      />
-      <div className="player-info">
-        <h4 className="player-name">{name}</h4>
-        <p
+    <>
+      <dialog id="dialog">
+        <ExitButton />
+        <DeedModal />
+      </dialog>
+
+      <div key={id} className="player-element">
+        <div
+          className="player-color"
+          style={{ backgroundColor: colorCode[0] }}
+        />
+        <div
+          className="game-player-icon"
           style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-            width: "100%",
-            gap: "0.25rem",
+            width: "3rem",
+            height: "3rem",
+            marginLeft: "1rem",
+            backgroundImage: `url(../../../../../${iconCode[0]})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "60%",
+            backgroundPosition: "center",
           }}
-        >
-          <span
-            style={{
-              paddingLeft: "0.25rem",
-              paddingRight: "0.25rem",
-            }}
-          >
-            Total
-          </span>
-          <img src="src/assets/icons/coinsIcon.png" style={{ width: "1rem" }} />{" "}
-          <span
-            style={{
-              paddingLeft: "0.25rem",
-              paddingRight: "0.25rem",
-            }}
-          >
-            : {balance}
-          </span>
-        </p>
+        />
+        <PlayerInfo name={name} balance={balance} />
+        <div className="deed-icon" onClick={() => openModal()}>
+          <img src="src/assets/icons/deedIcon.png" />
+        </div>
       </div>
-      <div className="deed-icon">
-        <img src="src/assets/icons/deedIcon.png" />
-      </div>
-    </div>
+    </>
   );
 };
 

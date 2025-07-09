@@ -2,7 +2,7 @@ import React from "react";
 import type { PlayerDotsProps } from "../../../../interfaces/interfaces";
 import { useGameContext } from "../../../../context/GameContext";
 
-const PlayerDots: React.FC<PlayerDotsProps> = ({
+const InJailPlayerDots: React.FC<PlayerDotsProps> = ({
   tileIndex,
   playerPositions,
   colors,
@@ -12,7 +12,7 @@ const PlayerDots: React.FC<PlayerDotsProps> = ({
   return (
     <div className="player-dots-container">
       {playerPositions.map((pos, i) => {
-        if (pos === tileIndex && !state.game?.getPlayerById(i)?.isInJail()) {
+        if (pos === tileIndex && state.game?.getPlayerById(i)?.isInJail()) {
           return (
             <div
               key={i}
@@ -31,4 +31,4 @@ const PlayerDots: React.FC<PlayerDotsProps> = ({
   );
 };
 
-export default PlayerDots;
+export default InJailPlayerDots;

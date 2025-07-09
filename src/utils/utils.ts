@@ -11,7 +11,11 @@ import stablesDeedsJson from "../data/stablesDeeds.json";
 import utilitiesDeedsJson from "../data/utilityDeeds.json";
 import chanceCardsJson from "../data/chanceCards.json";
 import communityChestCardsJson from "../data/communityChestCards.json";
-import type { Cell, ModalContent } from "../interfaces/interfaces";
+import type {
+  Cell,
+  DeedModalContent,
+  ModalContent,
+} from "../interfaces/interfaces";
 import type {
   ChanceCard,
   CommunityChestCard,
@@ -162,7 +166,6 @@ export const BoardArray: Cell[] = [
 ];
 
 export const serializeGame = (game: Game) => {
-  console.log(game.getCurrentPlayer());
   return {
     players: game.getPlayers().map((p) => ({
       id: p.getId(),
@@ -319,8 +322,6 @@ export const deserializeGame = (data: any): Game => {
   game.setModalContent(data.modalContent);
   game.setPendingDrawCard(data.pendingDrawCard);
   game.setCurrentPlayerIndex(data.currentPlayerIndex);
-
-  console.log(data.currentPlayerIndex);
 
   return game;
 };

@@ -24,7 +24,7 @@
 }
 
 .title {
-  background-color: #533621;
+  background-color: var(--header-color-primary);
   padding: 0.5rem 1rem;
   border: 0.1rem solid black;
   border-radius: 10px;

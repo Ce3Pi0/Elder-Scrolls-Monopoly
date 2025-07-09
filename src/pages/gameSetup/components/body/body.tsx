@@ -7,6 +7,7 @@ import StartButton from "./startButton";
 import { useGameContext } from "../../../../context/GameContext";
 import { Game, Player } from "../../../../classes/classes";
 import type { GameType } from "../../../../interfaces/interfaces";
+import { Colors, Icons } from "../../../../utils/enums";
 
 const Body: React.FC = () => {
   const { state, dispatch, loaded } = useGameContext();
@@ -27,10 +28,27 @@ const Body: React.FC = () => {
 
   useEffect(() => {
     if (loaded && !state.game) {
-      const playerOne = new Player(0, "Player 1", 1, 1);
-      const playerTwo = new Player(1, "Player 2", 2, 2);
+      const playerId_1: number = 0,
+        playerId_2: number = 1;
+      const tSeconds: number = 2700;
+
+      const playerName_1: string = "Player 1",
+        playerName_2: string = "Player 2";
+
+      const playerOne = new Player(
+        playerId_1,
+        playerName_1,
+        Colors.RED,
+        Icons.SKYRIM
+      );
+      const playerTwo = new Player(
+        playerId_2,
+        playerName_2,
+        Colors.GREEN,
+        Icons.OBLIVION
+      );
       const players: Player[] = [playerOne, playerTwo];
-      const settings: GameType = { type: "Timed", duration: 2700 };
+      const settings: GameType = { type: "Timed", duration: tSeconds };
 
       dispatch({ type: "GAME_SETUP", payload: new Game(players, settings) });
     } else if (loaded && state.game && !hasSyncedPlayerCount.current) {

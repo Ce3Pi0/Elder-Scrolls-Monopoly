@@ -5,7 +5,30 @@ import type {
   UtilityDeed,
   StablesDeed,
 } from "../classes/classes";
-import type { CellType, Direction } from "../utils/types";
+import type {
+  CellType,
+  ChanceCard,
+  CommunityChestCard,
+  Direction,
+} from "../utils/types";
+
+interface DeedModalPlayerInfo {
+  name: string;
+  icon: number;
+  balance: number;
+}
+
+interface DeedModalDeeds {
+  propertyDeeds: PropertyDeed[];
+  stablesDeeds: StablesDeed[];
+  utilityDeeds: UtilityDeed[];
+}
+
+export interface DeedModalContent {
+  player: DeedModalPlayerInfo;
+  getOutOfJailFreeCardsCount: number;
+  deeds: DeedModalDeeds;
+}
 
 export interface ModalContent {
   title:
@@ -20,8 +43,30 @@ export interface ModalContent {
     | "sellDeedProperties"
     | "sellDeedOther"
     | "sellAssets"
-    | "mortgage";
-  content: object;
+    | "mortgage"
+    | "bankruptcy"
+    | "incomeTax"
+    | "luxuryTax";
+  content: DeedModalContent | ChanceCard | CommunityChestCard | null;
+  //TODO: Add other modal content types
+}
+
+export interface DeedHeaderProps {
+  icon: number;
+  name: string;
+  balance: number;
+  getOutOfJailFreeCardsCount: number;
+}
+
+export interface DeedsProps {
+  propertyDeeds: PropertyDeed[];
+  stablesDeeds: StablesDeed[];
+  utilityDeeds: UtilityDeed[];
+}
+
+export interface PlayerInfoProps {
+  name: string;
+  balance: number;
 }
 
 export interface CellProps {
