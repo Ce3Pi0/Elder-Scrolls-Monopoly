@@ -58,6 +58,12 @@ export interface DeedHeaderProps {
   getOutOfJailFreeCardsCount: number;
 }
 
+export interface ModalPlayerInfoProps {
+  icon: number;
+  name: string;
+  balance: number;
+}
+
 export interface DeedsProps {
   propertyDeeds: PropertyDeed[];
   stablesDeeds: StablesDeed[];

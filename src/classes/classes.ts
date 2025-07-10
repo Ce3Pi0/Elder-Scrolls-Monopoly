@@ -18,7 +18,7 @@ import { Finances, Positions } from "../utils/enums";
 
 export abstract class BasicDeed {
   protected id: number;
-  protected owner: Player | null = null;
+  protected ownerId: number | null = null;
   protected deedName: string;
   protected price: number;
   protected rent: number[];
@@ -42,8 +42,8 @@ export abstract class BasicDeed {
   getId(): number {
     return this.id;
   }
-  getOwner(): Player | null {
-    return this.owner;
+  getOwnerId(): number | null {
+    return this.ownerId;
   }
   getDeedName(): string {
     return this.deedName;
@@ -54,42 +54,24 @@ export abstract class BasicDeed {
   getMortgageValue(): number {
     return this.mortgageValue;
   }
-  setOwner(owner: Player | null): void {
-    this.owner = owner;
-  }
-  canMortgage(player: Player): boolean {
-    return this.owner === player && !this.isMortgaged();
-  }
-  canUnmortgage(player: Player): boolean {
-    return (
-      this.owner === player &&
-      this.mortgaged &&
-      player.getBalance() >= this.mortgageValue + this.price * 0.1
-    );
+  setOwnerId(ownerId: number | null): void {
+    this.ownerId = ownerId;
   }
   isMortgaged(): boolean {
     return this.mortgaged;
   }
   mortgage(): void {
-    if (this.canMortgage(this.owner!)) {
-      this.mortgaged = true;
-      this.owner!.addBalance(this.mortgageValue); // Adding mortgage value to owner's balance
-    } else {
-      throw new Error("Cannot mortgage: conditions not met.");
-    }
+    if (this.mortgaged) throw new Error("Deed already mortgaged.");
+    this.mortgaged = true;
   }
   unmortgage(): void {
-    if (this.canUnmortgage(this.owner!)) {
-      this.mortgaged = false;
-      this.owner!.addBalance(-(this.mortgageValue + this.price * 0.1)); // 10% interest
-    } else {
-      throw new Error("Cannot unmortgage: conditions not met.");
-    }
+    if (!this.mortgaged) throw new Error("Deed not mortgaged mortgaged.");
+    this.mortgaged = false;
   }
   getRent(): number[] {
     return this.rent;
   }
-  abstract getRentOwed(): number;
+  abstract getRentOwed(owner: Player): number;
 }
 export class UtilityDeed extends BasicDeed {
   constructor(
@@ -112,14 +94,14 @@ export class UtilityDeed extends BasicDeed {
       [...this.rent],
       this.mortgageValue
     );
-    cloned.setOwner(this.getOwner());
+    cloned.setOwnerId(this.getOwnerId());
     if (this.mortgaged) cloned.mortgage();
 
     return cloned;
   }
-  getRentOwed(): number {
-    if (!this.getOwner()) return 0;
-    return this.rent[this.getOwner()!.getOwnedUtilities() - 1];
+  getRentOwed(owner: Player): number {
+    if (this.getOwnerId() !== owner.getId()) throw new Error("Wrong player.");
+    return this.rent[owner.getOwnedUtilities() - 1];
   }
 }
 export class StablesDeed extends BasicDeed {
@@ -145,14 +127,14 @@ export class StablesDeed extends BasicDeed {
       [...this.rent],
       this.mortgageValue
     );
-    cloned.setOwner(this.getOwner());
+    cloned.setOwnerId(this.getOwnerId());
     if (this.mortgaged) cloned.mortgage();
 
     return cloned;
   }
-  getRentOwed(): number {
-    if (!this.getOwner()) return 0;
-    return this.rent[this.getOwner()!.getOwnedStables() - 1];
+  getRentOwed(owner: Player): number {
+    if (this.getOwnerId() !== owner.getId()) throw new Error("Wrong player.");
+    return this.rent[owner.getOwnedStables() - 1];
   }
 }
 export class PropertyDeed extends BasicDeed {
@@ -189,7 +171,7 @@ export class PropertyDeed extends BasicDeed {
       this.mortgageValue
     );
 
-    cloned.setOwner(this.getOwner());
+    cloned.setOwnerId(this.getOwnerId());
     cloned.setNumberOfHouses(this.numberOfHouses);
     cloned.setNumberOfCastles(this.numberOfCastles);
     if (this.mortgaged) cloned.mortgage();
@@ -199,9 +181,12 @@ export class PropertyDeed extends BasicDeed {
   getRegion(): string {
     return this.region;
   }
-  getRentOwed(): number {
+  getRentOwed(owner: Player): number {
+    if (this.getOwnerId() === owner.getId())
+      throw new Error("You own the property.");
+
     if (this.numberOfHouses === 0 && this.numberOfCastles === 0) {
-      if (this.getOwner()!.regionOwned(this.region)) return 2 * this.rent[0];
+      if (owner.regionOwned(this.region)) return 2 * this.rent[0];
       return this.rent[0];
     }
     return this.rent[this.numberOfHouses + this.numberOfCastles];
@@ -237,74 +222,27 @@ export class PropertyDeed extends BasicDeed {
     }
     this.numberOfCastles = numberOfCastles;
   }
-  private canBuildHouse(): boolean {
-    return (
-      this.numberOfHouses < 4 &&
-      this.owner !== null &&
-      this.owner.getBalance() >= this.houseCost
-    );
+
+  addHouse(): void {
+    if (this.numberOfHouses >= 4) throw new Error("Cannot add more houses.");
+    this.numberOfHouses++;
   }
-  private canBuildCastle(): boolean {
-    return (
-      this.numberOfCastles < 4 &&
-      this.owner !== null &&
-      this.owner.getBalance() >= this.castleCost
-    );
+
+  removeHouse(): void {
+    if (this.numberOfCastles > 0) throw new Error("Cannot remove house.");
+    if (this.numberOfHouses <= 0) throw new Error("Cannot remove more houses.");
+    this.numberOfHouses--;
   }
-  buildHouse(): void {
-    if (this.canBuildHouse()) {
-      this.numberOfHouses++;
-      this.owner!.addBalance(-this.houseCost); // Deducting cost from owner's balance
-    } else {
-      throw new Error("Cannot build house: conditions not met.");
-    }
+
+  addCastle(): void {
+    if (this.numberOfHouses !== 4) throw new Error("Cannot add castle.");
+    if (this.numberOfCastles >= 4) throw new Error("Cannot add more castles.");
+    this.numberOfCastles++;
   }
-  buildCastle(): void {
-    if (this.canBuildCastle()) {
-      this.numberOfCastles++;
-      this.owner!.addBalance(-this.castleCost); // Deducting cost from owner's balance
-    } else {
-      throw new Error("Cannot build castle: conditions not met.");
-    }
-  }
-  private canSellHouse(): boolean {
-    return (
-      this.numberOfHouses > 0 &&
-      this.numberOfCastles === 0 &&
-      this.owner !== null &&
-      this.owner.getBalance() <= 0
-    );
-  }
-  private canSellCastle(): boolean {
-    return (
-      this.numberOfCastles > 0 &&
-      this.owner !== null &&
-      this.owner.getBalance() <= 0
-    );
-  }
-  sellHouse(): void {
-    if (this.canSellHouse()) {
-      this.numberOfHouses--;
-      this.owner!.addBalance(this.houseCost * 0.5); // Selling at half price
-    } else {
-      throw new Error("Cannot sell house: conditions not met.");
-    }
-  }
-  sellCastle(): void {
-    if (this.canSellCastle()) {
-      this.numberOfCastles--;
-      this.owner!.addBalance(this.castleCost * 0.5); // Selling at half price
-    } else {
-      throw new Error("Cannot sell castle: conditions not met.");
-    }
-  }
-  canMortgage(player: Player): boolean {
-    return (
-      this.owner === player &&
-      this.owner.getBalance() < 0 &&
-      this.getNumberOfHouses() === 0 &&
-      this.getNumberOfCastles() === 0
-    );
+
+  removeCastle(): void {
+    if (this.numberOfCastles <= 0) throw new Error("Cannot remove castle.");
+    this.numberOfCastles--;
   }
 }
 export class Player {
@@ -460,15 +398,109 @@ export class Player {
       throw new Error("PropertyDeed already owned by this player.");
     }
     this.deeds.push(deed);
-    deed.setOwner(this);
+    deed.setOwnerId(this.id);
   }
   removeDeed(deed: BasicDeed): void {
     const index = this.deeds.findIndex((d) => d.getId() === deed.getId());
     if (index === -1) {
       throw new Error("PropertyDeed not owned by this player.");
     }
-    deed.setOwner(null);
+    deed.setOwnerId(null);
     this.deeds.splice(index, 1);
+  }
+
+  mortgageDeed(deed: BasicDeed): void {
+    if (deed.getOwnerId() !== this.id)
+      throw new Error("Deed not owned by player");
+
+    if (deed.isMortgaged()) throw new Error("Deed already mortgaged");
+
+    if (this.balance > 0) throw new Error("Cannot mortgage: too much money");
+
+    if (isPropertyDeed(deed)) {
+      if (deed.getNumberOfCastles() > 0)
+        throw new Error("Cannot mortgage: castles on property deed");
+      if (deed.getNumberOfHouses() > 0)
+        throw new Error("Cannot mortgage: houses on property deed");
+    }
+
+    deed.mortgage();
+    this.addBalance(deed.getMortgageValue());
+  }
+
+  unmortgageDeed(deed: BasicDeed): void {
+    if (deed.getOwnerId() !== this.id)
+      throw new Error("Deed not owned by player");
+
+    if (!deed.isMortgaged()) throw new Error("Deed not mortgaged");
+
+    if (this.balance < deed.getMortgageValue())
+      throw new Error("Cannot unmortgage: too little money");
+
+    deed.unmortgage();
+    this.addBalance(-deed.getMortgageValue() - deed.getPrice() * 0.1);
+  }
+
+  private canBuildHouse(propertyDeed: PropertyDeed): boolean {
+    return (
+      propertyDeed.getNumberOfHouses() < 4 &&
+      propertyDeed.getOwnerId() === this.id &&
+      this.balance >= propertyDeed.getHouseCost()
+    );
+  }
+  private canBuildCastle(propertyDeed: PropertyDeed): boolean {
+    return (
+      propertyDeed.getNumberOfCastles() < 4 &&
+      propertyDeed.getOwnerId() === this.id &&
+      this.balance >= propertyDeed.getCastleCost()
+    );
+  }
+  buildHouse(propertyDeed: PropertyDeed): void {
+    if (this.canBuildHouse(propertyDeed)) {
+      propertyDeed.addHouse();
+      this.balance -= propertyDeed.getHouseCost();
+    } else {
+      throw new Error("Cannot build house: conditions not met.");
+    }
+  }
+  buildCastle(propertyDeed: PropertyDeed): void {
+    if (this.canBuildCastle(propertyDeed)) {
+      propertyDeed.addCastle();
+      this.balance -= propertyDeed.getCastleCost();
+    } else {
+      throw new Error("Cannot build castle: conditions not met.");
+    }
+  }
+  private canSellHouse(propertyDeed: PropertyDeed): boolean {
+    return (
+      propertyDeed.getNumberOfHouses() > 0 &&
+      propertyDeed.getNumberOfCastles() === 0 &&
+      propertyDeed.getOwnerId() !== this.id &&
+      this.balance <= 0
+    );
+  }
+  private canSellCastle(propertyDeed: PropertyDeed): boolean {
+    return (
+      propertyDeed.getNumberOfCastles() > 0 &&
+      propertyDeed.getOwnerId() !== this.id &&
+      this.balance <= 0
+    );
+  }
+  sellHouse(propertyDeed: PropertyDeed): void {
+    if (this.canSellHouse(propertyDeed)) {
+      propertyDeed.removeHouse();
+      this.balance += propertyDeed.getHouseCost() * 0.5; // Selling at half price
+    } else {
+      throw new Error("Cannot sell house: conditions not met.");
+    }
+  }
+  sellCastle(propertyDeed: PropertyDeed): void {
+    if (this.canSellCastle(propertyDeed)) {
+      propertyDeed.removeCastle();
+      this.balance += propertyDeed.getCastleCost() * 0.5; // Selling at half price
+    } else {
+      throw new Error("Cannot sell castle: conditions not met.");
+    }
   }
   addBalance(amount: number): void {
     this.balance += amount;
@@ -485,7 +517,7 @@ export class Player {
         deed.setNumberOfCastles(0);
         deed.setNumberOfHouses(0);
       }
-      deed.setOwner(null);
+      deed.setOwnerId(null);
     });
     this.deeds = [];
   }
@@ -596,7 +628,9 @@ export class Game {
 
     // Re-link deed ownership references
     clonedPlayers.forEach((player) => {
-      player.getDeeds().forEach((deed: BasicDeed) => deed.setOwner(player));
+      player
+        .getDeeds()
+        .forEach((deed: BasicDeed) => deed.setOwnerId(player.getId()));
     });
 
     return clonedGame;
@@ -745,13 +779,15 @@ export class Game {
         this.getCurrentPlayer().addBalance(Finances.PASS_MONEY);
         break;
       case "property":
-        if (!cell.deed?.getOwner()) {
+        if (!cell.deed?.getOwnerId()) {
           this.modalOpen = true;
           // this.modalContent = {
           //   title: "auction",
           //   content: { ...cell.deed },
           // };
-        } else if (cell.deed!.getOwner() !== this.getCurrentPlayer()) {
+        } else if (
+          cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
+        ) {
           this.getCurrentPlayer().addBalance(-cell.deed!.getPrice());
 
           // if (this.getCurrentPlayer().isBankrupt()) {

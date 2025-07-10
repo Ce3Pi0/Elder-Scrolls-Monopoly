@@ -789,28 +789,71 @@
 
 dialog {
   color: white;
-  background-color: var(--main-color);
+  background-color: transparent;
   padding: 0;
-  border: 2px var(--modal-border-color) solid;
-  border-radius: 10px;
   position: relative;
-
+  padding: 2em;
   scrollbar-width: none;
+  border: none;
+  outline: none;
+  width: 120vh;
 }
 
 .modal-exit-button {
   position: absolute;
-  top: -10px;
-  right: -40px;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: none;
   cursor: pointer;
 }
 
+.modal-exit-button img {
+  border-radius: 100px;
+}
+
+.modal-exit-button img:hover {
+  background-color: var(--button-hover-color);
+}
+
 .deed-modal {
+  background-color: var(--main-color);
+  border: 2px var(--modal-border-color) solid;
+  border-radius: 10px;
   padding: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.trade-button {
+  color: white;
+  background-color: var(--button-color);
+  padding: 0.9rem;
+  border-radius: 10px;
+  border: 2px solid black;
+  font-size: 1.5rem;
+  width: 20%;
+}
+
+.trade-button:hover {
+  cursor: pointer;
+  background-color: var(--button-hover-color);
+}
+
+.trade-button-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-direction: column;
+}
+
+.deed-modal-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
 }

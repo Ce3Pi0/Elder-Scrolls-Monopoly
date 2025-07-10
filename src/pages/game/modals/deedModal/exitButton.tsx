@@ -12,8 +12,15 @@ const ExitButton: React.FC = () => {
   };
 
   return (
-    <div className="modal-exit-button" onClick={() => handleModalClose()}>
-      Exit Button
+    <div className="modal-exit-button">
+      <img
+        onClick={() => handleModalClose()}
+        src="src/assets/icons/closeButton.png"
+        style={{
+          width: "3rem",
+          height: "3rem",
+        }}
+      />
     </div>
   );
 };

@@ -66,11 +66,11 @@ const Player: React.FC<GamePlayerData> = ({
           getOutOfJailFreeCards: player?.getGetOutOfJailCards().length || 0,
           deeds: {
             propertyDeeds:
-              player?.getDeeds().map((deed) => isPropertyDeed(deed)) || [],
+              player?.getDeeds().filter((deed) => isPropertyDeed(deed)) || [],
             stablesDeeds:
-              player?.getDeeds().map((deed) => isStablesDeed(deed)) || [],
+              player?.getDeeds().filter((deed) => isStablesDeed(deed)) || [],
             utilityDeeds:
-              player?.getDeeds().map((deed) => isUtilityDeed(deed)) || [],
+              player?.getDeeds().filter((deed) => isUtilityDeed(deed)) || [],
           },
         },
       },

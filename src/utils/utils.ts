@@ -11,11 +11,7 @@ import stablesDeedsJson from "../data/stablesDeeds.json";
 import utilitiesDeedsJson from "../data/utilityDeeds.json";
 import chanceCardsJson from "../data/chanceCards.json";
 import communityChestCardsJson from "../data/communityChestCards.json";
-import type {
-  Cell,
-  DeedModalContent,
-  ModalContent,
-} from "../interfaces/interfaces";
+import type { Cell, ModalContent } from "../interfaces/interfaces";
 import type {
   ChanceCard,
   CommunityChestCard,
@@ -196,7 +192,7 @@ export const serializeGame = (game: Game) => {
           rent: cell.deed.getRent(),
           mortgageValue: cell.deed.getMortgageValue(),
           isMortgaged: cell.deed.isMortgaged(),
-          ownerId: cell.deed.getOwner()?.getId() ?? null,
+          ownerId: cell.deed.getOwnerId() ?? null,
         };
 
         if (cell.deed instanceof PropertyDeed) {

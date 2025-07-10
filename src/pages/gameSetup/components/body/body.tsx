@@ -8,6 +8,7 @@ import { useGameContext } from "../../../../context/GameContext";
 import { Game, Player } from "../../../../classes/classes";
 import type { GameType } from "../../../../interfaces/interfaces";
 import { Colors, Icons } from "../../../../utils/enums";
+import { BoardArray } from "../../../../utils/utils";
 
 const Body: React.FC = () => {
   const { state, dispatch, loaded } = useGameContext();
@@ -41,6 +42,14 @@ const Body: React.FC = () => {
         Colors.RED,
         Icons.SKYRIM
       );
+
+      let deeds = BoardArray.map((cell) => cell.deed);
+      deeds = deeds.filter((deed) => deed !== null);
+      for (let deed of deeds) {
+        if (deed === null) continue;
+        playerOne.addDeed(deed);
+      }
+
       const playerTwo = new Player(
         playerId_2,
         playerName_2,

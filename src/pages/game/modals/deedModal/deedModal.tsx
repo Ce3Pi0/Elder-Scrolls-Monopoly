@@ -17,7 +17,6 @@ const DeedModal: React.FC = () => {
 
   return (
     <div className="deed-modal">
-      Deed Modal
       {modalContent?.content && (
         <DeedHeader
           icon={(modalContent.content as DeedModalContent).player.icon}
@@ -40,7 +39,12 @@ const DeedModal: React.FC = () => {
           (modalContent?.content as DeedModalContent).deeds.utilityDeeds
         }
       />
-      <TradeButton />
+      {state.game?.getCurrentPlayer().getName() ===
+        (modalContent!.content as DeedModalContent).player.name && (
+        <div className="trade-button-wrapper">
+          <TradeButton />
+        </div>
+      )}
     </div>
   );
 };
