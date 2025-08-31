@@ -129,6 +129,9 @@ export const UTILITIES_DEEDS: UtilityDeed[] = utilityDeedData.map(
   ([position, name]) => new UtilityDeed(position, name)
 );
 
+export const TOTAL_DEEDS: number =
+  PROPERTY_DEEDS.length + STABLES_DEEDS.length + UTILITIES_DEEDS.length;
+
 export const BoardArray: Cell[] = [
   { actionType: "START", deed: null, id: 0 },
   { actionType: "PROPERTY", deed: PROPERTY_DEEDS[0], id: 1 },
@@ -172,7 +175,7 @@ export const BoardArray: Cell[] = [
   { actionType: "PROPERTY", deed: PROPERTY_DEEDS[21], id: 39 },
 ];
 
-//FIXME:
+//FIXME: Change how data gets saved to local storage
 export const serializeGame = (game: Game) => {
   return {
     players: game.getPlayers().map((p) => ({
@@ -421,6 +424,8 @@ export const getRandomCommunityChestCard = (): ModalContent => {
   };
 };
 
+export const GET_OUT_OF_JAIL_FREE_CARDS_COUNT: number = 3;
+
 export const returnGetOutOfJailCard = (type: GetOutOfJailCardType): void => {
   if (type === "CHANCE") {
     drawnChanceGetOutOfJailCard = true;
@@ -428,3 +433,9 @@ export const returnGetOutOfJailCard = (type: GetOutOfJailCardType): void => {
     drawnCommunityChestGetOutOfJailCard = true;
   }
 };
+
+export const MAX_PLAYER_COUNT: number = 4;
+export const VALID_GAME_DURATIONS: number[] = [45]; //TODO: Check with the game creating page component to confirm
+export const BOARD_SIZE: number = BoardArray.length;
+export const MAX_DICE_VALUE: number = 6;
+export const MAX_DOUBLES_COUNTER: number = 3;

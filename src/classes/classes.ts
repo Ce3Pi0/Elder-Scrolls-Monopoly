@@ -6,34 +6,43 @@ import type {
   PlayerData,
 } from "../interfaces/interfaces";
 import {
+  BOARD_SIZE,
+  GET_OUT_OF_JAIL_FREE_CARDS_COUNT,
   getRandomChanceCard,
   getRandomCommunityChestCard,
   isPropertyDeed,
   isStablesDeed,
   isUtilityDeed,
+  MAX_DICE_VALUE,
+  MAX_DOUBLES_COUNTER,
+  MAX_PLAYER_COUNT,
   PLAYER_COLORS,
   PLAYER_ICONS,
   REGIONS,
   returnGetOutOfJailCard,
+  TOTAL_DEEDS,
+  VALID_GAME_DURATIONS,
 } from "../utils/utils";
 import type { CellType, EventType, GetOutOfJailCardType } from "../utils/types";
 import { Finances, Positions } from "../utils/enums";
 
 export abstract class BasicDeed {
   protected id: number;
-  protected ownerId: number | null = null;
+  protected ownerId: number | null;
   protected deedName: string;
   protected price: number;
   protected rent: number[];
   protected mortgageValue: number;
-  protected mortgaged: boolean = false;
+  protected mortgaged: boolean;
 
   constructor(
     id: number,
     deedName: string,
     price: number,
     rent: number[],
-    mortgageValue: number
+    mortgageValue: number,
+    ownerId: number | null,
+    mortgaged: boolean
   ) {
     if (id < 0) throw new Error("Invalid deed ID number");
     if (price < 0) throw new Error("Invalid deed price");
@@ -46,6 +55,8 @@ export abstract class BasicDeed {
     this.price = price;
     this.rent = rent;
     this.mortgageValue = mortgageValue;
+    this.ownerId = ownerId;
+    this.mortgaged = mortgaged;
   }
   abstract clone(): BasicDeed;
   getId(): number {
@@ -98,9 +109,11 @@ export class UtilityDeed extends BasicDeed {
       Finances.UTILITY_PRICE_MULTIPLIER,
       Finances.UTILITY_PRICE_MULTIPLIER_2,
     ],
-    mortgageValue: number = Finances.UTILITY_PRICE / 2
+    mortgageValue: number = Finances.UTILITY_PRICE / 2,
+    ownerId: number | null = null,
+    mortgaged: boolean = false
   ) {
-    super(id, deedName, price, rent, mortgageValue);
+    super(id, deedName, price, rent, mortgageValue, ownerId, mortgaged);
   }
   clone(): UtilityDeed {
     const cloned = new UtilityDeed(
@@ -108,10 +121,10 @@ export class UtilityDeed extends BasicDeed {
       this.deedName,
       this.price,
       [...this.rent],
-      this.mortgageValue
+      this.mortgageValue,
+      this.ownerId,
+      this.mortgaged
     );
-    cloned.setOwnerId(this.getOwnerId());
-    if (this.mortgaged) cloned.mortgage();
 
     return cloned;
   }
@@ -134,9 +147,11 @@ export class StablesDeed extends BasicDeed {
       Finances.STABLES_RENT_3,
       Finances.STABLES_RENT_4,
     ],
-    mortgageValue: number = Finances.STABLES_PRICE / 2
+    mortgageValue: number = Finances.STABLES_PRICE / 2,
+    ownerId: number | null = null,
+    mortgaged: boolean = false
   ) {
-    super(id, deedName, price, rent, mortgageValue);
+    super(id, deedName, price, rent, mortgageValue, ownerId, mortgaged);
   }
   clone(): StablesDeed {
     const cloned = new StablesDeed(
@@ -144,10 +159,10 @@ export class StablesDeed extends BasicDeed {
       this.deedName,
       this.price,
       [...this.rent],
-      this.mortgageValue
+      this.mortgageValue,
+      this.ownerId,
+      this.mortgaged
     );
-    cloned.setOwnerId(this.getOwnerId());
-    if (this.mortgaged) cloned.mortgage();
 
     return cloned;
   }
@@ -163,8 +178,8 @@ export class PropertyDeed extends BasicDeed {
   private region: string;
   private houseCost: number;
   private castleCost: number;
-  private numberOfHouses: number = 0;
-  private numberOfCastles: number = 0;
+  private numberOfHouses: number;
+  private numberOfCastles: number;
   constructor(
     id: number,
     region: string,
@@ -173,18 +188,27 @@ export class PropertyDeed extends BasicDeed {
     rent: number[],
     houseCost: number,
     castleCost: number,
-    mortgageValue: number
+    mortgageValue: number,
+    ownerId: number | null = null,
+    mortgaged: boolean = false,
+    numberOfHouses: number = 0,
+    numberOfCastles: number = 0
   ) {
-    super(id, deedName, price, rent, mortgageValue);
+    super(id, deedName, price, rent, mortgageValue, ownerId, mortgaged);
     if (houseCost < 0) throw new Error("Houses cannot cost negative values");
     if (castleCost < 0) throw new Error("Castles cannot cost negative values");
     if (REGIONS.includes(this.region) === undefined)
       throw new Error("Invalid region");
+    if (numberOfCastles < 0) throw new Error("Invalid number of castles");
+    if (numberOfHouses < 0) throw new Error("Invalid number of houses");
 
     this.region = region;
     this.deedName = deedName;
     this.houseCost = houseCost;
     this.castleCost = castleCost;
+
+    this.numberOfHouses = numberOfHouses;
+    this.numberOfCastles = numberOfCastles;
   }
   clone(): PropertyDeed {
     const cloned = new PropertyDeed(
@@ -241,25 +265,21 @@ export class PropertyDeed extends BasicDeed {
   getNumberOfCastles(): number {
     return this.numberOfCastles;
   }
-
   addHouse(): void {
     if (this.numberOfHouses === 4) throw new Error("Cannot add more houses.");
     this.numberOfHouses++;
   }
-
   removeHouse(): void {
     if (this.numberOfCastles > 0) throw new Error("Cannot remove house.");
     if (this.numberOfHouses === 0)
       throw new Error("Cannot remove more houses.");
     this.numberOfHouses--;
   }
-
   addCastle(): void {
     if (this.numberOfHouses !== 4) throw new Error("Cannot add castle.");
     if (this.numberOfCastles === 4) throw new Error("Cannot add more castles.");
     this.numberOfCastles++;
   }
-
   removeCastle(): void {
     if (this.numberOfCastles === 0) throw new Error("Cannot remove castle.");
     this.numberOfCastles--;
@@ -272,6 +292,7 @@ export class Player {
   private name: string;
   private color: number;
   private icon: number;
+
   private balance: number = Finances.START_MONEY;
   private position: number = 0;
   private inJail: boolean = false;
@@ -280,31 +301,68 @@ export class Player {
   private getOutOfJailCards: GetOutOfJailCardType[] = [];
   private bankrupt: boolean = false;
 
-  constructor(id: number, name: string, color: number, icon: number) {
+  constructor(
+    id: number,
+    name: string,
+    color: number,
+    icon: number,
+    balance: number = Finances.START_MONEY,
+    position: number = 0,
+    inJail: boolean = false,
+    jailTurns: number = 0,
+    deeds: BasicDeed[] = [],
+    getOutOfJailCards: GetOutOfJailCardType[] = [],
+    bankrupt: boolean = false
+  ) {
     if (id < 0) throw new Error("Invalid player ID number");
     if (PLAYER_COLORS[color] === undefined)
       throw new Error("Invalid player color");
     if (PLAYER_ICONS[icon] === undefined)
       throw new Error("Invalid player icon");
+    if (position < Positions.START || position > Positions.END) {
+      throw new Error(
+        `Invalid position: must be larger than ${Positions.START} and less than ${Positions.END}.`
+      );
+    }
+    if (jailTurns < 0 || jailTurns > 3)
+      throw new Error("Invalid number of jail turns");
+    if (deeds.length > TOTAL_DEEDS) throw new Error("Invalid number of deeds");
+    if (
+      getOutOfJailCards.length > GET_OUT_OF_JAIL_FREE_CARDS_COUNT ||
+      getOutOfJailCards.length < 0
+    )
+      throw new Error("Invalid number of get out of jail free cards");
 
     this.id = id;
     this.name = name;
     this.color = color;
     this.icon = icon;
+    this.balance = balance;
+    this.position = position;
+    this.inJail = inJail;
+    this.jailTurns = jailTurns;
+    this.deeds = deeds.map((deed) => deed.clone());
+    this.getOutOfJailCards = [...getOutOfJailCards];
+
+    if (this.getTotalBalance() > 0 && bankrupt)
+      throw new Error("Player not bankrupt");
+
+    this.bankrupt = bankrupt;
   }
-
   clone(): Player {
-    const cloned = new Player(this.id, this.name, this.color, this.icon);
-
-    cloned.position = this.position;
-    if (this.inJail) cloned.sendToJail();
-    for (let i = 0; i < this.jailTurns; i++) cloned.updateJailTurns();
-    if (this.bankrupt) cloned.declareBankruptcy();
-    for (let i = 0; i < this.getOutOfJailCards.length; i++)
-      cloned.addGetOutOfJailFreeCard(this.getOutOfJailCards[i]);
-    for (let i = 0; i < this.deeds.length; i++)
-      cloned.addDeed(this.deeds[i].clone());
-    cloned.addBalance(this.balance);
+    const cloned = new Player(
+      this.id,
+      this.name,
+      this.color,
+      this.icon,
+      this.balance,
+      this.position,
+      this.inJail,
+      this.jailTurns,
+      this.deeds,
+      this.getOutOfJailCards,
+      this.bankrupt
+    );
 
     return cloned;
   }
@@ -565,63 +623,116 @@ export class Player {
 }
 export class Game {
   private players: Player[];
-  private event: EventType | null = null;
   private gameSettings: GameType;
-  private gameStarted: boolean = false;
-  private gameEnded: boolean = true;
-  private board: Cell[] = [];
-  private currentPlayerIndex: number = 0;
-  private diceRolled: boolean = false;
-  private diceValue: Pair = { diceOne: 0, diceTwo: 0 };
-  private doublesCounter: number = 0;
-  private modalOpen: boolean = false;
-  private modalContent: ModalContent | null = null;
-  private pendingDrawCard: boolean = false;
+  private gameStarted: boolean;
+  private gameEnded: boolean;
+  private board: Cell[];
+  private event: EventType | null;
+  private currentPlayerIndex: number;
+  private diceRolled: boolean;
+  private diceValue: Pair;
+  private doublesCounter: number;
+  private modalOpen: boolean;
+  private modalContent: ModalContent | null;
+  private pendingDrawCard: boolean;
 
-  constructor(players: Player[], gameSettings: GameType) {
-    this.players = players;
-    this.gameSettings = gameSettings;
-    this.gameStarted = false; // Game starts when initialized
-    this.gameEnded = false; // Game is not ended when initialized
+  constructor(
+    players: Player[],
+    gameSettings: GameType,
+    gameStarted: boolean = false,
+    gameEnded: boolean = true,
+    board: Cell[],
+    event: EventType | null = null,
+    currentPlayerIndex: number = 0,
+    diceRolled: boolean = false,
+    diceValue: Pair = { diceOne: 0, diceTwo: 0 },
+    doublesCounter: number = 0,
+    modalOpen: boolean = false,
+    modalContent: ModalContent | null = null,
+    pendingDrawCard: boolean = false
+  ) {
+    if (players.length > MAX_PLAYER_COUNT)
+      throw new Error("Invalid player count");
+    if (VALID_GAME_DURATIONS.includes(gameSettings.duration) === undefined)
+      throw new Error("Invalid game duration");
+    if (gameStarted && gameEnded)
+      throw new Error("Game cannot be started and ended at the same time");
+    if (!gameStarted && !gameEnded)
+      throw new Error("Game has to be started or ended");
+    if (board.length !== BOARD_SIZE) throw new Error("Invalid board");
+    if (currentPlayerIndex < 0 || currentPlayerIndex > MAX_PLAYER_COUNT)
+      throw new Error("Invalid player index");
+    if (
+      (diceRolled && diceValue.diceOne === 0 && diceValue.diceTwo === 0) ||
+      (!diceRolled && diceValue.diceOne !== 0 && diceValue.diceTwo !== 0)
+    )
+      throw new Error("Dice values and dice rolled variables error");
+    if (
+      diceValue.diceOne < 0 ||
+      diceValue.diceOne > MAX_DICE_VALUE ||
+      diceValue.diceTwo < 0 ||
+      diceValue.diceTwo > MAX_DICE_VALUE
+    )
+      throw new Error("Invalid dice values");
+    if (doublesCounter < 0 || doublesCounter > MAX_DOUBLES_COUNTER)
+      throw new Error("Invalid doubles counter value");
+    if ((modalContent === null && modalOpen) || (modalContent && !modalOpen))
+      throw new Error("Modal content and modal open values error");
+
+    this.players = players.map((player) => player.clone());
+    this.gameSettings.type = gameSettings.type;
+    this.gameSettings.duration = gameSettings.duration;
+    this.gameStarted = gameStarted;
+    this.gameEnded = gameEnded;
+    this.board = board.map((cell) => {
+      return {
+        id: cell.id,
+        actionType: cell.actionType,
+        deed: cell.deed.clone(),
+      };
+    });
+    this.event = event;
+    this.currentPlayerIndex = currentPlayerIndex;
+    (this.diceRolled = diceRolled),
+      (this.diceValue = {
+        diceOne: diceValue.diceOne,
+        diceTwo: diceValue.diceTwo,
+      });
+    this.doublesCounter = doublesCounter;
+    this.modalOpen = modalOpen;
+    this.modalContent = {
+      title: modalContent.title,
+      content: modalContent.content,
+    };
+    this.pendingDrawCard = pendingDrawCard;
   }
   clone(): Game {
     const clonedPlayers = this.players.map((p) => p.clone());
-
-    const clonedSettings: GameType = { ...this.gameSettings };
-
-    const clonedGame = new Game(clonedPlayers, clonedSettings);
-
-    //FIXME:
-    clonedGame.board = this.board.map((cell) => ({
+    const clonedBoard = this.board.map((cell) => ({
       id: cell.id,
       actionType: cell.actionType,
       deed: cell.deed ? cell.deed.clone() : null,
     }));
+    const clonedSettings: GameType = { ...this.gameSettings };
 
-    clonedGame.currentPlayerIndex = this.currentPlayerIndex;
-    clonedGame.diceRolled = this.diceRolled;
-    clonedGame.diceValue = { ...this.diceValue };
-    clonedGame.gameStarted = this.gameStarted;
-    clonedGame.gameEnded = this.gameEnded;
-    clonedGame.event = this.event;
-    clonedGame.modalOpen = this.modalOpen;
-    clonedGame.modalContent = this.modalContent
-      ? structuredClone(this.modalContent)
-      : null;
-    clonedGame.pendingDrawCard = this.pendingDrawCard;
+    const clonedGame = new Game(clonedPlayers, clonedSettings);
 
-    // Re-link deed ownership references
-    clonedPlayers.forEach((player) => {
-      player
-        .getDeeds()
-        .forEach((deed: BasicDeed) => deed.setOwnerId(player.getId()));
-    });
+    while (this.currentPlayerIndex !== clonedGame.getCurrentPlayerIndex())
+      clonedGame.nextPlayer();
+    if (this.diceRolled) clonedGame.setDiceRolled(true);
+    clonedGame.setDiceValue(this.diceValue);
+    if (this.gameStarted) clonedGame.startGame(clonedBoard);
+    if (this.gameEnded) clonedGame.endGame();
+    clonedGame.setEvent(this.event);
+    if (this.pendingDrawCard) clonedGame.drawCard(this.modalContent);
+    else if (this.modalOpen && !this.pendingDrawCard)
+      clonedGame.openModal(this.modalContent);
 
     return clonedGame;
   }
-  startGame(board: Cell[]): void {
-    this.board = board;
+  startGame(): void {
     this.gameStarted = true;
+    this.gameEnded = false;
   }
   isGameStarted(): boolean {
     return this.gameStarted;
@@ -652,9 +763,6 @@ export class Game {
   setPlayers(players: Player[]): void {
     this.players = players;
   }
-  setBoard(board: Cell[]): void {
-    this.board = board;
-  }
   getGameSettings(): GameType {
     return this.gameSettings;
   }
@@ -680,8 +788,14 @@ export class Game {
   getPlayers(): Player[] {
     return this.players;
   }
+  getBoard(): Cell[] {
+    return this.board;
+  }
   getCurrentPlayer(): Player {
     return this.players[this.currentPlayerIndex];
+  }
+  getCurrentPlayerIndex(): number {
+    return this.currentPlayerIndex;
   }
   removePlayer(playerId: number): void {
     for (let i = 0; i < this.players.length; i++) {
@@ -831,8 +945,5 @@ export class Game {
   endDrawCard(): void {
     this.pendingDrawCard = false;
     this.closeModal();
-  }
-  getBoard(): Cell[] {
-    return this.board;
   }
 }

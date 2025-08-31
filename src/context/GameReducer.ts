@@ -12,9 +12,10 @@ export const gameReducer = (
   action: GameAction
 ): GameState => {
   switch (action.type) {
+    //FIXME: Testing purposes only
     case "TESTING":
       const newGame = state.game?.clone();
-      newGame?.setEvent("rollDice");
+      newGame?.setEvent("ROLL_DICE");
       return { ...state, game: newGame };
 
     case "GAME_SETUP":
