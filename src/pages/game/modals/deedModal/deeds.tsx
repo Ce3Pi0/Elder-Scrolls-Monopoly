@@ -8,8 +8,6 @@ const Deeds: React.FC<DeedsProps> = ({
 }) => {
   const allDeeds = [...propertyDeeds, ...stablesDeeds, ...utilityDeeds];
 
-  console.log(allDeeds);
-
   return null;
 
   // return allDeeds.map((deed) => {

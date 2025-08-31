@@ -7,11 +7,11 @@ const RollButton: React.FC = () => {
   const [hasRolled, setHasRolled] = useState(false);
 
   const dice: Pair | undefined = state.game?.getDiceValue();
-  const diceOne: number | undefined = 30; //dice?.diceOne;
+  const diceOne: number | undefined = 1; //dice?.diceOne;
   const diceTwo: number | undefined = 0; //dice?.diceTwo;
 
   const handleRoll = async () => {
-    // FIXME: Fix this after testing
+    // TODO: Create order deciding logic
     if (state.game?.getEvent() === "decideOrder") dispatch({ type: "TESTING" });
 
     if (state.game?.getEvent() === "rollDice") {

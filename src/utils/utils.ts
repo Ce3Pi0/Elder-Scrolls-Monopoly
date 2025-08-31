@@ -40,6 +40,17 @@ export const PLAYER_ICONS: { [key: number]: [string, string] } = {
   4: ["src/assets/icons/player-icon4.png", "Daggerfall"],
 };
 
+export const REGIONS: string[] = [
+  "Black Marsh",
+  "Cyrodiil",
+  "South Skyrim",
+  "North Skyrim",
+  "High Rock",
+  "Morrowind",
+  "Hammerfell",
+  "Summerset Isles",
+];
+
 export const REGIONS_TO_COLORS: { [key: string]: string } = {
   "Black Marsh": "#A8714E",
   Cyrodiil: "#4EA8A0",
@@ -119,48 +130,49 @@ export const UTILITIES_DEEDS: UtilityDeed[] = utilityDeedData.map(
 );
 
 export const BoardArray: Cell[] = [
-  { actionType: "start", deed: null, id: 0 },
-  { actionType: "property", deed: PROPERTY_DEEDS[0], id: 1 },
-  { actionType: "community", deed: null, id: 2 },
-  { actionType: "property", deed: PROPERTY_DEEDS[1], id: 3 },
-  { actionType: "incomeTax", deed: null, id: 4 },
-  { actionType: "stables", deed: STABLES_DEEDS[0], id: 5 },
-  { actionType: "property", deed: PROPERTY_DEEDS[2], id: 6 },
-  { actionType: "chance", deed: null, id: 7 },
-  { actionType: "property", deed: PROPERTY_DEEDS[3], id: 8 },
-  { actionType: "property", deed: PROPERTY_DEEDS[4], id: 9 },
-  { actionType: "jail", deed: null, id: 10 },
-  { actionType: "property", deed: PROPERTY_DEEDS[5], id: 11 },
-  { actionType: "utility", deed: UTILITIES_DEEDS[0], id: 12 },
-  { actionType: "property", deed: PROPERTY_DEEDS[6], id: 13 },
-  { actionType: "property", deed: PROPERTY_DEEDS[7], id: 14 },
-  { actionType: "stables", deed: STABLES_DEEDS[1], id: 15 },
-  { actionType: "property", deed: PROPERTY_DEEDS[8], id: 16 },
-  { actionType: "community", deed: null, id: 17 },
-  { actionType: "property", deed: PROPERTY_DEEDS[9], id: 18 },
-  { actionType: "property", deed: PROPERTY_DEEDS[10], id: 19 },
-  { actionType: "lodging", deed: null, id: 20 },
-  { actionType: "property", deed: PROPERTY_DEEDS[11], id: 21 },
-  { actionType: "chance", deed: null, id: 22 },
-  { actionType: "property", deed: PROPERTY_DEEDS[12], id: 23 },
-  { actionType: "property", deed: PROPERTY_DEEDS[13], id: 24 },
-  { actionType: "stables", deed: STABLES_DEEDS[2], id: 25 },
-  { actionType: "property", deed: PROPERTY_DEEDS[14], id: 26 },
-  { actionType: "property", deed: PROPERTY_DEEDS[15], id: 27 },
-  { actionType: "utility", deed: UTILITIES_DEEDS[1], id: 28 },
-  { actionType: "property", deed: PROPERTY_DEEDS[16], id: 29 },
-  { actionType: "goToJail", deed: null, id: 30 },
-  { actionType: "property", deed: PROPERTY_DEEDS[17], id: 31 },
-  { actionType: "property", deed: PROPERTY_DEEDS[18], id: 32 },
-  { actionType: "chance", deed: null, id: 33 },
-  { actionType: "property", deed: PROPERTY_DEEDS[19], id: 34 },
-  { actionType: "stables", deed: STABLES_DEEDS[3], id: 35 },
-  { actionType: "chance", deed: null, id: 36 },
-  { actionType: "property", deed: PROPERTY_DEEDS[20], id: 37 },
-  { actionType: "luxuryTax", deed: null, id: 38 },
-  { actionType: "property", deed: PROPERTY_DEEDS[21], id: 39 },
+  { actionType: "START", deed: null, id: 0 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[0], id: 1 },
+  { actionType: "COMMUNITY", deed: null, id: 2 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[1], id: 3 },
+  { actionType: "INCOME_TAX", deed: null, id: 4 },
+  { actionType: "STABLES", deed: STABLES_DEEDS[0], id: 5 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[2], id: 6 },
+  { actionType: "CHANCE", deed: null, id: 7 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[3], id: 8 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[4], id: 9 },
+  { actionType: "JAIL", deed: null, id: 10 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[5], id: 11 },
+  { actionType: "UTILITY", deed: UTILITIES_DEEDS[0], id: 12 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[6], id: 13 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[7], id: 14 },
+  { actionType: "STABLES", deed: STABLES_DEEDS[1], id: 15 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[8], id: 16 },
+  { actionType: "COMMUNITY", deed: null, id: 17 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[9], id: 18 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[10], id: 19 },
+  { actionType: "LODGING", deed: null, id: 20 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[11], id: 21 },
+  { actionType: "CHANCE", deed: null, id: 22 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[12], id: 23 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[13], id: 24 },
+  { actionType: "STABLES", deed: STABLES_DEEDS[2], id: 25 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[14], id: 26 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[15], id: 27 },
+  { actionType: "UTILITY", deed: UTILITIES_DEEDS[1], id: 28 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[16], id: 29 },
+  { actionType: "GO_TO_JAIL", deed: null, id: 30 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[17], id: 31 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[18], id: 32 },
+  { actionType: "CHANCE", deed: null, id: 33 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[19], id: 34 },
+  { actionType: "STABLES", deed: STABLES_DEEDS[3], id: 35 },
+  { actionType: "CHANCE", deed: null, id: 36 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[20], id: 37 },
+  { actionType: "LUXURY_TAX", deed: null, id: 38 },
+  { actionType: "PROPERTY", deed: PROPERTY_DEEDS[21], id: 39 },
 ];
 
+//FIXME:
 export const serializeGame = (game: Game) => {
   return {
     players: game.getPlayers().map((p) => ({
@@ -224,7 +236,6 @@ export const serializeGame = (game: Game) => {
     pendingDrawCard: game.isPendingDrawCard(),
   };
 };
-
 export const deserializeGame = (data: any): Game => {
   const players = data.players.map((p: any) => {
     const tempP = new Player(p.id, p.name, p.color, p.icon);
@@ -303,7 +314,7 @@ export const deserializeGame = (data: any): Game => {
         owner.addDeed(deed);
       }
     }
-    delete (deed as any)._ownerId; // clean up temp property
+    delete (deed as any)._ownerId; // clean up temp PROPERTY
   }
 
   const game = new Game(players, data.gameSettings);
@@ -315,6 +326,14 @@ export const deserializeGame = (data: any): Game => {
   game.setGameStarted(data.gameStarted);
   game.setGameEnded(data.gameEnded);
   game.setModalOpen(data.modalOpen);
+  if (data.modalContent !== null) {
+    if (data.modalContent.title === "trade") {
+      const playerId = data.modalContent.content.player.id;
+      data.modalContent.content.player = players.find(
+        (p: Player) => p.getId() === playerId
+      );
+    }
+  }
   game.setModalContent(data.modalContent);
   game.setPendingDrawCard(data.pendingDrawCard);
   game.setCurrentPlayerIndex(data.currentPlayerIndex);
@@ -362,17 +381,17 @@ export const getRandomChanceCard = (): ModalContent => {
     const card: ChanceCard =
       CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length) + 1];
     return {
-      title: "chance",
+      title: "CHANCE",
       content: card,
     };
   }
 
-  //Avoid the last index because that is the one with the get out of jail card
+  //Avoid the last index because that is the one with the get out of JAIL card
   const card: ChanceCard =
     CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length)];
 
   return {
-    title: "community",
+    title: "COMMUNITY",
     content: card,
   };
 };
@@ -385,25 +404,25 @@ export const getRandomCommunityChestCard = (): ModalContent => {
         Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length) + 1
       ];
     return {
-      title: "community",
+      title: "COMMUNITY",
       content: card,
     };
   }
 
-  //Avoid the last index because that is the one with the get out of jail card
+  //Avoid the last index because that is the one with the get out of JAIL card
   const card: CommunityChestCard =
     COMMUNITY_CHEST_CARDS[
       Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length)
     ];
 
   return {
-    title: "community",
+    title: "COMMUNITY",
     content: card,
   };
 };
 
 export const returnGetOutOfJailCard = (type: GetOutOfJailCardType): void => {
-  if (type === "chance") {
+  if (type === "CHANCE") {
     drawnChanceGetOutOfJailCard = true;
   } else {
     drawnCommunityChestGetOutOfJailCard = true;

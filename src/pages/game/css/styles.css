@@ -816,7 +816,7 @@ dialog {
   background-color: var(--button-hover-color);
 }
 
-.deed-modal {
+.modal {
   background-color: var(--main-color);
   border: 2px var(--modal-border-color) solid;
   border-radius: 10px;
@@ -856,4 +856,32 @@ dialog {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
+}
+
+.trade-modal-header-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+}
+
+.trade-modal-header {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.back-icon {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-direction: row;
+  width: 10%;
+  object-fit: contain;
+}
+
+.back-icon img {
+  cursor: pointer;
 }

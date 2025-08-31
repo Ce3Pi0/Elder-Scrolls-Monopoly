@@ -11,6 +11,7 @@ import PlayerInfo from "./playerInfo";
 import { useGameContext } from "../../../../context/GameContext";
 import DeedModal from "../../modals/deedModal/deedModal";
 import ExitButton from "../../modals/deedModal/exitButton";
+import TradeModal from "../../modals/tradeModal/tradeModal";
 
 const Player: React.FC<GamePlayerData> = ({
   id,
@@ -27,7 +28,7 @@ const Player: React.FC<GamePlayerData> = ({
   const isModalOpen = state.game?.isModalOpen();
 
   useEffect(() => {
-    if (isModalOpen && state.game?.getModalContent()!.title === "deed") {
+    if (isModalOpen) {
       const dialog: HTMLDialogElement = document.getElementById(
         "dialog"
       ) as HTMLDialogElement;
@@ -39,8 +40,6 @@ const Player: React.FC<GamePlayerData> = ({
       });
 
       dialog.addEventListener("click", (event) => {
-        console.log(event.target);
-
         if (event.target === dialog) {
           event.preventDefault();
         }
@@ -80,8 +79,23 @@ const Player: React.FC<GamePlayerData> = ({
   return (
     <>
       <dialog id="dialog">
-        <ExitButton />
-        <DeedModal />
+        {state.game?.isModalOpen() && (
+          <>
+            {state.game?.getModalContent().title !== "auction" && (
+              <ExitButton />
+            )}
+            {state.game?.getModalContent() &&
+              state.game.getModalContent().title === "deed" && <DeedModal />}
+            {state.game?.getModalContent() &&
+              state.game.getModalContent().title === "trade" && <TradeModal />}
+            {/*
+              state.game.getModalContent().title === "deedModalExpanded" && (
+              <DeedModalExpanded />
+             */}
+            {/* { state.game?.getModalContent().title === "auction" && <AuctionModal />} */}
+            {/* TODO: Create all modals and modal logic here */}
+          </>
+        )}
       </dialog>
 
       <div key={id} className="player-element">

@@ -55,7 +55,6 @@ export const gameReducer = (
       newGame?.setEvent(event);
 
       return { ...state, game: newGame };
-      //FIXME: fix this
     }
 
     case "RESET_DICE": {
@@ -193,7 +192,7 @@ export const gameReducer = (
         newGame
           ?.getPlayerById(action.payload.playerId)
           ?.canAfford(action.payload.deed.getPrice()) &&
-        action.payload.deed.getOwner() === null
+        action.payload.deed.getOwnerId() === null
       ) {
         newGame
           ?.getPlayerById(action.payload.playerId)
@@ -206,9 +205,7 @@ export const gameReducer = (
         throw new Error("Player does not have enough money to buy the deed.");
       } else {
         throw new Error(
-          `Property already owned by playerId: ${action.payload.deed
-            .getOwner()
-            ?.getId()}`
+          `Property already owned by playerId: ${action.payload.deed.getOwnerId()}`
         );
       }
       return { ...state, game: newGame };
@@ -218,7 +215,7 @@ export const gameReducer = (
       const newGame = state.game?.clone();
       const player = newGame?.getPlayerById(action.payload.playerId);
 
-      if (action.payload.deed.getOwner()?.getId() === player?.getId()) {
+      if (action.payload.deed.getOwnerId() === player?.getId()) {
         player?.removeDeed(action.payload.deed);
       }
 
@@ -232,7 +229,7 @@ export const gameReducer = (
       );
       const deed: BasicDeed = action.payload.deed;
 
-      if (curPlayer?.getId() === deed.getOwner()?.getId()) {
+      if (curPlayer?.getId() === deed.getOwnerId()) {
         deed.mortgage();
       }
 
@@ -246,7 +243,7 @@ export const gameReducer = (
       );
       const deed: BasicDeed = action.payload.deed;
 
-      if (player?.getId() === deed.getOwner()?.getId()) {
+      if (player?.getId() === deed.getOwnerId()) {
         deed.unmortgage();
       }
       return { ...state, game: newGame };
@@ -256,9 +253,10 @@ export const gameReducer = (
       const newGame = state.game?.clone();
 
       const deed: PropertyDeed = action.payload.propertyDeed;
+      const player: Player = newGame?.getPlayerById(action.payload.playerId)!;
 
-      if (deed.getOwner()?.getId() === action.payload.playerId) {
-        deed.buildHouse();
+      if (deed.getOwnerId() === player.getId()) {
+        player.buildHouse(deed);
       } else {
         throw new Error("Player doesn't own the deed.");
       }
@@ -270,9 +268,10 @@ export const gameReducer = (
       const newGame = state.game?.clone();
 
       const deed: PropertyDeed = action.payload.propertyDeed;
+      const player: Player = newGame?.getPlayerById(action.payload.playerId)!;
 
-      if (deed.getOwner()?.getId() === action.payload.playerId) {
-        deed.buildCastle();
+      if (deed.getOwnerId() === player.getId()) {
+        player.buildCastle(deed);
       } else {
         throw new Error("Player doesn't own the deed.");
       }
@@ -282,10 +281,12 @@ export const gameReducer = (
 
     case "SELL_HOUSE": {
       const newGame = state.game?.clone();
-      const deed: PropertyDeed = action.payload.propertyDeed;
 
-      if (deed.getOwner()?.getId() === action.payload.playerId) {
-        deed.sellHouse();
+      const deed: PropertyDeed = action.payload.propertyDeed;
+      const player: Player = newGame?.getPlayerById(action.payload.playerId)!;
+
+      if (deed.getOwnerId() === player.getId()) {
+        player.sellHouse(deed);
       } else {
         throw new Error("Player doesn't own the deed.");
       }
@@ -295,10 +296,12 @@ export const gameReducer = (
 
     case "SELL_CASTLE": {
       const newGame = state.game?.clone();
-      const deed: PropertyDeed = action.payload.propertyDeed;
 
-      if (deed.getOwner()?.getId() === action.payload.playerId) {
-        deed.sellCastle();
+      const deed: PropertyDeed = action.payload.propertyDeed;
+      const player: Player = newGame?.getPlayerById(action.payload.playerId)!;
+
+      if (deed.getOwnerId() === player.getId()) {
+        player.sellCastle(deed);
       } else {
         throw new Error("Player doesn't own the deed.");
       }

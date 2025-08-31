@@ -1,34 +1,34 @@
 import type { BasicDeed, Game, Player, PropertyDeed } from "../classes/classes";
 import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
 
-export type EventType =
-  | "decideOrder"
-  | "rollDice"
-  | "movePlayer"
-  | "inJail"
-  | "cellAction"
-  | "playerOut"
-  | "doubles"
-  | "endTurn";
+export type GameFlowEventType =
+  | "DECIDE_ORDER"
+  | "ROLL_DICE"
+  | "MOVE_PLAYER"
+  | "CELL_ACTION"
+  | "END_TURN";
 
-export type GetOutOfJailCardType = "chance" | "community";
+export type MiscEventType = "IN_JAIL" | "PLAYER_OUT" | "DOUBLES";
+export type EventType = GameFlowEventType | MiscEventType;
 
-export type Direction = "top" | "bottom" | "left" | "right";
+export type GetOutOfJailCardType = "CHANCE" | "COMMUNITY";
+
+export type Direction = "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
 export type CellType =
-  | "start"
-  | "property"
-  | "stables"
-  | "utility"
-  | "chance"
-  | "community"
-  | "incomeTax"
-  | "jail"
-  | "lodging"
-  | "goToJail"
-  | "luxuryTax";
+  | "START"
+  | "PROPERTY"
+  | "STABLES"
+  | "UTILITY"
+  | "CHANCE"
+  | "COMMUNITY"
+  | "INCOME_TAX"
+  | "JAIL"
+  | "LODGING"
+  | "GO_TO_JAIL"
+  | "LUXURY_TAX";
 
 export type GameAction =
-  // TESTING ONLY
+  //FIXME: TESTING ONLY
   | { type: "TESTING"; payload: null }
   | { type: "GAME_SETUP"; payload: Game }
   | { type: "START_GAME"; payload: Cell[] }
@@ -87,26 +87,26 @@ export type GameAction =
   | { type: "IN_JAIL"; payload: null };
 
 export type ChanceCard =
-  | { id: number; type: "move"; location: number | string; content: string }
-  | { id: number; type: "pay" | "collect"; value: number; content: string }
+  | { id: number; type: "MOVE"; location: number | string; content: string }
+  | { id: number; type: "PAY" | "COLLECT"; value: number; content: string }
   | {
       id: number;
-      type: "variablePay";
+      type: "VARIABLE_PAY";
       value: { house?: number; castle?: number; player?: number };
       content: string;
     }
-  | { id: number; type: "getOutOfJailCard"; content: string };
+  | { id: number; type: "GET_OUT_OF_JAIL_CARD"; content: string };
 
 export type CommunityChestCard =
-  | { id: number; type: "move"; location: number | string; content: string }
-  | { id: number; type: "pay" | "collect"; value: number; content: string }
+  | { id: number; type: "MOVE"; location: number | string; content: string }
+  | { id: number; type: "PAY" | "COLLECT"; value: number; content: string }
   | {
       id: number;
-      type: "variablePay";
+      type: "VARIABLE_PAY";
       value: { house?: number; castle?: number; player?: number };
       content: string;
     }
-  | { id: number; type: "getOutOfJailCard"; content: string };
+  | { id: number; type: "GET_OUT_OF_JAIL_CARD"; content: string };
 
 export type PropertyDeedTuple = [
   number,

@@ -32,21 +32,21 @@ export interface DeedModalContent {
 
 export interface ModalContent {
   title:
-    | "chance"
-    | "community"
-    | "deed"
-    | "deedProperties"
-    | "deedOther"
-    | "trade"
-    | "auction"
-    | "sellDeed"
-    | "sellDeedProperties"
-    | "sellDeedOther"
-    | "sellAssets"
-    | "mortgage"
-    | "bankruptcy"
-    | "incomeTax"
-    | "luxuryTax";
+    | "CHANCE"
+    | "COMMUNITY"
+    | "DEED"
+    | "DEED_PROPERTIES"
+    | "DEED_OTHER"
+    | "TRADE"
+    | "AUCTION"
+    | "SELL_DEED"
+    | "SELL_DEED_PROPERTIES"
+    | "SELL_DEED_OTHER"
+    | "SELL_ASSETS"
+    | "MORTGAGE"
+    | "BANKRUPTCY"
+    | "INCOME_TAX"
+    | "LUXURY_TAX";
   content: DeedModalContent | ChanceCard | CommunityChestCard | null;
   //TODO: Add other modal content types
 }
