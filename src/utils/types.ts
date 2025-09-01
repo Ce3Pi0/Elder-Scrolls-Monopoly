@@ -1,4 +1,7 @@
-import type { BasicDeed, Game, Player, PropertyDeed } from "../classes/classes";
+import type { BasicDeed } from "../classes/abstract/basicDeed";
+import type { Game } from "../classes/concrete/game";
+import type { Player } from "../classes/concrete/player";
+import type { PropertyDeed } from "../classes/concrete/propertyDeed";
 import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
 
 export type GameFlowEventType =

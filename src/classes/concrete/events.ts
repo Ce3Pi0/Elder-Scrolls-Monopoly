@@ -1,7 +1,7 @@
-import type { EventType } from "../utils/types";
+import type { EventType } from "../../utils/types";
 
 class EventsSingleton {
-  static #instance: EventsSingleton | null = null;
+  static _instance: EventsSingleton | null = null;
 
   private _events: { EventType: EventType };
 
@@ -23,11 +23,11 @@ class EventsSingleton {
   }
 
   public static get instance(): EventsSingleton {
-    if (!EventsSingleton.#instance) {
-      EventsSingleton.#instance = new EventsSingleton();
+    if (!EventsSingleton._instance) {
+      EventsSingleton._instance = new EventsSingleton();
     }
 
-    return EventsSingleton.#instance;
+    return EventsSingleton._instance;
   }
 
   public nextEvent(event: EventType): EventType {

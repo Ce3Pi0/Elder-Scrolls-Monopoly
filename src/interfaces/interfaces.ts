@@ -1,10 +1,9 @@
-import type {
-  BasicDeed,
-  Game,
-  PropertyDeed,
-  UtilityDeed,
-  StablesDeed,
-} from "../classes/classes";
+import { BasicDeed } from "../classes/abstract/basicDeed";
+import { Game } from "../classes/concrete/game";
+import { PropertyDeed } from "../classes/concrete/propertyDeed";
+import { StablesDeed } from "../classes/concrete/stablesDeed";
+import { UtilityDeed } from "../classes/concrete/utilityDeed";
+
 import type {
   CellType,
   ChanceCard,
@@ -118,7 +117,7 @@ export interface Cell {
   deed: PropertyDeed | UtilityDeed | StablesDeed | BasicDeed | null;
 }
 
-export interface GameType {
+export interface IGame {
   type: "Timed" | "Last Player Standing";
   duration?: number; // in seconds, only for "Timed" type
 }
