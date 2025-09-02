@@ -3,5 +3,5 @@ export abstract class Serializable {
     return;
   }
   abstract serialize(): void;
-  abstract deserialize(): void;
+  abstract deserialize(): Serializable;
 }

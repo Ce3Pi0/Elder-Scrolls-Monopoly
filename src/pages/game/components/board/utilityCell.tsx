@@ -3,7 +3,7 @@ import {
   UTILITIES_TO_LOGOS,
   UTILITIES_TO_PICTURES,
 } from "../../../../utils/utils";
-import type { UtilityCellProps } from "../../../../interfaces/interfaces";
+import type { UtilityCellProps } from "../../../../utils/interfaces";
 import PlayerDots from "./playerDots";
 
 const UtilityCell: React.FC<UtilityCellProps> = ({

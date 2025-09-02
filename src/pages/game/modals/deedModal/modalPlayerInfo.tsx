@@ -1,5 +1,5 @@
 import React from "react";
-import type { ModalPlayerInfoProps } from "../../../../interfaces/interfaces";
+import type { ModalPlayerInfoProps } from "../../../../utils/interfaces";
 import { PLAYER_ICONS } from "../../../../utils/utils";
 
 const ModalPlayerInfo: React.FC<ModalPlayerInfoProps> = ({

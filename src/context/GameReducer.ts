@@ -1,5 +1,5 @@
 import type { GameAction } from "../utils/types";
-import type { GameState, ModalContent } from "../interfaces/interfaces";
+import type { GameState, ModalContent } from "../utils/interfaces";
 import type { BasicDeed, Player, PropertyDeed } from "../classes/classes";
 import {
   getRandomChanceCard,

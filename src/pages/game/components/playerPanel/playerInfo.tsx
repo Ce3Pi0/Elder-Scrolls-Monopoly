@@ -1,5 +1,5 @@
 import React from "react";
-import type { PlayerInfoProps } from "../../../../interfaces/interfaces";
+import type { PlayerInfoProps } from "../../../../utils/interfaces";
 
 const PlayerInfo: React.FC<PlayerInfoProps> = ({ name, balance }) => {
   return (

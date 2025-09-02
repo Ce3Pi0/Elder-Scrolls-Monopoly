@@ -1,5 +1,5 @@
 import React from "react";
-import type { DeedHeaderProps } from "../../../../interfaces/interfaces";
+import type { DeedHeaderProps } from "../../../../utils/interfaces";
 import ModalPlayerInfo from "./modalPlayerInfo";
 
 const DeedHeader: React.FC<DeedHeaderProps> = ({

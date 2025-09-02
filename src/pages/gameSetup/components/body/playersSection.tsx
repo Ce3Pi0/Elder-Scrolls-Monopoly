@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import type {
   PlayerData,
   PlayerSectionProps,
-} from "../../../../interfaces/interfaces";
+} from "../../../../utils/interfaces";
 import PlayerComponent from "./playerComponent";
 import { useGameContext } from "../../../../context/GameContext";
 

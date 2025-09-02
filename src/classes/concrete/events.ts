@@ -1,9 +1,9 @@
-import type { EventType } from "../../utils/types";
+import type { Event } from "../../utils/types";
 
 class EventsSingleton {
   static _instance: EventsSingleton | null = null;
 
-  private _events: { EventType: EventType };
+  private _events: { EventType: Event };
 
   private initEvents(): void {
     //FIXME: Testing only
@@ -30,7 +30,7 @@ class EventsSingleton {
     return EventsSingleton._instance;
   }
 
-  public nextEvent(event: EventType): EventType {
+  public nextEvent(event: Event): Event {
     return this._events[event];
   }
 }

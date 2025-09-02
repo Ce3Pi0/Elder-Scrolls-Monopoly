@@ -1,13 +1,20 @@
 import { REGIONS } from "../../utils/constants";
+import type {
+  SerializedDeed,
+  SerializedPropertyDeed,
+} from "../../utils/interfaces";
 import { BasicDeed } from "../abstract/basicDeed";
+import type { Serializable } from "../abstract/serializable";
 import type { Player } from "./player";
 
-export class PropertyDeed extends BasicDeed {
+export class PropertyDeed extends BasicDeed<"PROPERTY"> {
   private region: string;
   private houseCost: number;
   private castleCost: number;
   private numberOfHouses: number;
   private numberOfCastles: number;
+
+  protected readonly type = "PROPERTY";
   constructor(
     id: number,
     region: string,
@@ -112,8 +119,45 @@ export class PropertyDeed extends BasicDeed {
     if (this.numberOfCastles === 0) throw new Error("Cannot remove castle.");
     this.numberOfCastles--;
   }
-  //TODO: Implement logic
-  serialize(): void {}
-  //TODO: Implement logic
-  deserialize(): void {}
+  serialize(): void {
+    const retrievedData: string | null = localStorage.getItem("deeds");
+    let deeds: SerializedDeed[] = [];
+
+    if (retrievedData !== null) {
+      deeds = JSON.parse(retrievedData);
+    }
+
+    const serializedPropertyDeed: SerializedPropertyDeed = {
+      id: this.id,
+      ownerId: this.ownerId,
+      mortgaged: this.mortgaged,
+      type: this.type,
+      numberOfHouses: this.numberOfHouses,
+      numberOfCastles: this.numberOfCastles,
+    };
+
+    deeds.push(serializedPropertyDeed);
+
+    localStorage.setItem("deeds", JSON.stringify(deeds));
+  }
+  deserialize(): Serializable {
+    const retrievedData: string | null = localStorage.getItem("deeds");
+
+    if (!retrievedData) return undefined;
+
+    let deeds: SerializedDeed[] = JSON.parse(retrievedData);
+
+    for (let deed of deeds) {
+      if (deed.id === this.id && deed.type === this.type) {
+        this.ownerId = deed.ownerId;
+        this.mortgaged = deed.mortgaged;
+        this.numberOfHouses = (deed as SerializedPropertyDeed).numberOfHouses;
+        this.numberOfCastles = (deed as SerializedPropertyDeed).numberOfCastles;
+
+        return this;
+      }
+    }
+
+    return undefined;
+  }
 }

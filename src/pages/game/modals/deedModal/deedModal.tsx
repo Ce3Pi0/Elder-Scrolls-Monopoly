@@ -4,7 +4,7 @@ import DeedHeader from "./deedHeader";
 import type {
   DeedModalContent,
   ModalContent,
-} from "../../../../interfaces/interfaces";
+} from "../../../../utils/interfaces";
 import Deeds from "./deeds";
 import TradeButton from "./tradeButton";
 

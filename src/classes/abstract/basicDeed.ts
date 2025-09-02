@@ -1,7 +1,9 @@
+import type { SerializedDeed } from "../../utils/interfaces";
+import type { DeedType } from "../../utils/types";
 import type { Player } from "../concrete/player";
 import { Serializable } from "./serializable";
 
-export abstract class BasicDeed extends Serializable {
+export abstract class BasicDeed<T extends DeedType> extends Serializable {
   protected id: number;
   protected ownerId: number | null;
   protected deedName: string;
@@ -9,6 +11,8 @@ export abstract class BasicDeed extends Serializable {
   protected rent: number[];
   protected mortgageValue: number;
   protected mortgaged: boolean;
+
+  protected abstract readonly type: T;
 
   constructor(
     id: number,
@@ -35,7 +39,7 @@ export abstract class BasicDeed extends Serializable {
     this.ownerId = ownerId;
     this.mortgaged = mortgaged;
   }
-  abstract clone(): BasicDeed;
+  abstract clone(): BasicDeed<T>;
   getId(): number {
     return this.id;
   }
@@ -72,6 +76,44 @@ export abstract class BasicDeed extends Serializable {
   }
   getRent(): number[] {
     return this.rent;
+  }
+  serialize(): void {
+    const retrievedData: string | null = localStorage.getItem("deeds");
+    let deeds: SerializedDeed[] = [];
+
+    if (retrievedData !== null) {
+      deeds = JSON.parse(retrievedData);
+    }
+
+    const serializedDeed: SerializedDeed = {
+      id: this.id,
+      ownerId: this.ownerId,
+      mortgaged: this.mortgaged,
+      type: this.type,
+    };
+
+    deeds.push(serializedDeed);
+
+    localStorage.setItem("deeds", JSON.stringify(deeds));
+  }
+
+  deserialize(): Serializable {
+    const retrievedData: string | null = localStorage.getItem("deeds");
+
+    if (!retrievedData) return undefined;
+
+    let deeds: SerializedDeed[] = JSON.parse(retrievedData);
+
+    for (let deed of deeds) {
+      if (deed.id === this.id && deed.type === this.type) {
+        this.ownerId = deed.ownerId;
+        this.mortgaged = deed.mortgaged;
+
+        return this;
+      }
+    }
+
+    return undefined;
   }
   abstract getRentOwed(owner: Player): number;
 }

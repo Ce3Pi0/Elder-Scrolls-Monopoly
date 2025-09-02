@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { HeaderProps } from "../../../interfaces/interfaces";
+import type { HeaderProps } from "../../../utils/interfaces";
 
 import { IoMdVolumeHigh, IoMdHelpCircleOutline } from "react-icons/io";
 

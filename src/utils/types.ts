@@ -2,17 +2,18 @@ import type { BasicDeed } from "../classes/abstract/basicDeed";
 import type { Game } from "../classes/concrete/game";
 import type { Player } from "../classes/concrete/player";
 import type { PropertyDeed } from "../classes/concrete/propertyDeed";
-import type { Cell, ModalContent, PlayerData } from "../interfaces/interfaces";
+import type { ModalContent, PlayerData } from "./interfaces";
 
-export type GameFlowEventType =
+export type GameFlowEvent =
   | "DECIDE_ORDER"
   | "ROLL_DICE"
   | "MOVE_PLAYER"
   | "CELL_ACTION"
   | "END_TURN";
 
-export type MiscEventType = "IN_JAIL" | "PLAYER_OUT" | "DOUBLES";
-export type EventType = GameFlowEventType | MiscEventType;
+export type MiscEvent = "IN_JAIL" | "PLAYER_OUT" | "DOUBLES";
+
+export type Event = GameFlowEvent | MiscEvent;
 
 export type GetOutOfJailCardType = "CHANCE" | "COMMUNITY";
 
@@ -30,13 +31,36 @@ export type CellType =
   | "GO_TO_JAIL"
   | "LUXURY_TAX";
 
+export type Cell = {
+  id: number;
+  cellType: CellType;
+  deed: BasicDeed<DeedType> | null;
+};
+
+export type ModalType =
+  | "CHANCE"
+  | "COMMUNITY"
+  | "DEED"
+  | "DEED_PROPERTIES"
+  | "DEED_OTHER"
+  | "TRADE"
+  | "AUCTION"
+  | "SELL_DEED"
+  | "SELL_DEED_PROPERTIES"
+  | "SELL_DEED_OTHER"
+  | "SELL_ASSETS"
+  | "MORTGAGE"
+  | "BANKRUPTCY"
+  | "INCOME_TAX"
+  | "LUXURY_TAX";
+
 export type GameAction =
   //FIXME: TESTING ONLY
   | { type: "TESTING"; payload: null }
   | { type: "GAME_SETUP"; payload: Game }
   | { type: "START_GAME"; payload: Cell[] }
   | { type: "DECIDE_ORDER"; payload: Player[] }
-  | { type: "ROLL_DICE"; payload: EventType }
+  | { type: "ROLL_DICE"; payload: Event }
   | { type: "RESET_DICE"; payload: null }
   | { type: "MOVE_PLAYER"; payload: number }
   | { type: "CELL_ACTION"; payload: null }
@@ -54,10 +78,22 @@ export type GameAction =
   | { type: "DRAW_CHANCE_CARD"; payload: null }
   | { type: "DRAW_COMMUNITY_CHEST_CARD"; payload: null }
   | { type: "END_DRAW_CARD"; payload: null }
-  | { type: "BUY_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | { type: "REMOVE_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | { type: "MORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
-  | { type: "UNMORTGAGE_DEED"; payload: { deed: BasicDeed; playerId: number } }
+  | {
+      type: "BUY_DEED";
+      payload: { deed: BasicDeed<DeedType>; playerId: number };
+    }
+  | {
+      type: "REMOVE_DEED";
+      payload: { deed: BasicDeed<DeedType>; playerId: number };
+    }
+  | {
+      type: "MORTGAGE_DEED";
+      payload: { deed: BasicDeed<DeedType>; playerId: number };
+    }
+  | {
+      type: "UNMORTGAGE_DEED";
+      payload: { deed: BasicDeed<DeedType>; playerId: number };
+    }
   | {
       type: "BUY_HOUSE";
       payload: { propertyDeed: PropertyDeed; playerId: number };
@@ -122,4 +158,17 @@ export type PropertyDeedTuple = [
   number
 ];
 
-export type OtherDeedTuple = [number, string];
+export type UtilityDeedTuple = [number, string];
+
+export type StablesDeedTuple = [number, string];
+
+export type Pair = {
+  diceOne: number;
+  diceTwo: number;
+};
+export type GameSettings = {
+  type: "Timed" | "Last Player Standing";
+  duration?: number; // in seconds, only for "Timed" type
+};
+
+export type DeedType = "STABLES" | "UTILITY" | "PROPERTY";

@@ -1,6 +1,6 @@
 import React from "react";
 import PlayerDots from "./playerDots";
-import type { CellProps } from "../../../../interfaces/interfaces";
+import type { CellProps } from "../../../../utils/interfaces";
 
 const GoToJailCell: React.FC<CellProps> = ({
   playerPositions,

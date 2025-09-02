@@ -1,9 +1,12 @@
 import type {
+  CellType,
   Cell,
-  IGame,
-  ModalContent,
+  GameSettings,
   Pair,
-} from "../../interfaces/interfaces";
+  Event,
+} from "../../utils/types";
+import type { ModalContent, SerializedGame } from "../../utils/interfaces";
+
 import {
   BOARD_SIZE,
   MAX_DICE_VALUE,
@@ -16,17 +19,17 @@ import {
   getRandomChanceCard,
   getRandomCommunityChestCard,
 } from "../../utils/helpers";
-import type { CellType, EventType } from "../../utils/types";
 import { Serializable } from "../abstract/serializable";
 import { Player } from "./player";
+import { GameDeserializerSingleton } from "./gameDeserializer";
 
 export class Game extends Serializable {
   private players: Player[];
-  private gameSettings: IGame;
+  private gameSettings: GameSettings;
   private gameStarted: boolean;
   private gameEnded: boolean;
   private board: Cell[];
-  private event: EventType | null;
+  private event: Event | null;
   private currentPlayerIndex: number;
   private diceRolled: boolean;
   private diceValue: Pair;
@@ -37,11 +40,11 @@ export class Game extends Serializable {
 
   constructor(
     players: Player[],
-    gameSettings: IGame,
+    gameSettings: GameSettings,
     board: Cell[],
     gameStarted: boolean = false,
     gameEnded: boolean = true,
-    event: EventType | null = null,
+    event: Event | null = null,
     currentPlayerIndex: number = 0,
     diceRolled: boolean = false,
     diceValue: Pair = { diceOne: 0, diceTwo: 0 },
@@ -88,7 +91,7 @@ export class Game extends Serializable {
     this.board = board.map((cell) => {
       return {
         id: cell.id,
-        actionType: cell.actionType,
+        cellType: cell.cellType,
         deed: cell.deed.clone(),
       };
     });
@@ -111,10 +114,10 @@ export class Game extends Serializable {
     const clonedPlayers = this.players.map((p) => p.clone());
     const clonedBoard = this.board.map((cell) => ({
       id: cell.id,
-      actionType: cell.actionType,
+      cellType: cell.cellType,
       deed: cell.deed ? cell.deed.clone() : null,
     }));
-    const clonedSettings: IGame = { ...this.gameSettings };
+    const clonedSettings: GameSettings = { ...this.gameSettings };
 
     const clonedGame = new Game(clonedPlayers, clonedSettings, clonedBoard);
 
@@ -140,10 +143,10 @@ export class Game extends Serializable {
   isGameEnded(): boolean {
     return this.gameEnded;
   }
-  getEvent(): EventType | null {
+  getEvent(): Event | null {
     return this.event;
   }
-  setEvent(event: EventType): void {
+  setEvent(event: Event): void {
     this.event = event;
   }
   isModalOpen(): boolean {
@@ -163,7 +166,7 @@ export class Game extends Serializable {
   setPlayers(players: Player[]): void {
     this.players = players;
   }
-  getGameSettings(): IGame {
+  getGameSettings(): GameSettings {
     return this.gameSettings;
   }
   getDiceValue(): Pair {
@@ -228,7 +231,7 @@ export class Game extends Serializable {
   //TODO: Figure out what to do with this method
   handleCellAction(): void {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
-    const cellType: CellType = cell.actionType;
+    const cellType: CellType = cell.cellType;
 
     switch (cellType) {
       case "START":
@@ -346,8 +349,52 @@ export class Game extends Serializable {
     this.pendingDrawCard = false;
     this.closeModal();
   }
-  //TODO: Implement logic
-  serialize(): void {}
-  //TODO: Implement logic
-  deserialize(): void {}
+  serialize(): void {
+    const serializedGame: SerializedGame = {
+      playerIds: this.players.map((player) => player.getId()),
+      gameSettings: this.gameSettings,
+      gameStarted: this.gameStarted,
+      gameEnded: this.gameEnded,
+      event: this.event,
+      currentPlayerIndex: this.currentPlayerIndex,
+      diceRolled: this.diceRolled,
+      diceValue: this.diceValue,
+      doublesCounter: this.doublesCounter,
+      modalOpen: this.modalOpen,
+      modalContent: this.modalContent,
+      pendingDrawCard: this.pendingDrawCard,
+    };
+
+    localStorage.setItem("game", JSON.stringify(serializedGame));
+
+    for (let player of this.players) {
+      player.serialize();
+    }
+  }
+  deserialize(): Game {
+    const retrievedData: string | null = localStorage.getItem("game");
+
+    if (!retrievedData) return undefined;
+
+    let game: SerializedGame = JSON.parse(retrievedData);
+
+    let players: Player[] = [];
+    for (let playerId of game.playerIds) {
+      players.push(GameDeserializerSingleton.deserializePlayer(playerId));
+    }
+
+    this.gameSettings = game.gameSettings;
+    this.gameStarted = game.gameStarted;
+    this.gameEnded = game.gameEnded;
+    this.event = game.event;
+    this.currentPlayerIndex = game.currentPlayerIndex;
+    this.diceRolled = game.diceRolled;
+    this.diceValue = game.diceValue;
+    this.doublesCounter = game.doublesCounter;
+    this.modalOpen = game.modalOpen;
+    this.modalContent = game.modalContent;
+    this.pendingDrawCard = game.pendingDrawCard;
+
+    return this;
+  }
 }

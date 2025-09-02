@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { NumberOfPlayersSectionProps } from "../../../../interfaces/interfaces";
+import type { NumberOfPlayersSectionProps } from "../../../../utils/interfaces";
 
 const NumberOfPlayersSection: React.FC<NumberOfPlayersSectionProps> = ({
   playerCount,

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Header from "../shared/header/header";
+import Header from "../shared/header/header.tsx";
 import Body from "./components/body/body.tsx";
 
 import "./css/styles.css";

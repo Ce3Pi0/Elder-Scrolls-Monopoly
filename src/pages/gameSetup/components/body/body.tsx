@@ -6,7 +6,7 @@ import StartButton from "./startButton";
 
 import { useGameContext } from "../../../../context/GameContext";
 import { Game, Player } from "../../../../classes/classes";
-import type { GameType } from "../../../../interfaces/interfaces";
+import type { GameType } from "../../../../utils/interfaces";
 import { Colors, Icons } from "../../../../utils/enums";
 import { BoardArray } from "../../../../utils/utils";
 

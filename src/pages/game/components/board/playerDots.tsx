@@ -1,5 +1,5 @@
 import React from "react";
-import type { PlayerDotsProps } from "../../../../interfaces/interfaces";
+import type { PlayerDotsProps } from "../../../../utils/interfaces";
 import { useGameContext } from "../../../../context/GameContext";
 
 const PlayerDots: React.FC<PlayerDotsProps> = ({

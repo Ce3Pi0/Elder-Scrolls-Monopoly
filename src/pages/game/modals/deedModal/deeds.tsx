@@ -1,5 +1,5 @@
 import React from "react";
-import type { DeedsProps } from "../../../../interfaces/interfaces";
+import type { DeedsProps } from "../../../../utils/interfaces";
 
 const Deeds: React.FC<DeedsProps> = ({
   propertyDeeds,

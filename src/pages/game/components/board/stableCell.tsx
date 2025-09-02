@@ -1,5 +1,5 @@
 import React from "react";
-import type { StableCellProps } from "../../../../interfaces/interfaces";
+import type { StableCellProps } from "../../../../utils/interfaces";
 import PlayerDots from "./playerDots";
 
 const StableCell: React.FC<StableCellProps> = ({

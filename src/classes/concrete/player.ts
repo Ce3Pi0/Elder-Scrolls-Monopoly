@@ -1,4 +1,5 @@
 import {
+  ALL_DEEDS,
   GET_OUT_OF_JAIL_FREE_CARDS_COUNT,
   MAX_JAIL_TURNS,
   PLAYER_COLORS,
@@ -12,7 +13,8 @@ import {
   isUtilityDeed,
   returnGetOutOfJailCard,
 } from "../../utils/helpers";
-import type { GetOutOfJailCardType } from "../../utils/types";
+import type { SerializedPlayer } from "../../utils/interfaces";
+import type { DeedType, GetOutOfJailCardType } from "../../utils/types";
 import { BasicDeed } from "../abstract/basicDeed";
 import { Serializable } from "../abstract/serializable";
 import { PropertyDeed } from "./propertyDeed";
@@ -29,7 +31,7 @@ export class Player extends Serializable {
   private position: number = 0;
   private inJail: boolean = false;
   private jailTurns: number = 0;
-  private deeds: BasicDeed[] = [];
+  private deeds: BasicDeed<DeedType>[] = [];
   private getOutOfJailCards: GetOutOfJailCardType[] = [];
   private bankrupt: boolean = false;
 
@@ -42,7 +44,7 @@ export class Player extends Serializable {
     position: number = 0,
     inJail: boolean = false,
     jailTurns: number = 0,
-    deeds: BasicDeed[] = [],
+    deeds: BasicDeed<DeedType>[] = [],
     getOutOfJailCards: GetOutOfJailCardType[] = [],
     bankrupt: boolean = false
   ) {
@@ -133,9 +135,6 @@ export class Player extends Serializable {
   getJailTurns(): number {
     return this.jailTurns;
   }
-  getDeeds(): BasicDeed[] {
-    return this.deeds;
-  }
   setPosition(position: number): void {
     if (position < Positions.START || position > Positions.END) {
       throw new Error(
@@ -187,7 +186,7 @@ export class Player extends Serializable {
       if (this.jailTurns >= MAX_JAIL_TURNS) this.releaseFromJail();
     } else throw new Error("Player not in jail");
   }
-  addDeed(deed: BasicDeed): void {
+  addDeed(deed: BasicDeed<DeedType>): void {
     if (this.deeds.some((d) => d.getId() === deed.getId())) {
       throw new Error("PropertyDeed already owned by this player.");
     }
@@ -195,7 +194,7 @@ export class Player extends Serializable {
     deed.setOwnerId(this.id);
     this.deeds.push(deed);
   }
-  removeDeed(deed: BasicDeed): void {
+  removeDeed(deed: BasicDeed<DeedType>): void {
     const index = this.deeds.findIndex((d) => d.getId() === deed.getId());
     if (index === -1) {
       throw new Error("PropertyDeed not owned by this player.");
@@ -203,7 +202,7 @@ export class Player extends Serializable {
     deed.setOwnerId(null);
     this.deeds.splice(index, 1);
   }
-  mortgageDeed(deed: BasicDeed): void {
+  mortgageDeed(deed: BasicDeed<DeedType>): void {
     if (deed.getOwnerId() !== this.id)
       throw new Error("Deed not owned by player");
 
@@ -219,7 +218,7 @@ export class Player extends Serializable {
     deed.mortgage();
     this.addBalance(deed.getMortgageValue());
   }
-  unMortgageDeed(deed: BasicDeed): void {
+  unMortgageDeed(deed: BasicDeed<DeedType>): void {
     if (deed.getOwnerId() !== this.id)
       throw new Error("Deed not owned by player");
 
@@ -320,6 +319,9 @@ export class Player extends Serializable {
   getOwnedStables(): StablesDeed[] {
     return this.deeds.filter(isStablesDeed);
   }
+  getOwnedProperties(): PropertyDeed[] {
+    return this.deeds.filter(isPropertyDeed);
+  }
   isBankrupt(): boolean {
     return this.bankrupt;
   }
@@ -354,8 +356,74 @@ export class Player extends Serializable {
         return false;
     }
   }
-  //TODO: Implement logic
-  serialize(): void {}
-  //TODO: Implement logic
-  deserialize(): void {}
+  serialize(): void {
+    const retrievedData: string | null = localStorage.getItem("players");
+    let players: SerializedPlayer[] = [];
+
+    if (retrievedData !== null) {
+      players = JSON.parse(retrievedData);
+    }
+
+    const serializedPlayer: SerializedPlayer = {
+      id: this.id,
+      name: this.name,
+      color: this.color,
+      icon: this.icon,
+      balance: this.balance,
+      position: this.position,
+      inJail: this.inJail,
+      jailTurns: this.jailTurns,
+      deeds: this.deeds.map((deed) => deed.getId()),
+      getOutOfJailFreeCards: this.getOutOfJailCards,
+      bankrupt: this.bankrupt,
+    };
+
+    players.push(serializedPlayer);
+
+    localStorage.setItem("players", JSON.stringify(players));
+
+    for (let deed of this.deeds) {
+      deed.serialize();
+    }
+  }
+  deserialize(): Player {
+    const retrievedData: string | null = localStorage.getItem("players");
+
+    if (!retrievedData) return undefined;
+
+    let players: SerializedPlayer[] = JSON.parse(retrievedData);
+
+    for (let player of players) {
+      if (player.id === this.id) {
+        this.id = player.id;
+        this.name = player.name;
+        this.color = player.color;
+        this.icon = player.icon;
+        this.balance = player.balance;
+        this.position = player.position;
+        this.inJail = player.inJail;
+        this.jailTurns = player.jailTurns;
+        const playerDeeds: BasicDeed<DeedType>[] = ALL_DEEDS.filter((deed) =>
+          player.deeds.includes(deed.getId())
+        );
+        for (let deed of playerDeeds) {
+          const deserializedDeed = deed.deserialize();
+          if (
+            deserializedDeed &&
+            (isPropertyDeed(deserializedDeed) ||
+              isStablesDeed(deserializedDeed) ||
+              isUtilityDeed(deserializedDeed))
+          ) {
+            this.deeds.push(deserializedDeed);
+          }
+        }
+        this.getOutOfJailCards = player.getOutOfJailFreeCards;
+        this.bankrupt = player.bankrupt;
+
+        return this;
+      }
+    }
+
+    return undefined;
+  }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import type { GamePlayerData } from "../../../../interfaces/interfaces";
+import type { GamePlayerData } from "../../../../utils/interfaces";
 import {
   isPropertyDeed,
   isStablesDeed,

@@ -1,6 +1,6 @@
 import { useGameContext } from "../../../../context/GameContext";
 
-import type { Cell } from "../../../../interfaces/interfaces";
+import type { Cell } from "../../../../utils/interfaces";
 import { BoardArray } from "../../../../utils/utils";
 
 const StartButton: React.FC = () => {

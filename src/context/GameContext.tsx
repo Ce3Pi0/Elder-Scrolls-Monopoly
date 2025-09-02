@@ -6,8 +6,9 @@ import {
   useState,
 } from "react";
 import { gameReducer } from "./GameReducer";
-import { deserializeGame, serializeGame } from "../utils/utils";
-import type { GameContextType } from "../interfaces/interfaces";
+import type { GameContextType } from "../utils/interfaces";
+import type { Game } from "../classes/concrete/game";
+import { GameDeserializerSingleton } from "../classes/concrete/gameDeserializer";
 
 const GameContext = createContext<GameContextType | null>(null);
 
@@ -18,10 +19,9 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [state, dispatch] = useReducer(gameReducer, initialState, () => {
-    const stored = localStorage.getItem("monopoly-game");
-    return stored
-      ? { game: deserializeGame(JSON.parse(stored)) }
-      : initialState;
+    const game: Game = GameDeserializerSingleton.deserializeData();
+
+    return game ? { game: game } : initialState;
   });
 
   useEffect(() => {
@@ -30,10 +30,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     if (state.game) {
-      localStorage.setItem(
-        "monopoly-game",
-        JSON.stringify(serializeGame(state.game))
-      );
+      state.game.serialize();
     }
   }, [state.game]);
 

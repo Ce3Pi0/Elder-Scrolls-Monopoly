@@ -1,5 +1,5 @@
 import React from "react";
-import type { PropertyCellProps } from "../../../../interfaces/interfaces";
+import type { PropertyCellProps } from "../../../../utils/interfaces";
 import { REGIONS_TO_COLORS, CITIES_TO_PICTURES } from "../../../../utils/utils";
 import PlayerDots from "./playerDots";
 

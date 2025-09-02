@@ -1,8 +1,11 @@
 import { Finances } from "../../utils/enums";
 import { BasicDeed } from "../abstract/basicDeed";
+import type { Serializable } from "../abstract/serializable";
 import type { Player } from "./player";
 
-export class UtilityDeed extends BasicDeed {
+export class UtilityDeed extends BasicDeed<"UTILITY"> {
+  protected readonly type = "UTILITY";
+
   constructor(
     id: number,
     deedName: string,
@@ -37,8 +40,10 @@ export class UtilityDeed extends BasicDeed {
       );
     return this.rent[owner.getOwnedUtilities().length - 1];
   }
-  //TODO: Implement logic
-  serialize(): void {}
-  //TODO: Implement logic
-  deserialize(): void {}
+  serialize(): void {
+    super.serialize();
+  }
+  deserialize(): Serializable {
+    return super.deserialize();
+  }
 }
