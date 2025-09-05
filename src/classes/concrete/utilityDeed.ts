@@ -38,12 +38,12 @@ export class UtilityDeed extends BasicDeed<"UTILITY"> {
       throw new Error(
         `Player with player ID ${owner.getId()} doesn't own this deed`
       );
-    return this.rent[owner.getOwnedUtilities().length - 1];
+    return this.rent[owner.getNumOwnedUtilities() - 1];
   }
   serialize(): void {
     super.serialize();
   }
-  deserialize(): Serializable {
-    return super.deserialize();
+  deserialize(): UtilityDeed | undefined {
+    return super.deserialize() as UtilityDeed;
   }
 }

@@ -160,10 +160,13 @@ export interface SerializedGame {
   gameEnded: boolean;
   event: Event | null;
   currentPlayerIndex: number;
-  diceRolled: boolean;
-  diceValue: Pair;
-  doublesCounter: number;
   modalOpen: boolean;
   modalContent: ModalContent | null;
   pendingDrawCard: boolean;
+}
+
+export interface SerializedDice {
+  diceRolled: boolean;
+  diceValues: Pair;
+  doublesCounter: number;
 }

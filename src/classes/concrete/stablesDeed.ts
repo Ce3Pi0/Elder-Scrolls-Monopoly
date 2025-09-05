@@ -46,7 +46,7 @@ export class StablesDeed extends BasicDeed<"STABLES"> {
   serialize(): void {
     super.serialize();
   }
-  deserialize(): Serializable {
-    return super.deserialize();
+  deserialize(): StablesDeed | undefined {
+    return super.deserialize() as StablesDeed;
   }
 }

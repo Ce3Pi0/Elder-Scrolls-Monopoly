@@ -7,15 +7,16 @@ class EventsSingleton {
 
   private initEvents(): void {
     //FIXME: Testing only
-    this._events["TESTING"] = "ROLL_DICE";
+    this._events["TESTING"] = "AWAIT_ROLL_DICE";
 
     //Game Flow
-    this._events["START_GAME"] = "DECIDE_ORDER";
-    this._events["DECIDE_ORDER"] = "ROLL_DICE";
+    this._events["DECIDE_ORDER"] = "AWAIT_ROLL_DICE";
+    this._events["AWAIT_ROLL_DICE"] = "ROLL_DICE";
     this._events["ROLL_DICE"] = "MOVE_PLAYER";
     this._events["MOVE_PLAYER"] = "CELL_ACTION";
-    this._events["CELL_ACTION"] = "END_TURN";
-    this._events["END_TURN"] = "ROLL_DICE";
+    this._events["CELL_ACTION"] = "AWAIT_END_TURN";
+    this._events["AWAIT_END_TURN"] = "END_TURN";
+    this._events["END_TURN"] = "AWAIT_ROLL_DICE";
   }
 
   private constructor() {
@@ -33,6 +34,13 @@ class EventsSingleton {
   public nextEvent(event: Event): Event {
     return this._events[event];
   }
+
+  public validTransition(curEvent: Event, nextEvent: Event): boolean {
+    if (this._events[curEvent] === nextEvent) return true;
+    return false;
+  }
 }
 
-export default EventsSingleton;
+const eventsSingleton: EventsSingleton = EventsSingleton.instance;
+
+export default eventsSingleton;

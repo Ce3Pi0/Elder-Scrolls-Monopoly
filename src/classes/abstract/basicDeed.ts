@@ -97,7 +97,7 @@ export abstract class BasicDeed<T extends DeedType> extends Serializable {
     localStorage.setItem("deeds", JSON.stringify(deeds));
   }
 
-  deserialize(): Serializable {
+  deserialize(): Serializable | undefined {
     const retrievedData: string | null = localStorage.getItem("deeds");
 
     if (!retrievedData) return undefined;

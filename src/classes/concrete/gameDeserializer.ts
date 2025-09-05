@@ -5,6 +5,8 @@ import {
   DEFAULT_PLAYER_NAME,
   DEFAULT_SETTINGS,
 } from "../../utils/constants";
+import type { Pair } from "../../utils/types";
+import { Dice } from "./dice";
 import { Game } from "./game";
 import { Player } from "./player";
 
@@ -34,7 +36,19 @@ class GameDeserializer {
       DEFAULT_PLAYER_ICON
     );
     player = player.deserialize();
+
+    if (!player) throw new Error("Player deserialization error!");
+
     return player;
+  }
+
+  public deserializeDice(): Dice {
+    let dice = new Dice();
+    dice = dice.deserialize();
+
+    if (!dice) throw new Error("Dice deserialization error!");
+
+    return dice;
   }
 }
 

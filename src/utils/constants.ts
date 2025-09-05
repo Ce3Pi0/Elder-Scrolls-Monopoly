@@ -147,6 +147,4 @@ export const GET_OUT_OF_JAIL_FREE_CARDS_COUNT: number = 3;
 export const MAX_PLAYER_COUNT: number = 4;
 export const VALID_GAME_DURATIONS: number[] = [45]; //TODO: Check with the game creating page component to confirm
 export const BOARD_SIZE: number = BOARD_ARRAY.length;
-export const MAX_DICE_VALUE: number = 6;
-export const MAX_DOUBLES_COUNTER: number = 3;
 export const MAX_JAIL_TURNS = 3;

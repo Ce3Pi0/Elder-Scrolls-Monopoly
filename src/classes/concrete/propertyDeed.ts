@@ -140,7 +140,7 @@ export class PropertyDeed extends BasicDeed<"PROPERTY"> {
 
     localStorage.setItem("deeds", JSON.stringify(deeds));
   }
-  deserialize(): Serializable {
+  deserialize(): PropertyDeed | undefined {
     const retrievedData: string | null = localStorage.getItem("deeds");
 
     if (!retrievedData) return undefined;

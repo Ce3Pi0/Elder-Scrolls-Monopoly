@@ -1,19 +1,17 @@
 import type { BasicDeed } from "../classes/abstract/basicDeed";
-import type { Game } from "../classes/concrete/game";
-import type { Player } from "../classes/concrete/player";
-import type { PropertyDeed } from "../classes/concrete/propertyDeed";
-import type { ModalContent, PlayerData } from "./interfaces";
 
 export type GameFlowEvent =
-  | "DECIDE_ORDER"
+  // | "DECIDE_ORDER" FIXME: Fix for final version
+  | "AWAIT_ROLL_DICE"
   | "ROLL_DICE"
   | "MOVE_PLAYER"
   | "CELL_ACTION"
+  | "AWAIT_END_TURN"
   | "END_TURN";
 
-export type MiscEvent = "IN_JAIL" | "PLAYER_OUT" | "DOUBLES";
+export type FlowType = "GAME" | "AWAIT" | "ACTION";
 
-export type Event = GameFlowEvent | MiscEvent;
+export type Event = GameFlowEvent;
 
 export type GetOutOfJailCardType = "CHANCE" | "COMMUNITY";
 
@@ -53,77 +51,6 @@ export type ModalType =
   | "BANKRUPTCY"
   | "INCOME_TAX"
   | "LUXURY_TAX";
-
-export type GameAction =
-  //FIXME: TESTING ONLY
-  | { type: "TESTING"; payload: null }
-  | { type: "GAME_SETUP"; payload: Game }
-  | { type: "START_GAME"; payload: Cell[] }
-  | { type: "DECIDE_ORDER"; payload: Player[] }
-  | { type: "ROLL_DICE"; payload: Event }
-  | { type: "RESET_DICE"; payload: null }
-  | { type: "MOVE_PLAYER"; payload: number }
-  | { type: "CELL_ACTION"; payload: null }
-  | { type: "PLAYER_OUT"; payload: number }
-  | { type: "DOUBLES"; payload: null }
-  | { type: "RESET_DOUBLES"; payload: null }
-  | { type: "SEND_TO_JAIL"; payload: number }
-  | { type: "END_TURN"; payload: Game }
-  | { type: "END_GAME"; payload: null }
-  | { type: "NEXT_PLAYER"; payload: null }
-  | { type: "UPDATE_PLAYER_BALANCE"; payload: number }
-  | { type: "OPEN_MODAL"; payload: null }
-  | { type: "SET_MODAL_CONTENT"; payload: ModalContent | null }
-  | { type: "CLOSE_MODAL"; payload: null }
-  | { type: "DRAW_CHANCE_CARD"; payload: null }
-  | { type: "DRAW_COMMUNITY_CHEST_CARD"; payload: null }
-  | { type: "END_DRAW_CARD"; payload: null }
-  | {
-      type: "BUY_DEED";
-      payload: { deed: BasicDeed<DeedType>; playerId: number };
-    }
-  | {
-      type: "REMOVE_DEED";
-      payload: { deed: BasicDeed<DeedType>; playerId: number };
-    }
-  | {
-      type: "MORTGAGE_DEED";
-      payload: { deed: BasicDeed<DeedType>; playerId: number };
-    }
-  | {
-      type: "UNMORTGAGE_DEED";
-      payload: { deed: BasicDeed<DeedType>; playerId: number };
-    }
-  | {
-      type: "BUY_HOUSE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "BUY_CASTLE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "SELL_HOUSE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "SELL_CASTLE";
-      payload: { propertyDeed: PropertyDeed; playerId: number };
-    }
-  | {
-      type: "ADD_GET_OUT_OF_JAIL_CARD";
-      payload: { playerId: number; amount: number; type: GetOutOfJailCardType };
-    }
-  | {
-      type: "REMOVE_GET_OUT_OF_JAIL_CARD";
-      payload: { playerId: number; amount: number };
-    }
-  | { type: "ADD_PLAYER"; payload: Player }
-  | { type: "UPDATE_PLAYER"; payload: PlayerData }
-  | { type: "REMOVE_PLAYER"; payload: Player }
-  | { type: "UPDATE_JAIL_TURNS"; payload: null }
-  | { type: "RELEASE_FROM_JAIL"; payload: null }
-  | { type: "IN_JAIL"; payload: null };
 
 export type ChanceCard =
   | { id: number; type: "MOVE"; location: number | string; content: string }
