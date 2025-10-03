@@ -9,12 +9,12 @@ import {
   isPropertyDeed,
   isStablesDeed,
   isUtilityDeed,
-  returnGetOutOfJailCard,
 } from "../../utils/helpers";
 import type { SerializedPlayer } from "../../utils/interfaces";
 import type { DeedType, GetOutOfJailCardType } from "../../utils/types";
 import { BasicDeed } from "../abstract/basicDeed";
 import { Serializable } from "../abstract/serializable";
+import { CardHandler } from "../static/cardHandler";
 import { PropertyDeed } from "./propertyDeed";
 
 export class Player extends Serializable {
@@ -180,7 +180,7 @@ export class Player extends Serializable {
   public useGetOutOfJailCard(): void {
     if (this.getOutOfJailCards.length > 0) {
       const card: GetOutOfJailCardType = this.getOutOfJailCards.pop()!;
-      returnGetOutOfJailCard(card);
+      CardHandler.returnGetOutOfJailCard(card);
       this.releaseFromJail();
     } else {
       throw new Error("No Get Out of Jail cards available.");
@@ -332,7 +332,7 @@ export class Player extends Serializable {
   public removeGetOutOfJailCard(): void {
     if (this.getOutOfJailCards.length > 0) {
       const card: GetOutOfJailCardType = this.getOutOfJailCards.pop()!;
-      returnGetOutOfJailCard(card);
+      CardHandler.returnGetOutOfJailCard(card);
     } else throw new Error("No Get Out of Jail cards to remove.");
   }
   public getNumOwnedUtilities(): number {

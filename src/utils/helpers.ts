@@ -1,18 +1,7 @@
 import { PropertyDeed } from "../classes/concrete/propertyDeed";
 import { StablesDeed } from "../classes/concrete/stablesDeed";
 import { UtilityDeed } from "../classes/concrete/utilityDeed";
-import type { ModalContent } from "./interfaces";
-import {
-  CHANCE_CARDS,
-  COMMUNITY_CHEST_CARDS,
-  PLAYER_COLORS,
-  PLAYER_ICONS,
-} from "./constants";
-import type {
-  ChanceCard,
-  CommunityChestCard,
-  GetOutOfJailCardType,
-} from "./types";
+import { PLAYER_COLORS, PLAYER_ICONS } from "./constants";
 
 export const regionsToColors = (key: string): string | undefined => {
   switch (key) {
@@ -140,55 +129,4 @@ export const isUtilityDeed = (deed: any): deed is UtilityDeed => {
 };
 export const isStablesDeed = (deed: any): deed is StablesDeed => {
   return deed instanceof StablesDeed;
-};
-let drawnChanceGetOutOfJailCard = true;
-export const getRandomChanceCard = (): ModalContent => {
-  if (!drawnChanceGetOutOfJailCard) {
-    const card: ChanceCard =
-      CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length) + 1];
-    return {
-      title: "CHANCE",
-      content: card,
-    };
-  }
-
-  //Avoid the last index because that is the one with the get out of JAIL card
-  const card: ChanceCard =
-    CHANCE_CARDS[Math.trunc(Math.random() * CHANCE_CARDS.length)];
-
-  return {
-    title: "COMMUNITY",
-    content: card,
-  };
-};
-let drawnCommunityChestGetOutOfJailCard = false;
-export const getRandomCommunityChestCard = (): ModalContent => {
-  if (!drawnCommunityChestGetOutOfJailCard) {
-    const card: CommunityChestCard =
-      COMMUNITY_CHEST_CARDS[
-        Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length) + 1
-      ];
-    return {
-      title: "COMMUNITY",
-      content: card,
-    };
-  }
-
-  //Avoid the last index because that is the one with the get out of JAIL card
-  const card: CommunityChestCard =
-    COMMUNITY_CHEST_CARDS[
-      Math.trunc(Math.random() * COMMUNITY_CHEST_CARDS.length)
-    ];
-
-  return {
-    title: "COMMUNITY",
-    content: card,
-  };
-};
-export const returnGetOutOfJailCard = (type: GetOutOfJailCardType): void => {
-  if (type === "CHANCE") {
-    drawnChanceGetOutOfJailCard = true;
-  } else {
-    drawnCommunityChestGetOutOfJailCard = true;
-  }
 };

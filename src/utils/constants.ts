@@ -1,8 +1,7 @@
 import propertyDeedsJson from "../data/propertyDeeds.json";
 import stablesDeedsJson from "../data/stablesDeeds.json";
 import utilitiesDeedsJson from "../data/utilityDeeds.json";
-import chanceCardsJson from "../data/chanceCards.json";
-import communityChestCardsJson from "../data/communityChestCards.json";
+
 import type {
   Cell,
   ChanceCard,
@@ -48,12 +47,6 @@ export const REGIONS: string[] = [
   "Hammerfell",
   "Summerset Isles",
 ];
-
-export const CHANCE_CARDS: ChanceCard[] =
-  chanceCardsJson.chanceCards as ChanceCard[];
-
-export const COMMUNITY_CHEST_CARDS: ChanceCard[] =
-  communityChestCardsJson.communityChestCards as CommunityChestCard[];
 
 const propertyDeedData = propertyDeedsJson.propertyDeeds as PropertyDeedTuple[];
 const stableDeedData = stablesDeedsJson.stablesDeeds as StablesDeedTuple[];

@@ -1,9 +1,12 @@
+import type { BasicDeed } from "../classes/abstract/basicDeed";
 import { Game } from "../classes/concrete/game";
+import type { Player } from "../classes/concrete/player";
 import { PropertyDeed } from "../classes/concrete/propertyDeed";
 import { StablesDeed } from "../classes/concrete/stablesDeed";
 import { UtilityDeed } from "../classes/concrete/utilityDeed";
 
 import type {
+  Asset,
   ChanceCard,
   CommunityChestCard,
   DeedType,
@@ -34,25 +37,52 @@ interface DeedModalDeeds {
   utilityDeeds: UtilityDeed[];
 }
 
-export interface AuctionModalContent {
-  deed: DeedInfo;
-}
 export interface DeedModalContent {
   player: DeedModalPlayerInfo;
   getOutOfJailFreeCardsCount: number;
   deeds: DeedModalDeeds;
 }
 
-//TODO: Add other modal content types
+export interface DeedExpandedModalContent {
+  deeds: PropertyDeed[] | UtilityDeed[] | StablesDeed[];
+}
+
+export interface TradeModalContent {
+  curPlayer: Player;
+  tradePlayer: Player;
+}
+
+export interface AuctionModalContent {
+  deed: DeedInfo;
+}
+
+export interface SellAssetsModalContent {
+  type: Asset;
+}
+
+export interface MortgageModalContent {
+  mortgage: PropertyDeed | StablesDeed | UtilityDeed;
+}
+
+export interface BankruptcyModalContent {
+  playerName: string;
+}
+
 export interface ModalContent {
   title: ModalType;
   content:
-    | AuctionModalContent
-    | DeedModalContent
     | ChanceCard
     | CommunityChestCard
+    | DeedModalContent
+    | DeedExpandedModalContent
+    | TradeModalContent
+    | AuctionModalContent
+    | SellAssetsModalContent
+    | BankruptcyModalContent
+    | MortgageModalContent
     | null;
 }
+
 export interface DeedHeaderProps {
   icon: number;
   name: string;

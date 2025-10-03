@@ -34,7 +34,8 @@ export type Cell = {
   cellType: CellType;
   deed: BasicDeed<DeedType> | null;
 };
-
+export type Asset = "HOUSE" | "HOTEL";
+//ModalCreator and ModalType are co-dependant
 export type ModalType =
   | "CHANCE"
   | "COMMUNITY"

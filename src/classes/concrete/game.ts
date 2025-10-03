@@ -8,25 +8,19 @@ import {
   VALID_GAME_DURATIONS,
 } from "../../utils/constants";
 import { Finances } from "../../utils/enums";
-import {
-  getRandomChanceCard,
-  getRandomCommunityChestCard,
-  isPropertyDeed,
-  isStablesDeed,
-  isUtilityDeed,
-} from "../../utils/helpers";
 import { Serializable } from "../abstract/serializable";
 import { Player } from "./player";
 import { GameDeserializerSingleton } from "./gameDeserializer";
 import { Dice } from "./dice";
 import eventsSingleton from "./events";
 import type { PropertyDeed } from "./propertyDeed";
-import { Modals } from "../static/modals";
+import { ModalCreator } from "../static/modalCreator";
 import type { StablesDeed } from "./stablesDeed";
 import type { UtilityDeed } from "./utilityDeed";
 
 export class Game extends Serializable {
   private readonly MOVE_TIMEOUT_MS = 500;
+  private changedPlayerOrder = false;
 
   private players: Player[];
   private gameSettings: GameSettings;
@@ -145,10 +139,6 @@ export class Game extends Serializable {
   public getEvent(): Event | null {
     return this.event;
   }
-
-  //TODO: Create interfaces and a method in the player class for giving only the data that the frontend needs to show the UI
-  //public allPlayerInfo
-  //public specificPlayerMoreInfo
   public isGameStarted(): boolean {
     return this.gameStarted;
   }
@@ -211,7 +201,7 @@ export class Game extends Serializable {
       case "PROPERTY":
         if (!cell.deed?.getOwnerId()) {
           this.openModal(
-            Modals.AUCTION_MODAL<"PROPERTY">(cell.deed as PropertyDeed)
+            ModalCreator.AUCTION_MODAL<"PROPERTY">(cell.deed as PropertyDeed)
           );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
@@ -226,7 +216,7 @@ export class Game extends Serializable {
       case "STABLES":
         if (!cell.deed?.getOwnerId()) {
           this.openModal(
-            Modals.AUCTION_MODAL<"STABLES">(cell.deed as StablesDeed)
+            ModalCreator.AUCTION_MODAL<"STABLES">(cell.deed as StablesDeed)
           );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
@@ -239,7 +229,7 @@ export class Game extends Serializable {
       case "UTILITY":
         if (!cell.deed?.getOwnerId()) {
           this.openModal(
-            Modals.AUCTION_MODAL<"UTILITY">(cell.deed as UtilityDeed)
+            ModalCreator.AUCTION_MODAL<"UTILITY">(cell.deed as UtilityDeed)
           );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
@@ -250,16 +240,13 @@ export class Game extends Serializable {
         }
         break;
       case "CHANCE":
-        const randomChanceCard: ModalContent = getRandomChanceCard();
-        this.openModal(randomChanceCard);
+        this.openModal(ModalCreator.CHANCE_MODAL());
         break;
       case "COMMUNITY":
-        const randomCommunityChestCard: ModalContent =
-          getRandomCommunityChestCard();
-        this.openModal(randomCommunityChestCard);
+        this.openModal(ModalCreator.COMMUNITY_MODAL());
         break;
       case "INCOME_TAX":
-        this.openModal(Modals.INCOME_TAX_MODAL());
+        this.openModal(ModalCreator.INCOME_TAX_MODAL());
         break;
       case "JAIL":
         break;
@@ -294,7 +281,7 @@ export class Game extends Serializable {
     if (this.getCurrentPlayer().isBankrupt()) return;
 
     if (this.getCurrentPlayer().getBalance() < 0) {
-      this.openModal(Modals.SELL_MODAL(this.getCurrentPlayer()));
+      this.openModal(ModalCreator.SELL_DEED_MODAL(this.getCurrentPlayer()));
     }
   }
   private endGame(): void {
@@ -330,6 +317,11 @@ export class Game extends Serializable {
 
     this.pendingDrawCard = false;
     this.closeModal();
+  }
+  public changePlayerOrder(): void {
+    if (this.changedPlayerOrder)
+      throw new Error("Player order already changed");
+    //TODO: Separate player storing functionality
   }
   //TODO: Add functionality
   // changePlayerOrder(): void {}
