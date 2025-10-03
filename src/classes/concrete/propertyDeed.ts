@@ -4,7 +4,6 @@ import type {
   SerializedPropertyDeed,
 } from "../../utils/interfaces";
 import { BasicDeed } from "../abstract/basicDeed";
-import type { Serializable } from "../abstract/serializable";
 import type { Player } from "./player";
 
 export class PropertyDeed extends BasicDeed<"PROPERTY"> {

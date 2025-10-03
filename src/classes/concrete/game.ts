@@ -11,6 +11,9 @@ import { Finances } from "../../utils/enums";
 import {
   getRandomChanceCard,
   getRandomCommunityChestCard,
+  isPropertyDeed,
+  isStablesDeed,
+  isUtilityDeed,
 } from "../../utils/helpers";
 import { Serializable } from "../abstract/serializable";
 import { Player } from "./player";
@@ -18,6 +21,9 @@ import { GameDeserializerSingleton } from "./gameDeserializer";
 import { Dice } from "./dice";
 import eventsSingleton from "./events";
 import type { PropertyDeed } from "./propertyDeed";
+import { Modals } from "../static/modals";
+import type { StablesDeed } from "./stablesDeed";
+import type { UtilityDeed } from "./utilityDeed";
 
 export class Game extends Serializable {
   private readonly MOVE_TIMEOUT_MS = 500;
@@ -184,15 +190,15 @@ export class Game extends Serializable {
 
     if (finalPlayerPos > BOARD_SIZE) finalPlayerPos -= BOARD_SIZE;
 
-    while (curPlayerPos !== finalPlayerPos) {
-      curPlayerPos++;
+    setTimeout(() => {
+      while (curPlayerPos !== finalPlayerPos) {
+        curPlayerPos++;
 
-      if (curPlayerPos > BOARD_SIZE) curPlayerPos -= BOARD_SIZE;
+        if (curPlayerPos > BOARD_SIZE) curPlayerPos -= BOARD_SIZE;
 
-      this.getCurrentPlayer().setPosition(curPlayerPos);
-
-      setTimeout(null, this.MOVE_TIMEOUT_MS);
-    }
+        this.getCurrentPlayer().setPosition(curPlayerPos);
+      }
+    }, this.MOVE_TIMEOUT_MS);
   }
   private cellAction(): void {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
@@ -204,29 +210,43 @@ export class Game extends Serializable {
         break;
       case "PROPERTY":
         if (!cell.deed?.getOwnerId()) {
-          //TODO: method to open auction modal for this property
+          this.openModal(
+            Modals.AUCTION_MODAL<"PROPERTY">(cell.deed as PropertyDeed)
+          );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
         ) {
-          this.decreasePlayerBal((cell.deed as PropertyDeed).getRentOwed());
+          this.decreasePlayerBal(
+            (cell.deed as PropertyDeed).getRentOwed(
+              this.getPlayerById(cell.deed.getOwnerId())
+            )
+          );
         }
         break;
       case "STABLES":
         if (!cell.deed?.getOwnerId()) {
-          //TODO: method to open auction modal for this property
+          this.openModal(
+            Modals.AUCTION_MODAL<"STABLES">(cell.deed as StablesDeed)
+          );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
         ) {
-          this.decreasePlayerBal(cell.deed.getRentOwed());
+          this.decreasePlayerBal(
+            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId()))
+          );
         }
         break;
       case "UTILITY":
         if (!cell.deed?.getOwnerId()) {
-          //TODO: method to open auction modal for this property
+          this.openModal(
+            Modals.AUCTION_MODAL<"UTILITY">(cell.deed as UtilityDeed)
+          );
         } else if (
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
         ) {
-          this.decreasePlayerBal(cell.deed.getRentOwed());
+          this.decreasePlayerBal(
+            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId()))
+          );
         }
         break;
       case "CHANCE":
@@ -239,8 +259,7 @@ export class Game extends Serializable {
         this.openModal(randomCommunityChestCard);
         break;
       case "INCOME_TAX":
-        const incomeTaxModalContent: ModalContent = {};
-        this.openModal(incomeTaxModalContent);
+        this.openModal(Modals.INCOME_TAX_MODAL());
         break;
       case "JAIL":
         break;
@@ -250,14 +269,17 @@ export class Game extends Serializable {
         this.getCurrentPlayer().sendToJail();
         break;
       case "LUXURY_TAX":
-        //TODO: method to decrease player balance and check if balance went negative (remove player if total balance is zero)
+        this.decreasePlayerBal(Finances.LUXURY_TAX_FEE);
         break;
       default:
         throw new Error("Invalid cell type.");
     }
   }
   private endTurn(): void {
-    if (
+    if (this.getCurrentPlayer().isBankrupt()) {
+      this.removePlayer(this.getCurrentPlayer().getId());
+      this.nextPlayer();
+    } else if (
       !this.dice.rolledDoubles() ||
       (this.dice.rolledDoubles() && this.getCurrentPlayer().isInJail())
     ) {
@@ -269,13 +291,10 @@ export class Game extends Serializable {
   private decreasePlayerBal(balance: number): void {
     this.getCurrentPlayer().addBalance(-balance);
 
-    if (this.getCurrentPlayer().isBankrupt()) {
-      this.removePlayer(this.getCurrentPlayer().getId());
-      return;
-    }
+    if (this.getCurrentPlayer().isBankrupt()) return;
 
     if (this.getCurrentPlayer().getBalance() < 0) {
-      //TODO: Open sell modal
+      this.openModal(Modals.SELL_MODAL(this.getCurrentPlayer()));
     }
   }
   private endGame(): void {
@@ -347,6 +366,13 @@ export class Game extends Serializable {
   }
   private getCurrentPlayer(): Player {
     return this.players[this.currentPlayerIndex];
+  }
+  private getPlayerById(playerId: number): Player {
+    for (let p of this.players) {
+      if (p.getId() === playerId) return p;
+    }
+
+    throw new Error("Invalid Player ID");
   }
   private nextPlayer(): void {
     this.currentPlayerIndex =

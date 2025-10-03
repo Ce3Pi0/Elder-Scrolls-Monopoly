@@ -40,3 +40,14 @@ export enum Icons {
   MORROWIND = 3,
   DAGGERFALL = 4,
 }
+
+export enum Region_Cities_Count {
+  BLACK_MARSH = 3,
+  CYRODIIL = 3,
+  SOUTH_SKYRIM = 3,
+  NORTH_SKYRIM = 3,
+  HIGH_ROCK = 3,
+  MORROWIND = 3,
+  HAMMERFELL = 3,
+  SUMMERSET_ISLES = 2,
+}

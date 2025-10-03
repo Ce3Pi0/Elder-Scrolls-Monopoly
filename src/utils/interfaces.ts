@@ -15,6 +15,13 @@ import type {
   Pair,
 } from "./types";
 
+interface DeedInfo {
+  name: string;
+  region: string | null;
+  rent: number[];
+  mortgageValue: number;
+  houseCost: number | null;
+}
 //DEED MODAL
 interface DeedModalPlayerInfo {
   name: string;
@@ -26,6 +33,10 @@ interface DeedModalDeeds {
   stablesDeeds: StablesDeed[];
   utilityDeeds: UtilityDeed[];
 }
+
+export interface AuctionModalContent {
+  deed: DeedInfo;
+}
 export interface DeedModalContent {
   player: DeedModalPlayerInfo;
   getOutOfJailFreeCardsCount: number;
@@ -35,7 +46,12 @@ export interface DeedModalContent {
 //TODO: Add other modal content types
 export interface ModalContent {
   title: ModalType;
-  content: DeedModalContent | ChanceCard | CommunityChestCard | null;
+  content:
+    | AuctionModalContent
+    | DeedModalContent
+    | ChanceCard
+    | CommunityChestCard
+    | null;
 }
 export interface DeedHeaderProps {
   icon: number;

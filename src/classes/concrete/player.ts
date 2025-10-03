@@ -1,12 +1,10 @@
 import {
   ALL_DEEDS,
-  GET_OUT_OF_JAIL_FREE_CARDS_COUNT,
   MAX_JAIL_TURNS,
   PLAYER_COLORS,
   PLAYER_ICONS,
-  TOTAL_DEEDS,
 } from "../../utils/constants";
-import { Finances, Positions } from "../../utils/enums";
+import { Finances, Positions, Region_Cities_Count } from "../../utils/enums";
 import {
   isPropertyDeed,
   isStablesDeed,
@@ -18,8 +16,6 @@ import type { DeedType, GetOutOfJailCardType } from "../../utils/types";
 import { BasicDeed } from "../abstract/basicDeed";
 import { Serializable } from "../abstract/serializable";
 import { PropertyDeed } from "./propertyDeed";
-import { StablesDeed } from "./stablesDeed";
-import { UtilityDeed } from "./utilityDeed";
 
 export class Player extends Serializable {
   private id: number;
@@ -163,7 +159,7 @@ export class Player extends Serializable {
   public sendToJail(): void {
     this.inJail = true;
     this.jailTurns = 0;
-    this.position = Positions.JAIL; // Jail position
+    this.position = Positions.JAIL;
   }
   public releaseFromJail(): void {
     if (this.inJail) {
@@ -172,6 +168,9 @@ export class Player extends Serializable {
     } else {
       throw new Error("Player is not in jail.");
     }
+  }
+  public getGetOutOfJailFreeCardsCount(): number {
+    return this.getOutOfJailCards.length;
   }
   public addGetOutOfJailFreeCard(
     getOutOfJailFreeCard: GetOutOfJailCardType
@@ -312,6 +311,7 @@ export class Player extends Serializable {
     return this.balance >= amount;
   }
   public declareBankruptcy(): void {
+    if (this.bankrupt) throw new Error("Player already bankrupted");
     this.bankrupt = true;
     this.balance = 0;
     this.deeds.forEach((deed) => {
@@ -322,6 +322,9 @@ export class Player extends Serializable {
       deed.setOwnerId(null);
     });
     this.deeds = [];
+    while (this.hasGetOutOfJailCard()) {
+      this.removeGetOutOfJailCard();
+    }
   }
   public hasGetOutOfJailCard(): boolean {
     return this.getOutOfJailCards.length > 0;
@@ -347,21 +350,30 @@ export class Player extends Serializable {
   public regionOwned(region: string): boolean {
     switch (region) {
       case "Black Marsh":
-        return this.countRegion(3, "Black Marsh");
+        return this.countRegion(Region_Cities_Count.BLACK_MARSH, "Black Marsh");
       case "Cyrodiil":
-        return this.countRegion(3, "Cyrodiil");
+        return this.countRegion(Region_Cities_Count.CYRODIIL, "Cyrodiil");
       case "South Skyrim":
-        return this.countRegion(3, "South Skyrim");
+        return this.countRegion(
+          Region_Cities_Count.SOUTH_SKYRIM,
+          "South Skyrim"
+        );
       case "North Skyrim":
-        return this.countRegion(3, "North Skyrim");
+        return this.countRegion(
+          Region_Cities_Count.NORTH_SKYRIM,
+          "North Skyrim"
+        );
       case "High Rock":
-        return this.countRegion(3, "High Rock");
+        return this.countRegion(Region_Cities_Count.HIGH_ROCK, "High Rock");
       case "Morrowind":
-        return this.countRegion(3, "Morrowind");
+        return this.countRegion(Region_Cities_Count.HIGH_ROCK, "Morrowind");
       case "Hammerfell":
-        return this.countRegion(3, "Hammerfell");
+        return this.countRegion(Region_Cities_Count.HAMMERFELL, "Hammerfell");
       case "Summerset Isles":
-        return this.countRegion(2, "Summerset Isles");
+        return this.countRegion(
+          Region_Cities_Count.SUMMERSET_ISLES,
+          "Summerset Isles"
+        );
       default:
         return false;
     }
