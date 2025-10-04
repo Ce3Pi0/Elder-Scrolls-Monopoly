@@ -1,9 +1,10 @@
-import type { GameState } from "../utils/interfaces";
+import type { ActionData, GameState } from "../utils/interfaces";
 import type { FlowType } from "../utils/types";
 
 export const gameReducer = (
   state: GameState,
-  flowType: FlowType
+  flowType: FlowType,
+  actionData: ActionData
 ): GameState => {
   switch (flowType) {
     case "GAME":
@@ -13,7 +14,7 @@ export const gameReducer = (
       state.game.handleAwaitFlow();
       break;
     case "ACTION":
-      state.game.handleAction();
+      state.game.handleAction(actionData);
   }
 
   return state;

@@ -1,10 +1,17 @@
 import type { CellType, Cell, GameSettings, Event } from "../../utils/types";
-import type { ModalContent, SerializedGame } from "../../utils/interfaces";
+import type {
+  ActionData,
+  ModalContent,
+  SerializedGame,
+} from "../../utils/interfaces";
 
 import {
   BOARD_SIZE,
   MAX_JAIL_TURNS,
   MAX_PLAYER_COUNT,
+  PROPERTY_DEEDS,
+  STABLES_DEEDS,
+  UTILITIES_DEEDS,
   VALID_GAME_DURATIONS,
 } from "../../utils/constants";
 import { Finances } from "../../utils/enums";
@@ -133,8 +140,60 @@ export class Game extends Serializable {
     this.setEvent(eventsSingleton.nextEvent(this.event));
   }
 
-  //TODO: Implement logic (modal setting logic)
-  public handleAction(): void {}
+  public handleAction(actionData: ActionData): void {
+    if (actionData.curPlayerId === actionData.tradePlayerId)
+      throw new Error("Player cannot trade with themselves");
+
+    const curPlayer: Player = this.getPlayerById(actionData.curPlayerId);
+    let tradePlayer: Player | null = null;
+    if (actionData.tradePlayerId)
+      tradePlayer = this.getPlayerById(actionData.tradePlayerId);
+
+    const propertyDeeds: PropertyDeed[] | null = PROPERTY_DEEDS.filter(
+      (deed) => deed.getOwnerId() === curPlayer.getId()
+    );
+
+    let otherDeeds: UtilityDeed[] | StablesDeed[] | null = null;
+    if (actionData.otherDeedType === "UTILITIES")
+      otherDeeds = [...UTILITIES_DEEDS];
+    else if (actionData.otherDeedType === "STABLES")
+      otherDeeds = [...STABLES_DEEDS];
+
+    switch (actionData.actionType) {
+      case "OPEN_DEED_MODAL":
+        this.openModal(ModalCreator.DEED_MODAL(curPlayer));
+        break;
+      case "OPEN_DEED_PROPERTIES_MODAL":
+        this.openModal(ModalCreator.DEED_PROPERTIES_MODAL(propertyDeeds));
+        break;
+      case "OPEN_DEED_OTHER_MODAL":
+        this.openModal(ModalCreator.DEED_OTHER_MODAL(otherDeeds));
+        break;
+      case "OPEN_TRADE_MODAL":
+        this.openModal(ModalCreator.TRADE_MODAL(curPlayer, tradePlayer));
+        break;
+      case "OPEN_MORTGAGE_MODAL":
+        break;
+      case "OPEN_SELL_DEED_ASSETS_MODAL":
+        break;
+      case "OPEN_SELL_DEED_PROPERTIES_MODAL":
+        break;
+      case "OPEN_SELL_DEED_OTHER_MODAL":
+        break;
+      case "CLOSE_MODAL":
+        this.closeModal();
+        break;
+      case "END_DRAW_CARD":
+        this.endDrawCard();
+        break;
+      default:
+        throw new Error("Invalid action event");
+    }
+    //TODO: Open Sell Deed Properties Modal (player ID)
+    //TODO: Open Sell Deed Other Modal (player ID)
+    //TODO: Open Sell Assets Modal (player ID)
+    //TODO: Open Mortgage Modal (player ID)
+  }
 
   public getEvent(): Event | null {
     return this.event;
@@ -240,10 +299,10 @@ export class Game extends Serializable {
         }
         break;
       case "CHANCE":
-        this.openModal(ModalCreator.CHANCE_MODAL());
+        this.drawCard(ModalCreator.CHANCE_MODAL());
         break;
       case "COMMUNITY":
-        this.openModal(ModalCreator.COMMUNITY_MODAL());
+        this.drawCard(ModalCreator.COMMUNITY_MODAL());
         break;
       case "INCOME_TAX":
         this.openModal(ModalCreator.INCOME_TAX_MODAL());

@@ -53,6 +53,20 @@ export type ModalType =
   | "INCOME_TAX"
   | "LUXURY_TAX";
 
+export type ActionType =
+  | "OPEN_DEED_MODAL"
+  | "OPEN_DEED_PROPERTIES_MODAL"
+  | "OPEN_DEED_OTHER_MODAL"
+  | "OPEN_TRADE_MODAL"
+  | "OPEN_SELL_DEED_PROPERTIES_MODAL"
+  | "OPEN_SELL_DEED_OTHER_MODAL"
+  | "OPEN_SELL_DEED_ASSETS_MODAL"
+  | "OPEN_MORTGAGE_MODAL"
+  | "CLOSE_MODAL"
+  | "END_DRAW_CARD";
+
+export type OtherDeedType = "STABLES" | "UTILITIES";
+
 export type ChanceCard =
   | { id: number; type: "MOVE"; location: number | string; content: string }
   | { id: number; type: "PAY" | "COLLECT"; value: number; content: string }

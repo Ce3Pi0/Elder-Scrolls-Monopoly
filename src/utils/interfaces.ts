@@ -6,6 +6,7 @@ import { StablesDeed } from "../classes/concrete/stablesDeed";
 import { UtilityDeed } from "../classes/concrete/utilityDeed";
 
 import type {
+  ActionType,
   Asset,
   ChanceCard,
   CommunityChestCard,
@@ -15,6 +16,7 @@ import type {
   GameSettings,
   GetOutOfJailCardType,
   ModalType,
+  OtherDeedType,
   Pair,
 } from "./types";
 
@@ -143,6 +145,13 @@ export interface PlayerSectionProps {
 }
 export interface GameState {
   game: Game | undefined | null;
+}
+
+export interface ActionData {
+  curPlayerId: number;
+  tradePlayerId: number | null;
+  actionType: ActionType;
+  otherDeedType: OtherDeedType | null;
 }
 export interface GameContextType {
   state: GameState;
