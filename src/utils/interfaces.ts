@@ -152,6 +152,8 @@ export interface ActionData {
   tradePlayerId: number | null;
   actionType: ActionType;
   otherDeedType: OtherDeedType | null;
+  mortgageDeedId: number | null;
+  assetType: Asset | null;
 }
 export interface GameContextType {
   state: GameState;

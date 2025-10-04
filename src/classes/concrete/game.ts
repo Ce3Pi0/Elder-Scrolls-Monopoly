@@ -139,7 +139,6 @@ export class Game extends Serializable {
 
     this.setEvent(eventsSingleton.nextEvent(this.event));
   }
-
   public handleAction(actionData: ActionData): void {
     if (actionData.curPlayerId === actionData.tradePlayerId)
       throw new Error("Player cannot trade with themselves");
@@ -159,6 +158,10 @@ export class Game extends Serializable {
     else if (actionData.otherDeedType === "STABLES")
       otherDeeds = [...STABLES_DEEDS];
 
+    const mortgageDeed: PropertyDeed | UtilityDeed | StablesDeed | undefined =
+      this.board.find((cell) => cell.deed.getId() === actionData.mortgageDeedId)
+        ?.deed as PropertyDeed | UtilityDeed | StablesDeed | undefined;
+
     switch (actionData.actionType) {
       case "OPEN_DEED_MODAL":
         this.openModal(ModalCreator.DEED_MODAL(curPlayer));
@@ -172,13 +175,17 @@ export class Game extends Serializable {
       case "OPEN_TRADE_MODAL":
         this.openModal(ModalCreator.TRADE_MODAL(curPlayer, tradePlayer));
         break;
-      case "OPEN_MORTGAGE_MODAL":
-        break;
-      case "OPEN_SELL_DEED_ASSETS_MODAL":
-        break;
       case "OPEN_SELL_DEED_PROPERTIES_MODAL":
+        this.openModal(ModalCreator.SELL_DEED_PROPERTIES_MODAL(propertyDeeds));
         break;
       case "OPEN_SELL_DEED_OTHER_MODAL":
+        this.openModal(ModalCreator.SELL_DEED_OTHER_MODAL(otherDeeds));
+        break;
+      case "OPEN_MORTGAGE_MODAL":
+        this.openModal(ModalCreator.MORTGAGE_MODAL(mortgageDeed));
+        break;
+      case "OPEN_SELL_DEED_ASSETS_MODAL":
+        this.openModal(ModalCreator.SELL_ASSETS_MODAL(actionData.assetType));
         break;
       case "CLOSE_MODAL":
         this.closeModal();
@@ -189,12 +196,7 @@ export class Game extends Serializable {
       default:
         throw new Error("Invalid action event");
     }
-    //TODO: Open Sell Deed Properties Modal (player ID)
-    //TODO: Open Sell Deed Other Modal (player ID)
-    //TODO: Open Sell Assets Modal (player ID)
-    //TODO: Open Mortgage Modal (player ID)
   }
-
   public getEvent(): Event | null {
     return this.event;
   }
