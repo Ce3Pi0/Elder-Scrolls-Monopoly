@@ -15,7 +15,6 @@ export class CardHandler {
 
   private static drawnChanceGetOutOfJailCard: boolean = false;
   private static drawnCommunityChestGetOutOfJailCard: boolean = false;
-
   public static getChanceCards(): ChanceCard[] {
     return CardHandler.CHANCE_CARDS;
   }

@@ -1,4 +1,11 @@
-import type { CellType, Cell, GameSettings, Event } from "../../utils/types";
+import type {
+  CellType,
+  Cell,
+  GameSettings,
+  Event,
+  ChanceCard,
+  CommunityChestCard,
+} from "../../utils/types";
 import type {
   ActionData,
   ModalContent,
@@ -8,11 +15,9 @@ import type {
 import {
   BOARD_SIZE,
   MAX_JAIL_TURNS,
-  MAX_PLAYER_COUNT,
   PROPERTY_DEEDS,
   STABLES_DEEDS,
   UTILITIES_DEEDS,
-  VALID_GAME_DURATIONS,
 } from "../../utils/constants";
 import { Finances } from "../../utils/enums";
 import { Serializable } from "../abstract/serializable";
@@ -24,13 +29,16 @@ import type { PropertyDeed } from "./propertyDeed";
 import { ModalCreator } from "../static/modalCreator";
 import type { StablesDeed } from "./stablesDeed";
 import type { UtilityDeed } from "./utilityDeed";
+import { PlayersContainer } from "./playerContainer";
+import { Timer } from "./timer";
 
 export class Game extends Serializable {
   private readonly MOVE_TIMEOUT_MS = 500;
   private changedPlayerOrder = false;
 
-  private players: Player[];
+  private playerContainer: PlayersContainer;
   private gameSettings: GameSettings;
+  private timer: Timer | null = null;
   private gameStarted: boolean;
   private gameEnded: boolean;
   private board: Cell[];
@@ -44,13 +52,13 @@ export class Game extends Serializable {
   constructor(players: Player[], gameSettings: GameSettings, board: Cell[]) {
     super();
 
-    this.setPlayers(players);
+    this.playerContainer = new PlayersContainer(players);
     this.setBoard(board);
     this.setSettings(gameSettings);
   }
   public serialize(): void {
     const serializedGame: SerializedGame = {
-      playerIds: this.players.map((player) => player.getId()),
+      playerIds: this.playerContainer.getAllPlayerIds(),
       gameSettings: this.gameSettings,
       gameStarted: this.gameStarted,
       gameEnded: this.gameEnded,
@@ -64,9 +72,7 @@ export class Game extends Serializable {
     localStorage.setItem("game", JSON.stringify(serializedGame));
 
     this.dice.serialize();
-    for (let player of this.players) {
-      player.serialize();
-    }
+    this.playerContainer.serializePlayers();
   }
   public deserialize(): Game | undefined {
     const retrievedData: string | null = localStorage.getItem("game");
@@ -139,6 +145,10 @@ export class Game extends Serializable {
 
     this.setEvent(eventsSingleton.nextEvent(this.event));
   }
+  //TODO: Implement logic
+  private handleCard(card: CommunityChestCard | ChanceCard): void {
+    throw new Error("Not implemented");
+  }
   public handleAction(actionData: ActionData): void {
     if (actionData.curPlayerId === actionData.tradePlayerId)
       throw new Error("Player cannot trade with themselves");
@@ -191,6 +201,13 @@ export class Game extends Serializable {
         this.closeModal();
         break;
       case "END_DRAW_CARD":
+        if (
+          this.modalContent.title === "CHANCE" ||
+          this.modalContent.title === "COMMUNITY"
+        )
+          this.handleCard(
+            this.modalContent.content as ChanceCard | CommunityChestCard
+          );
         this.endDrawCard();
         break;
       default:
@@ -270,7 +287,8 @@ export class Game extends Serializable {
           this.decreasePlayerBal(
             (cell.deed as PropertyDeed).getRentOwed(
               this.getPlayerById(cell.deed.getOwnerId())
-            )
+            ),
+            this.playerContainer.getCurrentIndex()
           );
         }
         break;
@@ -283,7 +301,8 @@ export class Game extends Serializable {
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
         ) {
           this.decreasePlayerBal(
-            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId()))
+            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId())),
+            this.playerContainer.getCurrentIndex()
           );
         }
         break;
@@ -296,7 +315,8 @@ export class Game extends Serializable {
           cell.deed!.getOwnerId() !== this.getCurrentPlayer().getId()
         ) {
           this.decreasePlayerBal(
-            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId()))
+            cell.deed.getRentOwed(this.getPlayerById(cell.deed.getOwnerId())),
+            this.playerContainer.getCurrentIndex()
           );
         }
         break;
@@ -317,7 +337,10 @@ export class Game extends Serializable {
         this.getCurrentPlayer().sendToJail();
         break;
       case "LUXURY_TAX":
-        this.decreasePlayerBal(Finances.LUXURY_TAX_FEE);
+        this.decreasePlayerBal(
+          Finances.LUXURY_TAX_FEE,
+          this.playerContainer.getCurrentIndex()
+        );
         break;
       default:
         throw new Error("Invalid cell type.");
@@ -336,10 +359,13 @@ export class Game extends Serializable {
 
     this.dice.resetDice();
   }
-  private decreasePlayerBal(balance: number): void {
-    this.getCurrentPlayer().addBalance(-balance);
+  private decreasePlayerBal(balance: number, playerId: number): void {
+    this.getPlayerById(playerId).addBalance(-balance);
 
-    if (this.getCurrentPlayer().isBankrupt()) return;
+    if (this.getCurrentPlayer().isBankrupt()) {
+      this.playerContainer.removeCurrent();
+      return;
+    }
 
     if (this.getCurrentPlayer().getBalance() < 0) {
       this.openModal(ModalCreator.SELL_DEED_MODAL(this.getCurrentPlayer()));
@@ -379,23 +405,30 @@ export class Game extends Serializable {
     this.pendingDrawCard = false;
     this.closeModal();
   }
-  public changePlayerOrder(): void {
+  public changePlayerOrder(diceValues: number[]): void {
     if (this.changedPlayerOrder)
       throw new Error("Player order already changed");
-    //TODO: Separate player storing functionality
-  }
-  //TODO: Add functionality
-  // changePlayerOrder(): void {}
 
-  //TODO: Add functionality for different game modes
+    this.playerContainer.changeOrder(diceValues);
+    this.changedPlayerOrder = true;
+  }
+  public getWinner(): Player {
+    if (!this.gameEnded) throw new Error("Game not over");
+
+    if (this.gameSettings.type === "Last Player Standing")
+      return this.playerContainer.getCurrent();
+    return this.playerContainer.richestPlayer();
+  }
   private checkGameOver(): boolean {
-    return this.players.filter((player) => !player.isBankrupt()).length <= 1;
+    if (this.playerContainer.getCount() <= 1) return true;
+
+    if (this.gameSettings.type === "Last Player Standing") {
+      return false;
+    }
+    return this.timer.expired();
   }
   private setPlayers(players: Player[]): void {
-    if (players.length > MAX_PLAYER_COUNT)
-      throw new Error(`Too many players - count: ${players.length}`);
-
-    this.players = players;
+    this.playerContainer.setData(players);
   }
   private setBoard(board: Cell[]): void {
     if (board.length !== BOARD_SIZE) throw new Error("Invalid board supplied");
@@ -409,44 +442,24 @@ export class Game extends Serializable {
     });
   }
   private setSettings(gameSettings: GameSettings): void {
-    if (
-      gameSettings.type === "Timed" &&
-      !VALID_GAME_DURATIONS.includes(gameSettings.duration)
-    )
-      throw new Error("Invalid game settings duration");
     if (gameSettings.type === "Last Player Standing" && gameSettings.duration)
       throw new Error("Settings mismatch");
+    if (gameSettings.type === "Timed")
+      this.timer = new Timer(gameSettings.duration);
   }
   private getCurrentPlayer(): Player {
-    return this.players[this.currentPlayerIndex];
+    return this.playerContainer.getCurrent();
   }
   private getPlayerById(playerId: number): Player {
-    for (let p of this.players) {
-      if (p.getId() === playerId) return p;
-    }
-
-    throw new Error("Invalid Player ID");
+    return this.playerContainer.getById(playerId);
   }
   private nextPlayer(): void {
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
-    if (this.getCurrentPlayer().isBankrupt())
-      throw new Error("Bankrupt player cannot be in the game flow");
+    this.playerContainer.next();
   }
   private removePlayer(playerId: number): void {
-    for (let i = 0; i < this.players.length; i++) {
-      if (this.players[i].getId() === playerId) {
-        this.players.splice(i, 1);
-        return;
-      }
-    }
-
-    throw new Error("Player not found");
+    this.playerContainer.removeByIndex(playerId);
   }
   private setCurrentPlayerIndex(index: number): void {
-    if (index < 0 || index > MAX_PLAYER_COUNT)
-      throw new Error("Invalid number of players given");
-
-    this.currentPlayerIndex = index;
+    this.playerContainer.setCurrentIndex(index);
   }
 }
