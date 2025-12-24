@@ -1,82 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useGameContext } from "../../../../context/GameContext";
-import type { Pair } from "../../../../utils/interfaces";
+import type { Pair } from "../../../../utils/types";
 
 const RollButton: React.FC = () => {
   const { state, dispatch } = useGameContext();
-  const [hasRolled, setHasRolled] = useState(false);
 
-  const dice: Pair | undefined = state.game?.getDiceValue();
+  const dice: Pair | undefined = {
+    diceOne: state.game?.getDiceValue()[0],
+    diceTwo: state.game?.getDiceValue()[1],
+  };
   const diceOne: number | undefined = 1; //dice?.diceOne;
   const diceTwo: number | undefined = 0; //dice?.diceTwo;
 
   const handleRoll = async () => {
+    dispatch({
+      state: state,
+      action: {
+        flowType: "AWAIT",
+      },
+    });
     // TODO: Create order deciding logic
-    if (state.game?.getEvent() === "decideOrder") dispatch({ type: "TESTING" });
-
-    if (state.game?.getEvent() === "rollDice") {
-      dispatch({
-        type: "ROLL_DICE",
-        payload: state.game?.getCurrentPlayer().isInJail()
-          ? "inJail"
-          : "movePlayer",
-      });
-      setHasRolled(true);
-    }
   };
 
-  //Move player logic
   useEffect(() => {
-    if (!hasRolled) return;
-
-    if (state.game?.getCurrentPlayer().isInJail()) {
-      dispatch({ type: "IN_JAIL" });
-      setHasRolled(false);
-      return;
-    }
-
-    if (
-      diceOne != null &&
-      diceTwo != null &&
-      state.game?.getEvent() === "movePlayer"
-    ) {
-      if (diceOne === diceTwo) {
-        dispatch({ type: "DOUBLES" });
-      }
-      if (state.game?.getDoublesCounter() === 3) {
-        dispatch({ type: "SEND_TO_JAIL" });
-        return;
-      }
-
-      setHasRolled(false);
-    }
-  }, [hasRolled, diceOne, diceTwo]);
-
-  //Cell action logic
-  useEffect(() => {
-    switch (state.game?.getEvent()) {
-      case "cellAction":
-        dispatch({ type: "CELL_ACTION" });
-        break;
-      case "inJail":
-        dispatch({ type: "IN_JAIL" });
-        break;
-      case "movePlayer":
-        if (diceOne != null && diceTwo != null) {
-          dispatch({ type: "MOVE_PLAYER", payload: diceOne + diceTwo });
-        }
-        break;
-      case "endTurn":
-        const nextPlayerButton = document.getElementById(
-          "next-player-button"
-        ) as HTMLButtonElement;
-        if (nextPlayerButton) {
-          nextPlayerButton.disabled = false;
-        }
-        break;
-      default:
-        break;
-    }
+    dispatch({
+      state: state,
+      action: {
+        flowType: "GAME",
+      },
+    });
   }, [state.game?.getEvent()]);
 
   return (
@@ -85,8 +37,8 @@ const RollButton: React.FC = () => {
       className="roll-button"
       onClick={handleRoll}
       disabled={
-        state.game?.getEvent() !== "rollDice" &&
-        state.game?.getEvent() !== "decideOrder"
+        state.game?.getEvent() !== "ROLL_DICE" &&
+        state.game?.getEvent() !== "DECIDE_ORDER"
       }
     >
       <h2>Roll</h2>

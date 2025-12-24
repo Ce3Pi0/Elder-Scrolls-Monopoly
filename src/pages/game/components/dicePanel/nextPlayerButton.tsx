@@ -4,7 +4,12 @@ const NextPlayerButton: React.FC = () => {
   const { state, dispatch } = useGameContext();
 
   const handleClick = () => {
-    dispatch({ type: "END_TURN" });
+    dispatch({
+      state: state,
+      action: {
+        flowType: "AWAIT",
+      },
+    });
     const nextPlayerButton = document.getElementById(
       "next-player-button"
     ) as HTMLButtonElement;
@@ -23,7 +28,7 @@ const NextPlayerButton: React.FC = () => {
       id="next-player-button"
       className="roll-button"
       onClick={handleClick}
-      disabled={state.game?.getEvent() !== "endTurn"}
+      disabled={state.game?.getEvent() !== "AWAIT_END_TURN"}
     >
       <h2>End</h2>
     </button>

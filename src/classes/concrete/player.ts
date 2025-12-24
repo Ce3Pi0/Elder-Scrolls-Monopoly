@@ -260,6 +260,22 @@ export class Player extends Serializable {
       this.balance >= propertyDeed.getCastleCost()
     );
   }
+  public numHouses(): number {
+    let count: number = 0;
+    for (let deed of this.deeds) {
+      if (isPropertyDeed(deed)) count += deed.getNumberOfHouses();
+    }
+
+    return count;
+  }
+  public numCastles(): number {
+    let count: number = 0;
+    for (let deed of this.deeds) {
+      if (isPropertyDeed(deed)) count += deed.getNumberOfCastles();
+    }
+
+    return count;
+  }
   public buildHouse(propertyDeed: PropertyDeed): void {
     if (this.canBuildHouse(propertyDeed)) {
       this.balance -= propertyDeed.getHouseCost();
@@ -311,7 +327,7 @@ export class Player extends Serializable {
     return this.balance >= amount;
   }
   public declareBankruptcy(): void {
-    if (this.bankrupt) throw new Error("Player already bankrupted");
+    if (this.bankrupt) throw new Error("Player is already");
     this.bankrupt = true;
     this.balance = 0;
     this.deeds.forEach((deed) => {

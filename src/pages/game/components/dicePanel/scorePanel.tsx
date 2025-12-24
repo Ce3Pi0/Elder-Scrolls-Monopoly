@@ -8,8 +8,8 @@ const ScorePanel: React.FC = () => {
     <div className="score-panel">
       {loaded && state.game && (
         <h2>
-          Dice One: {state.game.getDiceValue().diceOne} | Dice Two:{" "}
-          {state.game.getDiceValue().diceTwo}
+          Dice One: {state.game?.getDiceValue()[0]} | Dice Two:{" "}
+          {state.game.getDiceValue()[1]}
         </h2>
       )}
     </div>

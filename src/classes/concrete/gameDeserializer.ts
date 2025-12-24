@@ -5,7 +5,6 @@ import {
   DEFAULT_PLAYER_NAME,
   DEFAULT_SETTINGS,
 } from "../../utils/constants";
-import type { Pair } from "../../utils/types";
 import { Dice } from "./dice";
 import { Game } from "./game";
 import { Player } from "./player";

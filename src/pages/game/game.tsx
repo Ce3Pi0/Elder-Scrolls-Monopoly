@@ -5,15 +5,14 @@ import DicePanel from "./components/dicePanel/dicePanel";
 import { useGameContext } from "../../context/GameContext";
 
 import "./css/styles.css";
-import { PLAYER_COLORS } from "../../utils/utils";
+import { PLAYER_COLORS } from "../../utils/constants";
 
 const Game: React.FC = () => {
   const { state, loaded } = useGameContext();
 
-  const playerPositions: number[] =
-    state.game?.getPlayers().map((p) => p.getPosition()) ?? [];
+  const playerPositions: number[] = state.game?.getPlayerColors() ?? [];
   const colors: string[] =
-    state.game?.getPlayers().map((p) => PLAYER_COLORS[p.getColor()][0]) ?? [];
+    state.game?.getPlayerColors().map((p) => PLAYER_COLORS[p][0]) ?? [];
 
   if (!loaded) return <div>Loading game...</div>;
   if (!state.game?.isGameStarted()) location.href = "/game-setup";

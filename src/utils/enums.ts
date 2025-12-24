@@ -51,3 +51,8 @@ export enum Region_Cities_Count {
   HAMMERFELL = 3,
   SUMMERSET_ISLES = 2,
 }
+
+export enum MoveDirection {
+  BACKWARD = -1,
+  FORWARD = 1,
+}

@@ -16,15 +16,15 @@ const PlayerPanel: React.FC = () => {
       </div>
       {loaded &&
         state.game &&
-        state.game.getPlayers().map((player) => {
+        state.game.getPlayersInfo().map((playerInfo) => {
           return (
             <Player
-              key={player.getId()}
-              id={player.getId()}
-              name={player.getName()}
-              color={player.getColor()}
-              icon={player.getIcon()}
-              balance={player.getBalance()}
+              key={playerInfo.id}
+              id={playerInfo.id}
+              name={playerInfo.name}
+              color={playerInfo.color}
+              icon={playerInfo.icon}
+              balance={playerInfo.balance}
             />
           );
         })}

@@ -1,17 +1,11 @@
 import React, { useEffect } from "react";
 import type { GamePlayerData } from "../../../../utils/interfaces";
-import {
-  isPropertyDeed,
-  isStablesDeed,
-  isUtilityDeed,
-  PLAYER_COLORS,
-  PLAYER_ICONS,
-} from "../../../../utils/utils";
 import PlayerInfo from "./playerInfo";
 import { useGameContext } from "../../../../context/GameContext";
 import DeedModal from "../../modals/deedModal/deedModal";
 import ExitButton from "../../modals/deedModal/exitButton";
 import TradeModal from "../../modals/tradeModal/tradeModal";
+import { PLAYER_COLORS, PLAYER_ICONS } from "../../../../utils/constants";
 
 const Player: React.FC<GamePlayerData> = ({
   id,
@@ -50,44 +44,29 @@ const Player: React.FC<GamePlayerData> = ({
   }, [isModalOpen]);
 
   const openModal = (): void => {
-    const player = state.game?.getPlayerById(id);
-
     dispatch({
-      type: "SET_MODAL_CONTENT",
-      payload: {
-        title: "deed",
-        content: {
-          player: {
-            name: player?.getName(),
-            icon: player?.getIcon(),
-            balance: player?.getBalance(),
-          },
-          getOutOfJailFreeCards: player?.getGetOutOfJailCards().length || 0,
-          deeds: {
-            propertyDeeds:
-              player?.getDeeds().filter((deed) => isPropertyDeed(deed)) || [],
-            stablesDeeds:
-              player?.getDeeds().filter((deed) => isStablesDeed(deed)) || [],
-            utilityDeeds:
-              player?.getDeeds().filter((deed) => isUtilityDeed(deed)) || [],
-          },
+      state: state,
+      action: {
+        flowType: "ACTION",
+        actionData: {
+          tradePlayerId: null,
+          actionType: "OPEN_DEED_MODAL",
         },
       },
     });
-    dispatch({ type: "OPEN_MODAL", payload: null });
   };
   return (
     <>
       <dialog id="dialog">
         {state.game?.isModalOpen() && (
           <>
-            {state.game?.getModalContent().title !== "auction" && (
+            {state.game?.getModalContent().title !== "AUCTION" && (
               <ExitButton />
             )}
             {state.game?.getModalContent() &&
-              state.game.getModalContent().title === "deed" && <DeedModal />}
+              state.game.getModalContent().title === "DEED" && <DeedModal />}
             {state.game?.getModalContent() &&
-              state.game.getModalContent().title === "trade" && <TradeModal />}
+              state.game.getModalContent().title === "TRADE" && <TradeModal />}
             {/*
               state.game.getModalContent().title === "deedModalExpanded" && (
               <DeedModalExpanded />

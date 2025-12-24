@@ -1,7 +1,7 @@
 import React from "react";
 import type { PropertyCellProps } from "../../../../utils/interfaces";
-import { REGIONS_TO_COLORS, CITIES_TO_PICTURES } from "../../../../utils/utils";
 import PlayerDots from "./playerDots";
+import { citiesToPictures, regionsToColors } from "../../../../utils/helpers";
 
 const PropertyCell: React.FC<PropertyCellProps> = ({
   playerPositions,
@@ -12,8 +12,8 @@ const PropertyCell: React.FC<PropertyCellProps> = ({
   name,
   price,
 }) => {
-  const color = REGIONS_TO_COLORS[region];
-  const picture = CITIES_TO_PICTURES[city];
+  const color = regionsToColors(region);
+  const picture = citiesToPictures(city);
 
   return (
     <div className="tile">

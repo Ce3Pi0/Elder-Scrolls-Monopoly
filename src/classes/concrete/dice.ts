@@ -27,8 +27,8 @@ export class Dice extends Serializable {
       this.incrementDoublesCounter();
     }
   }
-  public getDiceValues(): number {
-    return this.diceValues.diceOne + this.diceValues.diceTwo;
+  public getDiceValues(): number[] {
+    return [this.diceValues.diceOne, this.diceValues.diceTwo];
   }
   public areDiceRolled(): boolean {
     return this.diceRolled;

@@ -22,13 +22,13 @@
       "id": 3,
       "type": "move",
       "location": "utility",
-      "content": "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times the amount thrown."
+      "content": "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, pay the owner."
     },
     {
       "id": 4,
       "type": "move",
       "location": "stables",
-      "content": "Advance token to the nearest Stables and pay owner Twice the Rental to which they are otherwise entitled. If Stables are UNOWNED, you may buy it from the Bank."
+      "content": "Advance token to the nearest Stables and pay owner the Rental to which they are entitled. If Stables are UNOWNED, you may buy it from the Bank."
     },
     {
       "id": 5,

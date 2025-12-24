@@ -5,6 +5,8 @@ import type {
   Event,
   ChanceCard,
   CommunityChestCard,
+  GetOutOfJailCardType,
+  PlayerInfo,
 } from "../../utils/types";
 import type {
   ActionData,
@@ -19,7 +21,7 @@ import {
   STABLES_DEEDS,
   UTILITIES_DEEDS,
 } from "../../utils/constants";
-import { Finances } from "../../utils/enums";
+import { Finances, MoveDirection } from "../../utils/enums";
 import { Serializable } from "../abstract/serializable";
 import { Player } from "./player";
 import { GameDeserializerSingleton } from "./gameDeserializer";
@@ -114,6 +116,28 @@ export class Game extends Serializable {
     this.gameStarted = true;
     this.gameEnded = false;
   }
+  public isPlayerInJail(id: number): boolean {
+    return this.getPlayerById(id).isInJail();
+  }
+  private getNearestUtility(): number {
+    let curCell: number = this.currentPlayerIndex;
+    while (this.board[curCell].cellType != "UTILITY") {
+      curCell += 1;
+      if (curCell > BOARD_SIZE) curCell -= BOARD_SIZE;
+    }
+
+    return curCell;
+  }
+  private getNearestStables(): number {
+    let curCell: number = this.currentPlayerIndex;
+    while (this.board[curCell].cellType != "STABLES") {
+      curCell += 1;
+      if (curCell > BOARD_SIZE) curCell -= BOARD_SIZE;
+    }
+
+    return curCell;
+  }
+  // Called on use effect
   public handleGameFlow(): void {
     switch (this.event) {
       case "ROLL_DICE":
@@ -133,27 +157,82 @@ export class Game extends Serializable {
     }
     this.setEvent(eventsSingleton.nextEvent(this.event));
   }
+  // Called on game flow button press
   public handleAwaitFlow(): void {
-    switch (this.event) {
-      case "AWAIT_ROLL_DICE":
-        break;
-      case "AWAIT_END_TURN":
-        break;
-      default:
-        return;
-    }
-
+    if (this.event !== "AWAIT_ROLL_DICE" && this.event !== "AWAIT_END_TURN")
+      return;
     this.setEvent(eventsSingleton.nextEvent(this.event));
   }
-  //TODO: Implement logic
-  private handleCard(card: CommunityChestCard | ChanceCard): void {
-    throw new Error("Not implemented");
+  private handleCard(
+    cardType: GetOutOfJailCardType,
+    card: CommunityChestCard | ChanceCard
+  ): void {
+    switch (card.type) {
+      case "COLLECT":
+        if (card.value < 0) throw new Error("Invalid card collect value");
+        this.getCurrentPlayer().addBalance(card.value);
+        break;
+      case "GET_OUT_OF_JAIL_CARD":
+        this.getCurrentPlayer().addGetOutOfJailFreeCard(cardType);
+        break;
+      case "MOVE":
+        if (typeof card.location == "number") {
+          this.movePlayer(card.location);
+        } else if (card.location == "utility") {
+          this.movePlayer(this.getNearestUtility());
+        } else if (card.location == "stables") {
+          this.movePlayer(this.getNearestStables());
+        } else {
+          this.getCurrentPlayer().sendToJail();
+          return;
+        }
+        this.cellAction();
+        break;
+      case "PAY":
+        if (card.value < 0) throw new Error("Invalid card pay value");
+        this.decreasePlayerBal(this.currentPlayerIndex, card.value);
+        break;
+      case "VARIABLE_PAY":
+        if (card.value.player) {
+          for (let playerId of this.playerContainer.getAllPlayerIds()) {
+            this.getPlayerById(playerId).addBalance(card.value.player);
+          }
+
+          this.decreasePlayerBal(
+            this.currentPlayerIndex,
+            card.value.player * this.playerContainer.getCount()
+          );
+        } else if (card.value.castle && card.value.house) {
+          const repairsCost: number =
+            this.getCurrentPlayer().numHouses() * card.value.house +
+            this.getCurrentPlayer().numCastles() * card.value.castle;
+
+          this.decreasePlayerBal(this.currentPlayerIndex, repairsCost);
+        } else {
+          throw new Error("Invalid card variable pay value");
+        }
+        break;
+      case "VARIABLE_COLLECT":
+        if (card.value.player < 0)
+          throw new Error("Invalid card collect value");
+
+        this.getCurrentPlayer().addBalance(
+          card.value.player * this.playerContainer.getCount()
+        );
+        for (let playerId of this.playerContainer.getAllPlayerIds()) {
+          this.decreasePlayerBal(playerId, card.value.player);
+        }
+        break;
+      default:
+        throw new Error("Invalid card type");
+    }
   }
+  // Called on specific button press
   public handleAction(actionData: ActionData): void {
-    if (actionData.curPlayerId === actionData.tradePlayerId)
+    if (this.currentPlayerIndex === actionData.tradePlayerId)
       throw new Error("Player cannot trade with themselves");
 
-    const curPlayer: Player = this.getPlayerById(actionData.curPlayerId);
+    const curPlayer: Player = this.getPlayerById(this.currentPlayerIndex);
     let tradePlayer: Player | null = null;
     if (actionData.tradePlayerId)
       tradePlayer = this.getPlayerById(actionData.tradePlayerId);
@@ -206,6 +285,7 @@ export class Game extends Serializable {
           this.modalContent.title === "COMMUNITY"
         )
           this.handleCard(
+            this.modalContent.title,
             this.modalContent.content as ChanceCard | CommunityChestCard
           );
         this.endDrawCard();
@@ -232,7 +312,39 @@ export class Game extends Serializable {
   private rollDice(): void {
     this.dice.roll();
   }
-  private movePlayer(): void {
+  private delayedMove(
+    curPlayerPos: number,
+    finalPlayerPos: number,
+    direction: MoveDirection = MoveDirection.FORWARD
+  ): void {
+    setTimeout(() => {
+      while (curPlayerPos !== finalPlayerPos) {
+        if (direction == MoveDirection.FORWARD) curPlayerPos++;
+        else curPlayerPos--;
+
+        while (curPlayerPos < 0) curPlayerPos += BOARD_SIZE;
+        if (curPlayerPos > BOARD_SIZE) curPlayerPos -= BOARD_SIZE;
+
+        this.getCurrentPlayer().setPosition(curPlayerPos);
+      }
+    }, this.MOVE_TIMEOUT_MS);
+  }
+  private movePlayer(distance: number = 0): void {
+    let curPlayerPos = this.getCurrentPlayer().getPosition();
+
+    if (distance !== 0) {
+      let moveDirection: MoveDirection = MoveDirection.FORWARD;
+      if (distance < 0) {
+        distance = curPlayerPos - distance;
+        moveDirection = MoveDirection.BACKWARD;
+      }
+
+      while (distance < 0) distance += BOARD_SIZE;
+      if (distance > BOARD_SIZE) distance -= BOARD_SIZE;
+      this.delayedMove(curPlayerPos, distance, moveDirection);
+      return;
+    }
+
     if (this.dice.getDoublesCounter() === Dice.MAX_DOUBLES_COUNTER) {
       this.getCurrentPlayer().sendToJail();
       this.event = "AWAIT_END_TURN";
@@ -253,20 +365,14 @@ export class Game extends Serializable {
       return;
     }
 
-    let curPlayerPos = this.getCurrentPlayer().getPosition();
-    let finalPlayerPos = curPlayerPos + this.dice.getDiceValues();
+    let finalPlayerPos =
+      curPlayerPos +
+      this.dice.getDiceValues()[0] +
+      this.dice.getDiceValues()[1];
 
     if (finalPlayerPos > BOARD_SIZE) finalPlayerPos -= BOARD_SIZE;
 
-    setTimeout(() => {
-      while (curPlayerPos !== finalPlayerPos) {
-        curPlayerPos++;
-
-        if (curPlayerPos > BOARD_SIZE) curPlayerPos -= BOARD_SIZE;
-
-        this.getCurrentPlayer().setPosition(curPlayerPos);
-      }
-    }, this.MOVE_TIMEOUT_MS);
+    this.delayedMove(curPlayerPos, finalPlayerPos);
   }
   private cellAction(): void {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
@@ -288,7 +394,7 @@ export class Game extends Serializable {
             (cell.deed as PropertyDeed).getRentOwed(
               this.getPlayerById(cell.deed.getOwnerId())
             ),
-            this.playerContainer.getCurrentIndex()
+            this.currentPlayerIndex
           );
         }
         break;
@@ -412,12 +518,50 @@ export class Game extends Serializable {
     this.playerContainer.changeOrder(diceValues);
     this.changedPlayerOrder = true;
   }
+  public getCurrentPlayerInfo(): PlayerInfo {
+    const player: Player = this.getCurrentPlayer();
+
+    return {
+      id: player.getId(),
+      name: player.getName(),
+      color: player.getColor(),
+      icon: player.getIcon(),
+      balance: player.getBalance(),
+    };
+  }
+  public getPlayersInfo(): PlayerInfo[] {
+    return this.playerContainer.getAllPlayerIds().map((playerId) => {
+      const player: Player = this.getPlayerById(playerId);
+      const playerInfoEntry: PlayerInfo = {
+        id: player.getId(),
+        name: player.getName(),
+        color: player.getColor(),
+        icon: player.getIcon(),
+        balance: player.getBalance(),
+      };
+
+      return playerInfoEntry;
+    });
+  }
+  public getDiceValue(): number[] {
+    return this.dice.getDiceValues();
+  }
   public getWinner(): Player {
     if (!this.gameEnded) throw new Error("Game not over");
 
     if (this.gameSettings.type === "Last Player Standing")
       return this.playerContainer.getCurrent();
     return this.playerContainer.richestPlayer();
+  }
+  public getPlayerPositions(): number[] {
+    return this.playerContainer
+      .getAllPlayerIds()
+      .map((id) => this.getPlayerById(id).getPosition());
+  }
+  public getPlayerColors(): number[] {
+    return this.playerContainer
+      .getAllPlayerIds()
+      .map((id) => this.getPlayerById(id).getColor());
   }
   private checkGameOver(): boolean {
     if (this.playerContainer.getCount() <= 1) return true;

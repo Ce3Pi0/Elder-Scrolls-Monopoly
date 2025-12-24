@@ -5,29 +5,30 @@ import CommunityChestCell from "./communityChestCell";
 import ChanceCell from "./chanceCell";
 import IncomeTaxCell from "./incomeTaxCell";
 import GoCell from "./goCell";
-import { BoardArray, isPropertyDeed } from "../../../../utils/utils";
 import JailCell from "./jailCell";
 import UtilityCell from "./utilityCell";
 import LuxuryTaxCell from "./luxuryTaxCell";
 import GoToJailCell from "./goToJailCell";
 import LodgingCell from "./lodgingCell";
+import { BOARD_ARRAY } from "../../../../utils/constants";
+import { isPropertyDeed } from "../../../../utils/helpers";
 
 const Board: React.FC<{
   playerPositions: number[];
   colors: string[];
 }> = ({ playerPositions, colors }) => {
-  const rowOneArray = BoardArray.slice(0, 10);
-  const rowTwoArray = BoardArray.slice(10, 20);
-  const rowThreeArray = BoardArray.slice(20, 30);
-  const rowFourArray = BoardArray.slice(30, 40);
+  const rowOneArray = BOARD_ARRAY.slice(0, 10);
+  const rowTwoArray = BOARD_ARRAY.slice(10, 20);
+  const rowThreeArray = BOARD_ARRAY.slice(20, 30);
+  const rowFourArray = BOARD_ARRAY.slice(30, 40);
 
   return (
     <div id="board">
       {/* <!--Row 1--> */}
       <div className="row" id="row-0">
         {rowOneArray.map((data) => {
-          switch (data.actionType) {
-            case "property":
+          switch (data.cellType) {
+            case "PROPERTY":
               return (
                 <PropertyCell
                   key={data.id}
@@ -43,7 +44,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "start":
+            case "START":
               return (
                 <GoCell
                   key={data.id}
@@ -52,7 +53,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "community":
+            case "COMMUNITY":
               return (
                 <CommunityChestCell
                   key={data.id}
@@ -61,7 +62,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "chance":
+            case "CHANCE":
               return (
                 <ChanceCell
                   key={data.id}
@@ -70,7 +71,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "incomeTax":
+            case "INCOME_TAX":
               return (
                 <IncomeTaxCell
                   key={data.id}
@@ -79,7 +80,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "stables":
+            case "STABLES":
               return (
                 <StableCell
                   key={data.id}
@@ -97,8 +98,8 @@ const Board: React.FC<{
       {/* <!--Row 2--> */}
       <div className="row" id="row-1">
         {rowTwoArray.map((data) => {
-          switch (data.actionType) {
-            case "property":
+          switch (data.cellType) {
+            case "PROPERTY":
               return (
                 <PropertyCell
                   key={data.id}
@@ -114,7 +115,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "community":
+            case "COMMUNITY":
               return (
                 <CommunityChestCell
                   key={data.id}
@@ -123,7 +124,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "stables":
+            case "STABLES":
               return (
                 <StableCell
                   key={data.id}
@@ -134,7 +135,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "utility":
+            case "UTILITY":
               return (
                 <UtilityCell
                   id={data.id}
@@ -147,7 +148,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "jail":
+            case "JAIL":
               return (
                 <JailCell
                   key={data.id}
@@ -163,8 +164,8 @@ const Board: React.FC<{
       {/* <!--Row 3--> */}
       <div className="row" id="row-2">
         {rowThreeArray.map((data) => {
-          switch (data.actionType) {
-            case "property":
+          switch (data.cellType) {
+            case "PROPERTY":
               return (
                 <PropertyCell
                   key={data.id}
@@ -180,7 +181,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "lodging":
+            case "LODGING":
               return (
                 <LodgingCell
                   key={data.id}
@@ -189,7 +190,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "chance":
+            case "CHANCE":
               return (
                 <ChanceCell
                   key={data.id}
@@ -198,7 +199,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "community":
+            case "COMMUNITY":
               return (
                 <CommunityChestCell
                   key={data.id}
@@ -207,7 +208,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "stables":
+            case "STABLES":
               return (
                 <StableCell
                   key={data.id}
@@ -218,7 +219,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "utility":
+            case "UTILITY":
               return (
                 <UtilityCell
                   id={data.id}
@@ -238,8 +239,8 @@ const Board: React.FC<{
       {/* <!--Row 4--> */}
       <div className="row" id="row-3">
         {rowFourArray.map((data) => {
-          switch (data.actionType) {
-            case "property":
+          switch (data.cellType) {
+            case "PROPERTY":
               return (
                 <PropertyCell
                   key={data.id}
@@ -255,7 +256,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "chance":
+            case "CHANCE":
               return (
                 <ChanceCell
                   key={data.id}
@@ -264,7 +265,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "stables":
+            case "STABLES":
               return (
                 <StableCell
                   key={data.id}
@@ -275,7 +276,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "goToJail":
+            case "GO_TO_JAIL":
               return (
                 <GoToJailCell
                   key={data.id}
@@ -284,7 +285,7 @@ const Board: React.FC<{
                   colors={colors}
                 />
               );
-            case "luxuryTax":
+            case "LUXURY_TAX":
               return (
                 <LuxuryTaxCell
                   key={data.id}

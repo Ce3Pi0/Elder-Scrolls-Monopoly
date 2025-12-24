@@ -8,11 +8,9 @@ const Deeds: React.FC<DeedsProps> = ({
 }) => {
   const allDeeds = [...propertyDeeds, ...stablesDeeds, ...utilityDeeds];
 
-  return null;
-
-  // return allDeeds.map((deed) => {
-  //   return <div>Hi</div>;
-  // });
+  return allDeeds.map((deed) => {
+    <div>Hi</div>;
+  });
 };
 
 export default Deeds;

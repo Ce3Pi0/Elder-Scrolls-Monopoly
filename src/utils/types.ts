@@ -1,13 +1,19 @@
 import type { BasicDeed } from "../classes/abstract/basicDeed";
+import type { ActionData } from "./interfaces";
 
 export type GameFlowEvent =
-  // | "DECIDE_ORDER" FIXME: Fix for final version
+  | "DECIDE_ORDER"
   | "AWAIT_ROLL_DICE"
   | "ROLL_DICE"
   | "MOVE_PLAYER"
   | "CELL_ACTION"
   | "AWAIT_END_TURN"
   | "END_TURN";
+
+export type GameAction = {
+  flowType: FlowType;
+  actionData: ActionData;
+};
 
 export type FlowType = "GAME" | "AWAIT" | "ACTION";
 
@@ -87,7 +93,13 @@ export type CommunityChestCard =
       value: { house?: number; castle?: number; player?: number };
       content: string;
     }
-  | { id: number; type: "GET_OUT_OF_JAIL_CARD"; content: string };
+  | { id: number; type: "GET_OUT_OF_JAIL_CARD"; content: string }
+  | {
+      id: number;
+      type: "VARIABLE_COLLECT";
+      value: { player: number };
+      content: string;
+    };
 
 export type PropertyDeedTuple = [
   number,
@@ -114,3 +126,11 @@ export type GameSettings = {
 };
 
 export type DeedType = "STABLES" | "UTILITY" | "PROPERTY";
+
+export type PlayerInfo = {
+  id: number;
+  name: string;
+  color: number;
+  icon: number;
+  balance: number;
+};

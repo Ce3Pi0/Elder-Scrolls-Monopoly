@@ -18,6 +18,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [loaded, setLoaded] = useState(false);
+
   const [state, dispatch] = useReducer(gameReducer, initialState, () => {
     const game: Game = GameDeserializerSingleton.deserializeData();
 

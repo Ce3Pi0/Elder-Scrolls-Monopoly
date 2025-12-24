@@ -1,36 +1,24 @@
 import { useGameContext } from "../../../../context/GameContext";
-import {
-  isPropertyDeed,
-  isStablesDeed,
-  isUtilityDeed,
-} from "../../../../utils/utils";
+import type { TradeModalContent } from "../../../../utils/interfaces";
 
 const TradeModalHeader: React.FC = () => {
   const { state, dispatch } = useGameContext();
 
   const handleClick = () => {
-    const id = (state.game?.getModalContent() as any).content.player.getId();
-    const player = state.game?.getPlayerById(id);
+    const tradePlayerId: number = (
+      state.game?.getModalContent().content as TradeModalContent
+    ).tradePlayer.getId();
 
     dispatch({
-      type: "SET_MODAL_CONTENT",
-      payload: {
-        title: "deed",
-        content: {
-          player: {
-            name: player?.getName(),
-            icon: player?.getIcon(),
-            balance: player?.getBalance(),
-          },
-          getOutOfJailFreeCards: player?.getGetOutOfJailCards().length || 0,
-          deeds: {
-            propertyDeeds:
-              player?.getDeeds().filter((deed) => isPropertyDeed(deed)) || [],
-            stablesDeeds:
-              player?.getDeeds().filter((deed) => isStablesDeed(deed)) || [],
-            utilityDeeds:
-              player?.getDeeds().filter((deed) => isUtilityDeed(deed)) || [],
-          },
+      state: state,
+      action: {
+        flowType: "ACTION",
+        actionData: {
+          tradePlayerId: tradePlayerId,
+          actionType: "OPEN_TRADE_MODAL",
+          otherDeedType: null,
+          mortgageDeedId: null,
+          assetType: null,
         },
       },
     });

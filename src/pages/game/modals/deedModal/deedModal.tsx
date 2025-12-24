@@ -17,7 +17,7 @@ const DeedModal: React.FC = () => {
 
   return (
     <div className="modal">
-      {modalContent?.content && modalContent.title === "deed" && (
+      {modalContent?.content && modalContent.title === "DEED" && (
         <DeedHeader
           icon={(modalContent.content as DeedModalContent).player.icon}
           name={(modalContent.content as DeedModalContent).player.name}
@@ -28,7 +28,7 @@ const DeedModal: React.FC = () => {
           }
         />
       )}
-      {modalContent?.content && modalContent.title === "deed" && (
+      {modalContent?.content && modalContent.title === "DEED" && (
         <Deeds
           propertyDeeds={
             (modalContent?.content as DeedModalContent).deeds.propertyDeeds
@@ -41,19 +41,20 @@ const DeedModal: React.FC = () => {
           }
         />
       )}
-      {state.game?.getCurrentPlayer().getName() ===
+      {state.game?.getCurrentPlayerInfo().name ===
         (modalContent!.content as DeedModalContent).player.name &&
-        modalContent.title === "deed" && (
+        modalContent.title === "DEED" && (
           <div className="trade-button-wrapper">
             <TradeButton
-              playerId={state.game
-                .getPlayers()
-                .filter(
-                  (player) =>
-                    player.getName() ===
-                    (modalContent.content as DeedModalContent).player.name
-                )[0]
-                .getId()}
+              playerId={
+                state.game
+                  .getPlayersInfo()
+                  .filter(
+                    (player) =>
+                      player.name ===
+                      (modalContent.content as DeedModalContent).player.name
+                  )[0].id
+              }
             />
           </div>
         )}

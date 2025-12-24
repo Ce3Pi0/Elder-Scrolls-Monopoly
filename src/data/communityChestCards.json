@@ -2,7 +2,7 @@
   "communityChestCards": [
     {
       "id": 0,
-      "type": " move",
+      "type": "move",
       "location": 0,
       "content": "Advance to GO Collect 200"
     },
@@ -37,7 +37,7 @@
         "house": 40,
         "castle": 115
       },
-      "content": "FOR EACH HOUSE PAY 40 /FOR EACH CASTLE PAY 115"
+      "content": "FOR EACH HOUSE PAY 40 FOR EACH CASTLE PAY 115"
     },
     {
       "id": 6,

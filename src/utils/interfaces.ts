@@ -1,4 +1,3 @@
-import type { BasicDeed } from "../classes/abstract/basicDeed";
 import { Game } from "../classes/concrete/game";
 import type { Player } from "../classes/concrete/player";
 import { PropertyDeed } from "../classes/concrete/propertyDeed";
@@ -148,7 +147,6 @@ export interface GameState {
 }
 
 export interface ActionData {
-  curPlayerId: number;
   tradePlayerId: number | null;
   actionType: ActionType;
   otherDeedType: OtherDeedType | null;
