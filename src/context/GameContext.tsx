@@ -33,7 +33,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({
     if (state.game) {
       state.game.serialize();
     }
-  }, [state.game]);
+  }, [state]);
 
   return (
     <GameContext.Provider value={{ state, dispatch, loaded }}>

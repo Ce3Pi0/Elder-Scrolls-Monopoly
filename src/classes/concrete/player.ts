@@ -67,13 +67,11 @@ export class Player extends Serializable {
       bankrupt: this.bankrupt,
     };
 
-    players.push(serializedPlayer);
+    if (!players.some((p) => p.id === this.id)) {
+      players.push(serializedPlayer);
+    }
 
     localStorage.setItem("players", JSON.stringify(players));
-
-    for (let deed of this.deeds) {
-      deed.serialize();
-    }
   }
   public deserialize(): Player | undefined {
     const retrievedData: string | null = localStorage.getItem("players");

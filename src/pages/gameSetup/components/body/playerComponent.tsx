@@ -1,7 +1,7 @@
 import React from "react";
 import type { PlayerProps } from "../../../../utils/interfaces";
-import { PLAYER_COLORS, PLAYER_ICONS } from "../../../../utils/utils";
 import { useGameContext } from "../../../../context/GameContext";
+import { PLAYER_COLORS, PLAYER_ICONS } from "../../../../utils/constants";
 
 const PlayerComponent: React.FC<PlayerProps> = ({
   id,

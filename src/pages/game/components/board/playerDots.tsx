@@ -12,7 +12,7 @@ const PlayerDots: React.FC<PlayerDotsProps> = ({
   return (
     <div className="player-dots-container">
       {playerPositions.map((pos, i) => {
-        if (pos === tileIndex && !state.game?.getPlayerById(i)?.isInJail()) {
+        if (pos === tileIndex && !state.game?.isPlayerInJailByIndex(i)) {
           return (
             <div
               key={i}

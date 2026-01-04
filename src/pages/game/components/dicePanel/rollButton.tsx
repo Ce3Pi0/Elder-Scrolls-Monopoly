@@ -1,34 +1,40 @@
 import React, { useEffect } from "react";
 import { useGameContext } from "../../../../context/GameContext";
-import type { Pair } from "../../../../utils/types";
 
 const RollButton: React.FC = () => {
   const { state, dispatch } = useGameContext();
 
-  const dice: Pair | undefined = {
-    diceOne: state.game?.getDiceValue()[0],
-    diceTwo: state.game?.getDiceValue()[1],
-  };
-  const diceOne: number | undefined = 1; //dice?.diceOne;
-  const diceTwo: number | undefined = 0; //dice?.diceTwo;
-
   const handleRoll = async () => {
     dispatch({
-      state: state,
-      action: {
-        flowType: "AWAIT",
-      },
+      flowType: "AWAIT",
     });
     // TODO: Create order deciding logic
   };
 
   useEffect(() => {
-    dispatch({
-      state: state,
-      action: {
-        flowType: "GAME",
-      },
-    });
+    const runGameLogic = async () => {
+      const currentEvent = state.game?.getEvent();
+
+      if (currentEvent === "ROLL_DICE") {
+        dispatch({ flowType: "GAME" });
+      } else if (currentEvent === "MOVE_PLAYER") {
+        const lastRoll = state.game?.getDiceValue();
+        const total = lastRoll[0] + lastRoll[1];
+
+        await state.game?.moveCurrentPlayer(total, () => {
+          dispatch({ flowType: "UPDATE_DISPLAY" });
+        });
+
+        dispatch({ flowType: "GAME" });
+      } else if (
+        currentEvent === "CELL_ACTION" ||
+        currentEvent === "END_TURN"
+      ) {
+        dispatch({ flowType: "GAME" });
+      }
+    };
+
+    runGameLogic();
   }, [state.game?.getEvent()]);
 
   return (
@@ -38,7 +44,8 @@ const RollButton: React.FC = () => {
       onClick={handleRoll}
       disabled={
         state.game?.getEvent() !== "ROLL_DICE" &&
-        state.game?.getEvent() !== "DECIDE_ORDER"
+        state.game?.getEvent() !== "DECIDE_ORDER" &&
+        state.game?.getEvent() !== "AWAIT_ROLL_DICE"
       }
     >
       <h2>Roll</h2>

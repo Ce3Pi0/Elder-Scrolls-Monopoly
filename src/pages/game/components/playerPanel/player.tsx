@@ -45,13 +45,10 @@ const Player: React.FC<GamePlayerData> = ({
 
   const openModal = (): void => {
     dispatch({
-      state: state,
-      action: {
-        flowType: "ACTION",
-        actionData: {
-          tradePlayerId: null,
-          actionType: "OPEN_DEED_MODAL",
-        },
+      flowType: "ACTION",
+      actionData: {
+        tradePlayerId: null,
+        actionType: "OPEN_DEED_MODAL",
       },
     });
   };
@@ -60,9 +57,10 @@ const Player: React.FC<GamePlayerData> = ({
       <dialog id="dialog">
         {state.game?.isModalOpen() && (
           <>
-            {state.game?.getModalContent().title !== "AUCTION" && (
-              <ExitButton />
-            )}
+            {state.game?.getModalContent().title !== "AUCTION" &&
+              state.game?.getModalContent().title !== "INCOME_TAX" && (
+                <ExitButton />
+              )}
             {state.game?.getModalContent() &&
               state.game.getModalContent().title === "DEED" && <DeedModal />}
             {state.game?.getModalContent() &&

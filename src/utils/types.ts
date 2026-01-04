@@ -15,7 +15,15 @@ export type GameAction = {
   actionData: ActionData;
 };
 
-export type FlowType = "GAME" | "AWAIT" | "ACTION";
+export type FlowType =
+  | "GAME"
+  | "AWAIT"
+  | "ACTION"
+  | "START_GAME"
+  | "GAME_SETUP"
+  | "ADD_PLAYER"
+  | "REMOVE_PLAYER"
+  | "UPDATE_DISPLAY";
 
 export type Event = GameFlowEvent;
 
@@ -69,7 +77,8 @@ export type ActionType =
   | "OPEN_SELL_DEED_ASSETS_MODAL"
   | "OPEN_MORTGAGE_MODAL"
   | "CLOSE_MODAL"
-  | "END_DRAW_CARD";
+  | "END_DRAW_CARD"
+  | "HANDLE_INCOME_TAX";
 
 export type OtherDeedType = "STABLES" | "UTILITIES";
 

@@ -152,6 +152,9 @@ export interface ActionData {
   otherDeedType: OtherDeedType | null;
   mortgageDeedId: number | null;
   assetType: Asset | null;
+  game: Game | null;
+  player: Player | null;
+  playerId: number | null;
 }
 export interface GameContextType {
   state: GameState;

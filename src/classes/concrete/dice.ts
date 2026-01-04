@@ -7,8 +7,8 @@ export class Dice extends Serializable {
   static readonly MAX_DOUBLES_COUNTER: number = 3;
 
   private diceValues: Pair = { diceOne: 0, diceTwo: 0 };
-  private diceRolled: boolean;
-  private doublesCounter: number;
+  private diceRolled: boolean = false;
+  private doublesCounter: number = 0;
 
   public constructor() {
     super();
@@ -17,10 +17,11 @@ export class Dice extends Serializable {
     if (this.diceRolled) {
       throw new Error("Dice already rolled this turn.");
     }
-    this.diceValues.diceOne =
-      Math.floor(Math.random() * Dice.MAX_DICE_VALUE) + 1;
-    this.diceValues.diceTwo =
-      Math.floor(Math.random() * Dice.MAX_DICE_VALUE) + 1;
+    //FIXME: Change for final version
+    this.diceValues.diceOne = 6;
+    //Math.floor(Math.random() * Dice.MAX_DICE_VALUE) + 1;
+    this.diceValues.diceTwo = 1;
+    //Math.floor(Math.random() * Dice.MAX_DICE_VALUE) + 1;
     this.diceRolled = true;
 
     if (this.rolledDoubles()) {
@@ -64,6 +65,8 @@ export class Dice extends Serializable {
     this.setDiceRolled(dice.diceRolled);
     this.setDiceValues(dice.diceValues);
     this.setDoublesCounter(dice.doublesCounter);
+
+    return this;
   }
   private incrementDoublesCounter(): void {
     this.doublesCounter++;
@@ -84,10 +87,7 @@ export class Dice extends Serializable {
       diceValues.diceTwo > Dice.MAX_DICE_VALUE
     )
       return false;
-    if (
-      (diceValues.diceOne === 0 || diceValues.diceTwo === 0) &&
-      this.diceRolled
-    )
+    if (diceValues.diceOne === 0 && diceValues.diceTwo === 0 && this.diceRolled)
       return false;
     return true;
   }

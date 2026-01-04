@@ -2,67 +2,67 @@
   "chanceCards": [
     {
       "id": 0,
-      "type": "move",
+      "type": "MOVE",
       "location": 21,
       "content": "Advance to Evermore"
     },
     {
       "id": 1,
-      "type": "pay",
+      "type": "PAY",
       "value": 15,
       "content": "Pay poor tax of 15"
     },
     {
       "id": 2,
-      "type": "move",
+      "type": "MOVE",
       "location": -3,
       "content": "Go back 3 spaces!"
     },
     {
       "id": 3,
-      "type": "move",
+      "type": "MOVE",
       "location": "utility",
-      "content": "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, pay the owner."
+      "content": "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, PAY the owner."
     },
     {
       "id": 4,
-      "type": "move",
+      "type": "MOVE",
       "location": "stables",
-      "content": "Advance token to the nearest Stables and pay owner the Rental to which they are entitled. If Stables are UNOWNED, you may buy it from the Bank."
+      "content": "Advance token to the nearest Stables and PAY owner the Rental to which they are entitled. If Stables are UNOWNED, you may buy it from the Bank."
     },
     {
       "id": 5,
-      "type": "move",
+      "type": "MOVE",
       "location": 25,
       "content": "TAKE A HORSE TO MARKARTH STABLES. IF YOU PASS GO, COLLECT 200"
     },
     {
       "id": 6,
-      "type": "move",
+      "type": "MOVE",
       "location": "jail",
-      "content": "Do not pass go, do not collect 200"
+      "content": "Do not pass go, do not COLLECT 200"
     },
     {
       "id": 7,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 150,
       "content": "YOUR BUILDING AND LOAN MATURES COLLECT 150"
     },
     {
       "id": 8,
-      "type": "move",
+      "type": "MOVE",
       "location": 39,
       "content": "Advance token to Alinor. Take a ship to the Isles!"
     },
     {
       "id": 9,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 50,
       "content": "Bank pays you dividend of 50"
     },
     {
       "id": 10,
-      "type": "variablePay",
+      "type": "VARIABLE_PAY",
       "value": {
         "house": 25,
         "castle": 100
@@ -71,13 +71,13 @@
     },
     {
       "id": 11,
-      "type": "move",
+      "type": "MOVE",
       "location": "stables",
-      "content": "Advance token to the nearest Stables and pay owner Twice the Rental to which they are otherwise entitled. If Stables are UNOWNED, you may buy it from the Bank."
+      "content": "Advance token to the nearest Stables and PAY owner Twice the Rental to which they are otherwise entitled. If Stables are UNOWNED, you may buy it from the Bank."
     },
     {
       "id": 12,
-      "type": "variablePay",
+      "type": "VARIABLE_PAY",
       "value": {
         "player": 50
       },
@@ -85,19 +85,19 @@
     },
     {
       "id": 13,
-      "type": "move",
+      "type": "MOVE",
       "location": 0,
       "content": "ADVANCE TO GO!"
     },
     {
       "id": 14,
-      "type": "move",
+      "type": "MOVE",
       "location": 32,
-      "content": "Advance to Sentinel. If you pass go, collect 200"
+      "content": "Advance to Sentinel. If you pass go, COLLECT 200"
     },
     {
       "id": 15,
-      "type": "getOutOfJailCard",
+      "type": "GET_OUT_OF_JAIL_CARD",
       "content": "This card may be kept until needed, or sold"
     }
   ]

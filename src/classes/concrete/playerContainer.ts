@@ -51,6 +51,15 @@ export class PlayersContainer extends Container {
       throw new Error("Too many players supplied");
     this.players = players;
   }
+  public addPlayer(player: Player): void {
+    if (this.players.length >= MAX_PLAYER_COUNT)
+      throw new Error("Too many players supplied");
+    this.players.forEach((p) => {
+      if (p.getId() === player.getId())
+        throw new Error("Player already exists");
+    });
+    this.players.push(player);
+  }
   public changeOrder(order: number[]): void {
     let swapped: boolean;
 
@@ -81,9 +90,9 @@ export class PlayersContainer extends Container {
 
     return curPlayer;
   }
-  public removeByIndex(index: number): void {
+  public removeById(id: number): void {
     for (let i = 0; i < this.players.length; i++) {
-      if (this.players[i].getId() === index) {
+      if (this.players[i].getId() === id) {
         this.players.splice(i, 1);
         return;
       }
@@ -101,6 +110,7 @@ export class PlayersContainer extends Container {
   }
 
   public serializePlayers(): void {
+    localStorage.removeItem("players");
     for (let player of this.players) {
       player.serialize();
     }

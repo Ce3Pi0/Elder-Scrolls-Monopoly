@@ -5,7 +5,7 @@ export abstract class Container {
   abstract getCount(): number;
   abstract setData(data: any): void;
   abstract changeOrder(order: any): void;
-  abstract removeByIndex(index: number): void;
+  abstract removeById(id: number): void;
   abstract removeCurrent(): void;
   abstract next(): void;
 }

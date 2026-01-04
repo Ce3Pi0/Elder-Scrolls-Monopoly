@@ -10,7 +10,7 @@ import { PLAYER_COLORS } from "../../utils/constants";
 const Game: React.FC = () => {
   const { state, loaded } = useGameContext();
 
-  const playerPositions: number[] = state.game?.getPlayerColors() ?? [];
+  const playerPositions: number[] = state.game?.getPlayerPositions() ?? [];
   const colors: string[] =
     state.game?.getPlayerColors().map((p) => PLAYER_COLORS[p][0]) ?? [];
 

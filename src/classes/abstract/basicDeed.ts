@@ -78,12 +78,10 @@ export abstract class BasicDeed<T extends DeedType> extends Serializable {
     return this.rent;
   }
   serialize(): void {
-    const retrievedData: string | null = localStorage.getItem("deeds");
-    let deeds: SerializedDeed[] = [];
-
-    if (retrievedData !== null) {
-      deeds = JSON.parse(retrievedData);
-    }
+    const retrievedData = localStorage.getItem("deeds");
+    let deeds: SerializedDeed[] = retrievedData
+      ? JSON.parse(retrievedData)
+      : [];
 
     const serializedDeed: SerializedDeed = {
       id: this.id,
@@ -92,7 +90,15 @@ export abstract class BasicDeed<T extends DeedType> extends Serializable {
       type: this.type,
     };
 
-    deeds.push(serializedDeed);
+    const existingIndex = deeds.findIndex(
+      (d) => d.id == serializedDeed.id && d.type === serializedDeed.type
+    );
+
+    if (existingIndex !== -1) {
+      deeds[existingIndex] = serializedDeed;
+    } else {
+      deeds.push(serializedDeed);
+    }
 
     localStorage.setItem("deeds", JSON.stringify(deeds));
   }

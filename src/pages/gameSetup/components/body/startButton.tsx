@@ -1,20 +1,21 @@
+import React from "react";
+import { useNavigate } from "react-router";
 import { useGameContext } from "../../../../context/GameContext";
-
-import type { Cell } from "../../../../utils/interfaces";
-import { BoardArray } from "../../../../utils/utils";
 
 const StartButton: React.FC = () => {
   const { dispatch } = useGameContext();
+  const navigate = useNavigate();
 
   const handleStartGame = () => {
-    const board: Cell[] = [...BoardArray];
-
-    dispatch({ type: "START_GAME", payload: board });
+    dispatch({
+      flowType: "START_GAME",
+    });
+    navigate("/game");
   };
 
   return (
     <div className="start-button">
-      <button onClick={() => handleStartGame()}>Start Game</button>
+      <button onClick={handleStartGame}>Start Game</button>
     </div>
   );
 };

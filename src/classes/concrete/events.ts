@@ -3,7 +3,7 @@ import type { Event } from "../../utils/types";
 class EventsSingleton {
   static _instance: EventsSingleton | null = null;
 
-  private _events: { EventType: Event };
+  private _events: { [key: string]: Event } = {};
 
   private initEvents(): void {
     //FIXME: Testing only

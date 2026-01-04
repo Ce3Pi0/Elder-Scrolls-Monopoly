@@ -120,11 +120,9 @@ export class PropertyDeed extends BasicDeed<"PROPERTY"> {
   }
   serialize(): void {
     const retrievedData: string | null = localStorage.getItem("deeds");
-    let deeds: SerializedDeed[] = [];
-
-    if (retrievedData !== null) {
-      deeds = JSON.parse(retrievedData);
-    }
+    let deeds: SerializedDeed[] = retrievedData
+      ? JSON.parse(retrievedData)
+      : [];
 
     const serializedPropertyDeed: SerializedPropertyDeed = {
       id: this.id,
@@ -135,7 +133,17 @@ export class PropertyDeed extends BasicDeed<"PROPERTY"> {
       numberOfCastles: this.numberOfCastles,
     };
 
-    deeds.push(serializedPropertyDeed);
+    const existingIndex = deeds.findIndex(
+      (d) =>
+        d.id == serializedPropertyDeed.id &&
+        d.type === serializedPropertyDeed.type
+    );
+
+    if (existingIndex !== -1) {
+      deeds[existingIndex] = serializedPropertyDeed;
+    } else {
+      deeds.push(serializedPropertyDeed);
+    }
 
     localStorage.setItem("deeds", JSON.stringify(deeds));
   }

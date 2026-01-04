@@ -39,21 +39,22 @@ export class Game extends Serializable {
   private changedPlayerOrder = false;
 
   private playerContainer: PlayersContainer;
-  private gameSettings: GameSettings;
+  private gameSettings: GameSettings | null = null;
   private timer: Timer | null = null;
-  private gameStarted: boolean;
-  private gameEnded: boolean;
+  private gameStarted: boolean = false;
+  private gameEnded: boolean = false;
   private board: Cell[];
   private event: Event | null = "AWAIT_ROLL_DICE"; //FIXME: Fix for final version
-  private currentPlayerIndex: number;
+  private currentPlayerIndex: number = 0;
   private dice: Dice;
-  private modalOpen: boolean;
-  private modalContent: ModalContent | null;
-  private pendingDrawCard: boolean;
+  private modalOpen: boolean = false;
+  private modalContent: ModalContent | null = null;
+  private pendingDrawCard: boolean = false;
 
   constructor(players: Player[], gameSettings: GameSettings, board: Cell[]) {
     super();
 
+    this.dice = new Dice();
     this.playerContainer = new PlayersContainer(players);
     this.setBoard(board);
     this.setSettings(gameSettings);
@@ -73,7 +74,11 @@ export class Game extends Serializable {
 
     localStorage.setItem("game", JSON.stringify(serializedGame));
 
-    this.dice.serialize();
+    this.timer?.serialize();
+    this.board.forEach((cell) => {
+      cell.deed?.serialize();
+    });
+    this.dice?.serialize();
     this.playerContainer.serializePlayers();
   }
   public deserialize(): Game | undefined {
@@ -102,11 +107,13 @@ export class Game extends Serializable {
     this.setCurrentPlayerIndex(game.currentPlayerIndex);
     this.dice = dice;
 
-    if (game.pendingDrawCard) {
-      this.drawCard(game.modalContent);
-    } else if (game.modalOpen) {
-      this.openModal(game.modalContent);
-    }
+    if (game.modalOpen) this.openModal(game.modalContent);
+    if (game.pendingDrawCard) this.drawCard(game.modalContent);
+
+    this.timer?.deserialize();
+    this.board.forEach((cell) => {
+      cell.deed?.deserialize();
+    });
 
     return this;
   }
@@ -116,8 +123,8 @@ export class Game extends Serializable {
     this.gameStarted = true;
     this.gameEnded = false;
   }
-  public isPlayerInJail(id: number): boolean {
-    return this.getPlayerById(id).isInJail();
+  public isPlayerInJailByIndex(index: number): boolean {
+    return this.getPlayerByIndex(index).isInJail();
   }
   private getNearestUtility(): number {
     let curCell: number = this.currentPlayerIndex;
@@ -227,6 +234,12 @@ export class Game extends Serializable {
         throw new Error("Invalid card type");
     }
   }
+  public addPlayer(player: Player): void {
+    this.playerContainer.addPlayer(player);
+  }
+  public removePlayerById(playerId: number): void {
+    this.playerContainer.removeById(playerId);
+  }
   // Called on specific button press
   public handleAction(actionData: ActionData): void {
     if (this.currentPlayerIndex === actionData.tradePlayerId)
@@ -248,8 +261,9 @@ export class Game extends Serializable {
       otherDeeds = [...STABLES_DEEDS];
 
     const mortgageDeed: PropertyDeed | UtilityDeed | StablesDeed | undefined =
-      this.board.find((cell) => cell.deed.getId() === actionData.mortgageDeedId)
-        ?.deed as PropertyDeed | UtilityDeed | StablesDeed | undefined;
+      this.board.find((cell) => {
+        if (cell.deed) cell.deed.getId() === actionData.mortgageDeedId;
+      })?.deed as PropertyDeed | UtilityDeed | StablesDeed | undefined;
 
     switch (actionData.actionType) {
       case "OPEN_DEED_MODAL":
@@ -290,6 +304,10 @@ export class Game extends Serializable {
           );
         this.endDrawCard();
         break;
+      case "HANDLE_INCOME_TAX":
+        //TODO: Implement logic
+        this.closeModal();
+        break;
       default:
         throw new Error("Invalid action event");
     }
@@ -306,27 +324,44 @@ export class Game extends Serializable {
   public isModalOpen(): boolean {
     return this.modalOpen;
   }
+  public isCardDrawing(): boolean {
+    return this.pendingDrawCard;
+  }
   public getModalContent(): ModalContent | null {
     return this.modalContent;
   }
   private rollDice(): void {
     this.dice.roll();
   }
+  public async moveCurrentPlayer(
+    steps: number,
+    onStep: () => void
+  ): Promise<void> {
+    const player = this.getCurrentPlayer();
+    const startPos = player.getPosition();
+    const finalPos = (startPos + steps) % BOARD_SIZE;
+
+    return new Promise((resolve) => {
+      this.delayedMove(startPos, finalPos, resolve, onStep);
+    });
+  }
+
   private delayedMove(
-    curPlayerPos: number,
-    finalPlayerPos: number,
-    direction: MoveDirection = MoveDirection.FORWARD
+    cur: number,
+    final: number,
+    resolve: () => void,
+    onStep: () => void
   ): void {
+    if (cur === final) {
+      resolve();
+      return;
+    }
+
     setTimeout(() => {
-      while (curPlayerPos !== finalPlayerPos) {
-        if (direction == MoveDirection.FORWARD) curPlayerPos++;
-        else curPlayerPos--;
-
-        while (curPlayerPos < 0) curPlayerPos += BOARD_SIZE;
-        if (curPlayerPos > BOARD_SIZE) curPlayerPos -= BOARD_SIZE;
-
-        this.getCurrentPlayer().setPosition(curPlayerPos);
-      }
+      let nextPos = (cur + 1) % BOARD_SIZE;
+      this.getCurrentPlayer().setPosition(nextPos);
+      onStep(); // Pulse to React
+      this.delayedMove(nextPos, final, resolve, onStep);
     }, this.MOVE_TIMEOUT_MS);
   }
   private movePlayer(distance: number = 0): void {
@@ -341,7 +376,8 @@ export class Game extends Serializable {
 
       while (distance < 0) distance += BOARD_SIZE;
       if (distance > BOARD_SIZE) distance -= BOARD_SIZE;
-      this.delayedMove(curPlayerPos, distance, moveDirection);
+      //FIXME: Implement delayed move with animation
+      //this.delayedMove(curPlayerPos, distance, moveDirection);
       return;
     }
 
@@ -372,7 +408,8 @@ export class Game extends Serializable {
 
     if (finalPlayerPos > BOARD_SIZE) finalPlayerPos -= BOARD_SIZE;
 
-    this.delayedMove(curPlayerPos, finalPlayerPos);
+    //FIXME: Implement delayed move with animation
+    //this.delayedMove(curPlayerPos, finalPlayerPos);
   }
   private cellAction(): void {
     const cell: Cell = this.board[this.getCurrentPlayer().getPosition()];
@@ -454,7 +491,7 @@ export class Game extends Serializable {
   }
   private endTurn(): void {
     if (this.getCurrentPlayer().isBankrupt()) {
-      this.removePlayer(this.getCurrentPlayer().getId());
+      this.removePlayerById(this.getCurrentPlayer().getId());
       this.nextPlayer();
     } else if (
       !this.dice.rolledDoubles() ||
@@ -486,9 +523,6 @@ export class Game extends Serializable {
     this.gameStarted = false;
   }
   private setEvent(event: Event): void {
-    if (this.event && !eventsSingleton.validTransition(this.event, event))
-      throw new Error("Invalid event transition");
-
     this.event = event;
   }
   private openModal(content: ModalContent): void {
@@ -581,11 +615,12 @@ export class Game extends Serializable {
       return {
         id: cell.id,
         cellType: cell.cellType,
-        deed: cell.deed.clone(),
+        deed: cell.deed?.clone(),
       };
     });
   }
-  private setSettings(gameSettings: GameSettings): void {
+  private setSettings(gameSettings: GameSettings | null): void {
+    if (!gameSettings) return;
     if (gameSettings.type === "Last Player Standing" && gameSettings.duration)
       throw new Error("Settings mismatch");
     if (gameSettings.type === "Timed")
@@ -597,11 +632,11 @@ export class Game extends Serializable {
   private getPlayerById(playerId: number): Player {
     return this.playerContainer.getById(playerId);
   }
+  private getPlayerByIndex(index: number): Player {
+    return this.playerContainer.getByIndex(index);
+  }
   private nextPlayer(): void {
     this.playerContainer.next();
-  }
-  private removePlayer(playerId: number): void {
-    this.playerContainer.removeByIndex(playerId);
   }
   private setCurrentPlayerIndex(index: number): void {
     this.playerContainer.setCurrentIndex(index);

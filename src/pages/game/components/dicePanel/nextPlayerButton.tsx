@@ -5,10 +5,7 @@ const NextPlayerButton: React.FC = () => {
 
   const handleClick = () => {
     dispatch({
-      state: state,
-      action: {
-        flowType: "AWAIT",
-      },
+      flowType: "AWAIT",
     });
     const nextPlayerButton = document.getElementById(
       "next-player-button"

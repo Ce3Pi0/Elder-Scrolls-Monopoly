@@ -2,37 +2,37 @@
   "communityChestCards": [
     {
       "id": 0,
-      "type": "move",
+      "type": "MOVE",
       "location": 0,
       "content": "Advance to GO Collect 200"
     },
     {
       "id": 1,
-      "type": "pay",
+      "type": "PAY",
       "value": 100,
       "content": "Pay hospital bill of 100"
     },
     {
       "id": 2,
-      "type": "pay",
+      "type": "PAY",
       "value": 50,
       "content": "Doctor's fee Pay 50"
     },
     {
       "id": 3,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 100,
       "content": "You inherit 100"
     },
     {
       "id": 4,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 20,
       "content": "Income tax refund. Collect 20"
     },
     {
       "id": 5,
-      "type": "variablePay",
+      "type": "VARIABLE_PAY",
       "value": {
         "house": 40,
         "castle": 115
@@ -41,13 +41,13 @@
     },
     {
       "id": 6,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 25,
       "content": "RECEIVE FOR SERVICES 25"
     },
     {
       "id": 7,
-      "type": "variableCollect",
+      "type": "VARIABLE_COLLECT",
       "value": {
         "player": 50
       },
@@ -55,49 +55,49 @@
     },
     {
       "id": 8,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 100,
       "content": "LIFE INSURANCE MATURES COLLECT 100"
     },
     {
       "id": 9,
-      "type": "move",
+      "type": "MOVE",
       "location": "jail",
-      "content": "Do not pass go, do not collect 200"
+      "content": "Do not pass go, do not COLLECT 200"
     },
     {
       "id": 10,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 200,
       "content": "BANK ERROR IN YOUR FAVOR COLLECT 200"
     },
     {
       "id": 11,
-      "type": "pay",
+      "type": "PAY",
       "value": 150,
       "content": "PAY SCHOOL TAX OF 150"
     },
     {
       "id": 12,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 100,
       "content": "XMAS FUND MATURES COLLECT 100"
     },
     {
       "id": 13,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 10,
       "content": "YOU HAVE WON SECOND PRIZE in a beauty contest. Collect 10"
     },
     {
       "id": 14,
-      "type": "collect",
+      "type": "COLLECT",
       "value": 45,
       "content": "FROM SALE OF STOCK YOU GET 45"
     },
     {
       "id": 15,
-      "type": "getOutOfJailCard",
+      "type": "GET_OUT_OF_JAIL_CARD",
       "content": "This card may be kept until needed, or sold"
     }
   ]

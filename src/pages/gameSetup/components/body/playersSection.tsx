@@ -6,36 +6,41 @@ import type {
 } from "../../../../utils/interfaces";
 import PlayerComponent from "./playerComponent";
 import { useGameContext } from "../../../../context/GameContext";
-
-import { Player } from "../../../../classes/classes";
-
-import { getRandomColor, getRandomIcon } from "../../../../utils/utils";
+import { getRandomColor, getRandomIcon } from "../../../../utils/helpers";
+import { Player } from "../../../../classes/concrete/player";
 
 const PlayersSection: React.FC<PlayerSectionProps> = ({ playerCount }) => {
   const { state, dispatch, loaded } = useGameContext();
 
-  const [playersData, setPlayersData] = React.useState<PlayerData[]>([]);
+  const playersData: PlayerData[] =
+    loaded && state.game
+      ? state.game.getPlayersInfo().map((player) => ({
+          id: player.id,
+          name: player.name,
+          color: player.color,
+          icon: player.icon,
+        }))
+      : [];
 
   useEffect(() => {
     if (!loaded || !state.game) return;
 
-    const players: PlayerData[] = state.game.getPlayers().map((player) => ({
-      id: player.getId(),
-      name: player.getName(),
-      color: player.getColor(),
-      icon: player.getIcon(),
+    const players: PlayerData[] = state.game.getPlayersInfo().map((player) => ({
+      id: player.id,
+      name: player.name,
+      color: player.color,
+      icon: player.icon,
     }));
 
-    setPlayersData(players);
-
-    const currentCount = state.game.getPlayers().length;
+    const currentCount = state.game.getPlayersInfo().length;
 
     if (currentCount === playerCount) return;
-    if (state.game && loaded) {
-      let statePlayerCount = state.game.getPlayers().length;
 
-      const usedColors = playersData.map((p) => Number(p.color));
-      const usedIcons = playersData.map((p) => Number(p.icon));
+    if (state.game && loaded) {
+      let statePlayerCount = state.game.getPlayersInfo().length;
+
+      const usedColors = players.map((p) => Number(p.color));
+      const usedIcons = players.map((p) => Number(p.icon));
 
       while (statePlayerCount < playerCount) {
         const newColor = getRandomColor(usedColors);
@@ -51,14 +56,21 @@ const PlayersSection: React.FC<PlayerSectionProps> = ({ playerCount }) => {
         usedColors.push(newColor);
         usedIcons.push(newIcon);
 
-        dispatch({ type: "ADD_PLAYER", payload: newPlayer });
+        dispatch({
+          flowType: "ADD_PLAYER",
+          actionData: {
+            player: newPlayer,
+          },
+        });
         statePlayerCount++;
       }
 
       while (statePlayerCount > playerCount) {
         dispatch({
-          type: "REMOVE_PLAYER",
-          payload: state.game.getPlayers()[statePlayerCount - 1],
+          flowType: "REMOVE_PLAYER",
+          actionData: {
+            playerId: state.game.getPlayersInfo()[statePlayerCount - 1].id,
+          },
         });
         statePlayerCount--;
       }

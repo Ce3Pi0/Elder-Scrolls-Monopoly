@@ -1,10 +1,10 @@
 import React from "react";
-import {
-  UTILITIES_TO_LOGOS,
-  UTILITIES_TO_PICTURES,
-} from "../../../../utils/utils";
 import type { UtilityCellProps } from "../../../../utils/interfaces";
 import PlayerDots from "./playerDots";
+import {
+  utilitiesToLogos,
+  utilitiesToPictures,
+} from "../../../../utils/helpers";
 
 const UtilityCell: React.FC<UtilityCellProps> = ({
   playerPositions,
@@ -14,8 +14,8 @@ const UtilityCell: React.FC<UtilityCellProps> = ({
   type,
   name,
 }) => {
-  const picture = UTILITIES_TO_PICTURES[utility];
-  const logo = UTILITIES_TO_LOGOS[type];
+  const picture = utilitiesToPictures(utility);
+  const logo = utilitiesToLogos(type);
 
   return (
     <div className="tile">
