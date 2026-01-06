@@ -1,23 +1,22 @@
+import React, { useEffect } from "react";
 import { useGameContext } from "../../../../context/GameContext";
 
 const NextPlayerButton: React.FC = () => {
   const { state, dispatch } = useGameContext();
 
+  const currentEvent = state.game?.getEvent();
+  const [isDisabled, setIsDisabled] = React.useState(
+    currentEvent !== "AWAIT_END_TURN"
+  );
+
+  useEffect(() => {
+    setIsDisabled(state.game?.getEvent() !== "AWAIT_END_TURN");
+  }, [state.game?.getEvent()]);
+
   const handleClick = () => {
     dispatch({
       flowType: "AWAIT",
     });
-    const nextPlayerButton = document.getElementById(
-      "next-player-button"
-    ) as HTMLButtonElement;
-    const rollButton = document.getElementById(
-      "roll-button"
-    ) as HTMLButtonElement;
-
-    if (nextPlayerButton && rollButton) {
-      nextPlayerButton.disabled = true;
-      rollButton.disabled = false;
-    }
   };
 
   return (
@@ -25,7 +24,7 @@ const NextPlayerButton: React.FC = () => {
       id="next-player-button"
       className="roll-button"
       onClick={handleClick}
-      disabled={state.game?.getEvent() !== "AWAIT_END_TURN"}
+      disabled={isDisabled}
     >
       <h2>End</h2>
     </button>

@@ -47,7 +47,7 @@ const PlayersSection: React.FC<PlayerSectionProps> = ({ playerCount }) => {
         const newIcon = getRandomIcon(usedIcons);
 
         const newPlayer = new Player(
-          statePlayerCount + 1,
+          statePlayerCount,
           `Player ${statePlayerCount + 1}`,
           newColor,
           newIcon

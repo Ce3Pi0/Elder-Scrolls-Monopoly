@@ -196,10 +196,11 @@ export class Player extends Serializable {
       throw new Error("Player is not in jail.");
     }
   }
-  public updateJailTurns(): void {
+  public increaseJailTurns(): void {
     if (this.inJail) {
       this.jailTurns++;
-      if (this.jailTurns >= MAX_JAIL_TURNS) this.releaseFromJail();
+      if (this.jailTurns > MAX_JAIL_TURNS)
+        throw new Error("Jail Turn Number too High");
     } else throw new Error("Player not in jail");
   }
   public addDeed(deed: BasicDeed<DeedType>): void {

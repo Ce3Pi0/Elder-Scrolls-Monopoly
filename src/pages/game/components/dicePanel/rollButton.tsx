@@ -18,10 +18,7 @@ const RollButton: React.FC = () => {
       if (currentEvent === "ROLL_DICE") {
         dispatch({ flowType: "GAME" });
       } else if (currentEvent === "MOVE_PLAYER") {
-        const lastRoll = state.game?.getDiceValue();
-        const total = lastRoll[0] + lastRoll[1];
-
-        await state.game?.moveCurrentPlayer(total, () => {
+        await state.game?.moveCurrentPlayer(() => {
           dispatch({ flowType: "UPDATE_DISPLAY" });
         });
 

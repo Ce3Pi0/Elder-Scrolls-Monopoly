@@ -25,7 +25,7 @@ export class CardHandler {
     if (!CardHandler.drawnChanceGetOutOfJailCard) {
       const card: ChanceCard =
         CardHandler.CHANCE_CARDS[
-          Math.trunc(Math.random() * CardHandler.CHANCE_CARDS.length) + 1
+          Math.trunc(Math.random() * CardHandler.CHANCE_CARDS.length) - 1
         ];
       return card;
     }
@@ -42,7 +42,7 @@ export class CardHandler {
     if (!CardHandler.drawnCommunityChestGetOutOfJailCard) {
       const card: CommunityChestCard =
         CardHandler.COMMUNITY_CHEST_CARDS[
-          Math.trunc(Math.random() * CardHandler.COMMUNITY_CHEST_CARDS.length) +
+          Math.trunc(Math.random() * CardHandler.COMMUNITY_CHEST_CARDS.length) -
             1
         ];
       return card;

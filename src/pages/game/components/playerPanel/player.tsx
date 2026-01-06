@@ -41,7 +41,7 @@ const Player: React.FC<GamePlayerData> = ({
 
       dialog.showModal();
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, state.game?.getModalContent()]);
 
   const openModal = (): void => {
     dispatch({

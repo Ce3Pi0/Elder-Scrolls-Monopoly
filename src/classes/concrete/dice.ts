@@ -4,6 +4,7 @@ import { Serializable } from "../abstract/serializable";
 
 export class Dice extends Serializable {
   static readonly MAX_DICE_VALUE: number = 6;
+  static readonly MIN_DICE_VALUE: number = 1;
   static readonly MAX_DOUBLES_COUNTER: number = 3;
 
   private diceValues: Pair = { diceOne: 0, diceTwo: 0 };
@@ -73,17 +74,20 @@ export class Dice extends Serializable {
     if (this.doublesCounter > Dice.MAX_DICE_VALUE)
       throw new Error(`Cannot roll ${this.doublesCounter} doubles in a row`);
   }
+  public resetDoublesCounter(): void {
+    this.doublesCounter = 0;
+  }
   private setDiceValues(diceValues: Pair) {
-    if (!this.validDice(diceValues))
+    if (!this.validDice(diceValues) && this.areDiceRolled())
       throw new Error(`Invalid dice values ${diceValues}`);
     this.diceValues.diceOne = diceValues.diceOne;
     this.diceValues.diceTwo = diceValues.diceTwo;
   }
   private validDice(diceValues: Pair): boolean {
     if (
-      diceValues.diceOne < 0 ||
+      diceValues.diceOne < Dice.MIN_DICE_VALUE ||
       diceValues.diceOne > Dice.MAX_DICE_VALUE ||
-      diceValues.diceTwo < 0 ||
+      diceValues.diceTwo < Dice.MIN_DICE_VALUE ||
       diceValues.diceTwo > Dice.MAX_DICE_VALUE
     )
       return false;

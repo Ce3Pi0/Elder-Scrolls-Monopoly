@@ -218,6 +218,7 @@ export interface SerializedGame {
   gameEnded: boolean;
   event: Event | null;
   currentPlayerIndex: number;
+  targetPosition: number | null;
   modalOpen: boolean;
   modalContent: ModalContent | null;
   pendingDrawCard: boolean;
